@@ -70,6 +70,7 @@
             this.btnPlay.TabIndex = 2;
             this.btnPlay.Text = "SPELA";
             this.btnPlay.UseVisualStyleBackColor = false;
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             this.btnPlay.MouseEnter += new System.EventHandler(this.Button_MouseEnter);
             this.btnPlay.MouseLeave += new System.EventHandler(this.Button_MouseLeave);
             // 

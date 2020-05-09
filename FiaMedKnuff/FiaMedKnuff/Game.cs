@@ -10,11 +10,11 @@ namespace FiaMedKnuff
     {
         // public enum GameState { } ???
 
-        static public List<Player> players = new List<Player>();
-        static public List<Square> squares = new List<Square>();
-        static public byte maxPlayers = 4;
-        static public byte ammountOfPlayers;
-        static public Player currentTurn;
+        static private List<Player> players = new List<Player>();
+        static private List<Square> squares = new List<Square>();
+        static private byte maxPlayers = 4;
+        static private byte ammountOfPlayers;
+        static private Player currentTurn;
 
         /// <summary>
         /// Check if everyone is ready to start the game
@@ -22,7 +22,7 @@ namespace FiaMedKnuff
         /// <returns>True if everyone is ready</returns>
         public bool ReadyToStart()
         {
-            foreach(Player p in players)
+            foreach (Player p in players)
             {
                 if (p.State == Player.PlayerState.NOT_READY)
                     return false;
@@ -36,6 +36,8 @@ namespace FiaMedKnuff
         /// </summary>
         public void InitGame(List<Player> players)
         {
+            // Populate the Game.Squares list
+
             // Populate player list
             Game.players = players;
 
@@ -62,6 +64,31 @@ namespace FiaMedKnuff
         public override string ToString()
         {
             return $"Connected players: {ammountOfPlayers}, max players: {maxPlayers}, current turn: {currentTurn}";
+        }
+
+        // Getters and Setters for the private variables at the top of this class
+        static public List<Player> Players
+        {
+            get { return players; }
+        }
+        static public List<Square> Squares
+        {
+            get { return squares; }
+        }
+        static public byte MaxPlayers
+        {
+            get { return maxPlayers; }
+            set { maxPlayers = value; }
+        }
+        static public byte AmmountOfPlayers
+        {
+            get { return ammountOfPlayers; }
+            set { ammountOfPlayers = value; }
+        }
+        static public Player CurrentTurn
+        {
+            get { return currentTurn; }
+            set { currentTurn = value; }
         }
     }
 }

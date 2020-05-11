@@ -42,7 +42,10 @@ namespace FiaMedKnuff
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
+            FileHandler.SaveUserData("Jinado", 2, 6);
+            FileHandler.ReadUserData("Jinado", out int gamesWon, out int gamesLost);
 
+            MessageBox.Show($"Games won: {gamesWon}\nGames lost: {gamesLost}");
         }
     }
 }

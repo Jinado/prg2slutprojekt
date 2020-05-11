@@ -11,6 +11,7 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="player">The player who is linked to this character</param>
         /// <param name="color">The colour of this character</param>
+        /// <exception cref="InvalidColourException"></exception>
         public Character(Player player, Color colour)
         {
             this.Player = player;

@@ -25,8 +25,13 @@ namespace FiaMedKnuff
         /// <param name="clients"></param>
         /// <param name="port"></param>
         /// <param name="maxPlayers"></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="InvalidValueOfMaximumPlayersException"></exception>
         public Server(TcpListener listener, List<TcpClient> clients, int port, int maxPlayers)
         {
+            if (port < 0)
+                throw new ArgumentException();
+
             if (maxPlayers < 2 || maxPlayers > 4)
                 throw new InvalidValueOfMaximumPlayersException();
 
@@ -41,8 +46,12 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="client"></param>
         /// <param name="port"></param>
+        /// <exception cref="ArgumentException"></exception>
         public Server(TcpClient client, string ip, int port)
         {
+            if (port < 0)
+                throw new ArgumentException();
+
             try
             {
                 this.ip = IPAddress.Parse(ip);
@@ -50,11 +59,11 @@ namespace FiaMedKnuff
             catch(Exception err)
             {
                 if(err.InnerException is ArgumentNullException)
-                    MessageBox.Show("The IP-address cannot be null", "Invalid IP-address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("IP-adressen kan ej vara av typ null", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else if (err.InnerException is FormatException)
-                    MessageBox.Show("The supplied IP-address if formatted incorrectly.", "Invalid IP-address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Den angivna IP-adressen är inkorrekt formaterad", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
-                    MessageBox.Show(err.Message, "Invalid IP-address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(err.Message, "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }
@@ -74,7 +83,7 @@ namespace FiaMedKnuff
                 server.listener = new TcpListener(IPAddress.Any, server.port);
                 server.listener.Start();
             }
-            catch (Exception err) { MessageBox.Show(err.Message, "Error on server launch", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            catch (Exception err) { MessageBox.Show(err.Message, "Fel vid start av server", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
 
             ListenForConnections(server);
         }

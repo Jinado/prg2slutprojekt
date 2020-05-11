@@ -12,6 +12,8 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="colour">The colour of the Square, if black, it's the middle Square</param>
         /// <param name="index">The index of the Square</param>
+        /// <exception cref="InvalidColourException"></exception>
+        /// <exception cref="System.IndexOutOfRangeException"></exception>
         public Square(Color colour, int index)
         {
             this.State = SquareState.FREE;

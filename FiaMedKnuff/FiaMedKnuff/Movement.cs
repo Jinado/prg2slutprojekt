@@ -101,8 +101,6 @@ namespace FiaMedKnuff
         /// <param name="character">The character to move</param>
         static public void MoveCharacter(Square square, Character character)
         {
-            // This class gets called after recieving information from 
-            // the server that a character is supposed to be moved
             throw new NotImplementedException();
         }
 

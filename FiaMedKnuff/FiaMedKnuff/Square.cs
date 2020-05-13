@@ -22,7 +22,7 @@ namespace FiaMedKnuff
             this.Colour = colour;
             if (index < 0 || index >= 57)
                 throw new System.IndexOutOfRangeException("The index may not be larger than 56 nor smaller than 0");
-            this.SquareIndex = index;
+            this.Position = index;
             this.Border = SquareBorder.BORDERLESS;
         }
 
@@ -30,6 +30,6 @@ namespace FiaMedKnuff
         public Character Character { get; set; }
         public SquareState State { get; set; }
         public SquareBorder Border { get; set; }
-        public int SquareIndex { get; set; }
+        public int Position { get; set; }
     }
 }

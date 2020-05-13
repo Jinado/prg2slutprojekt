@@ -12,10 +12,9 @@ namespace FiaMedKnuff
     public class Server
     {
         private TcpListener listener;
-        private List<TcpClient> clients;
+        private List<TcpClient> clients = new List<TcpClient>();
         private TcpClient client;
         private int port;
-        private int maxPlayers;
         private IPAddress ip;
 
         /// <summary>
@@ -26,19 +25,12 @@ namespace FiaMedKnuff
         /// <param name="port"></param>
         /// <param name="maxPlayers"></param>
         /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="InvalidValueOfMaximumPlayersException"></exception>
-        public Server(TcpListener listener, List<TcpClient> clients, int port, int maxPlayers)
+        public Server(int port, int maxPlayers)
         {
             if (port < 0)
                 throw new ArgumentException();
 
-            if (maxPlayers < 2 || maxPlayers > 4)
-                throw new InvalidValueOfMaximumPlayersException();
-
-            this.listener = listener;
-            this.clients = clients;
             this.port = port;
-            this.maxPlayers = maxPlayers;
         }
 
         /// <summary>
@@ -94,20 +86,18 @@ namespace FiaMedKnuff
         /// <param name="server">The server to listen on</param>
         private async static void ListenForConnections(Server server)
         {
-            TcpClient tempClient;
+            TcpClient tempClient = null;
 
             try
             {
                 tempClient = await server.listener.AcceptTcpClientAsync();
-                server.clients.Add(tempClient);
+                if(tempClient != null)
+                    server.clients.Add(tempClient);
             }
-            catch (Exception err) { MessageBox.Show(err.Message, "Connection error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            catch (Exception err) { MessageBox.Show(err.Message, "Connection error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
 
-            //FetchMessages(tempClient);
-
-            // Make sure no more than four clients may join
-            if(server.clients.Count != server.maxPlayers)
-                ListenForConnections(server);
+            RecieveData(server, tempClient);
+            ListenForConnections(server);
         }
 
         /// <summary>
@@ -122,7 +112,11 @@ namespace FiaMedKnuff
                 await server.client.ConnectAsync(server.ip, server.port);
 
                 if (server.client.Connected)
+                {
+                    // Start listening for messages
+                    RecieveDataFromServer(server.client);
                     return true;
+                }
             }
             catch (Exception err) { MessageBox.Show(err.Message, "Connection error", MessageBoxButtons.OK, MessageBoxIcon.Error); return false; }
 
@@ -132,11 +126,13 @@ namespace FiaMedKnuff
         /// <summary>
         /// Disconnect a player from a server
         /// </summary>
+        /// <param name="client">The client to disconnect</param>
         /// <param name="player">The player to disconnect</param>
         /// <param name="server">The server to disconnect from</param>
-        public static void Disconnect(Player player, Server server)
+        public static void Disconnect(TcpClient client, Player player, Server server)
         {
-            throw new NotImplementedException();
+            client.Close();
+            Server.PlayerDisconnected(server, player);
         }
 
         /// <summary>
@@ -145,7 +141,22 @@ namespace FiaMedKnuff
         /// <param name="server">The server to stop</param>
         public static void Stop(Server server)
         {
-            throw new NotImplementedException();
+            server.listener.Stop();
+            foreach(TcpClient c in server.clients)
+                c.Close();
+        }
+
+        /// <summary>
+        /// Announce to each client that a player has disconnected
+        /// </summary>
+        /// <param name="server">The server the player has disconnected from</param>
+        /// <param name="player">The player that has disconnected</param>
+        public static void PlayerDisconnected(Server server, Player player)
+        {
+            // PLD stands for "PLAYER DISCONNECTED", this is used on the server side 
+            // to identify what type of message has been recieved
+            string message = $"PLD|{player.Name}";
+            SendMessage(server, message);           
         }
 
         /// <summary>
@@ -156,7 +167,10 @@ namespace FiaMedKnuff
         /// <param name="character">The character to move</param>
         public static void MoveCharacter(Server server, Square square, Character character)
         {
-            throw new NotImplementedException();
+            // MVC stands for "MOVE CHARACTER", this is used on the server side 
+            // to identify what type of message has been recieved
+            string message = $"MVC|{square.Position}|{character.Position}";
+            SendMessage(server, message);
         }
 
         /// <summary>
@@ -166,7 +180,10 @@ namespace FiaMedKnuff
         /// <param name="player">The player that has won the game</param>
         public static void HasWon(Server server, Player player)
         {
-            throw new NotImplementedException();
+            // HAW stands for "HAS WON", this is used on the server side 
+            // to identify what type of message has been recieved
+            string message = $"HAW|{player.Name}";
+            SendMessage(server, message);
         }
 
         /// <summary>
@@ -176,7 +193,10 @@ namespace FiaMedKnuff
         /// <param name="diceResult">The result of the dice throw</param>
         public static void ThrownDice(Server server, byte diceResult)
         {
-            throw new NotImplementedException();
+            // TRD stands for "THROWN DICE", this is used on the server side 
+            // to identify what type of message has been recieved
+            string message = $"TRD|{diceResult}";
+            SendMessage(server, message);
         }
 
         /// <summary>
@@ -186,7 +206,10 @@ namespace FiaMedKnuff
         /// <param name="player">The player whose turn it is</param>
         public static void ChangeTurn(Server server, Player player)
         {
-            throw new NotImplementedException();
+            // CHT stands for "CHANGE TURN", this is used on the server side 
+            // to identify what type of message has been recieved
+            string message = $"CHT|{player.Name}";
+            SendMessage(server, message);
         }
 
         /// <summary>
@@ -196,7 +219,10 @@ namespace FiaMedKnuff
         /// <param name="player">The player object to send over</param>
         public static void SendPlayerData(Server server, Player player)
         {
-            throw new NotImplementedException();
+            // SPD stands for "SEND PLAYER DATA", this is used on the server side 
+            // to identify what type of message has been recieved
+            string message = $"SPD|{player.Name}|{player.Characters[0].Colour}|{player.PlayersTurn}|{player.State}";
+            SendMessage(server, message);
         }
 
         /// <summary>
@@ -206,29 +232,100 @@ namespace FiaMedKnuff
         /// <param name="players">The list of players connected to the server</param>
         public static void SendReadyStatus(Server server, List<Player> players)
         {
-            throw new NotImplementedException();
+            // SRS stands for "SEND READY STATUS", this is used on the server side 
+            // to identify what type of message has been recieved
+            string message = "SRS";
+            foreach(Player p in players)
+                message += $"|{p.Name}|{p.State}";
+
+            SendMessage(server, message);
         }
 
         /// <summary>
-        /// Recieve data broadcasted to the clients
+        /// Recieve data sent to the server and broadcast it to all clients
         /// </summary>
-        /// <param name="server">The server to recieve data from</param>
-        public async static void RecieveData(Server server)
+        /// <param name="server">The server to broadcast the message to</param>
+        /// <param name="client">The client that will listen to messages (I.E. The server's client itself)</param>
+        private async static void RecieveData(Server server, TcpClient client)
         {
             byte[] buffer = new byte[1024];
 
             int n = 0;
             try
             {
-                n = await server.client.GetStream().ReadAsync(buffer, 0, buffer.Length);
+                n = await client.GetStream().ReadAsync(buffer, 0, buffer.Length);
             }
             catch (Exception err) { MessageBox.Show(err.Message, "Server error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
 
             string message = Encoding.UTF8.GetString(buffer, 0, n);
-            // I'll have to handle the data here, MAKE SURE TO USE A MAGIC NUMBER AT THE BEGINNING OF THE STRING
-            // FOR EASY IDENTIFICATION
+            if(message != null)
+            {
+                // Broadcast the message
+                foreach(TcpClient clt in server.clients)
+                {
+                    // Make sure NOT to send the message back to origin
+                    if (!clt.Equals(client))
+                    {
+                        SendMessage(clt, message);
+                    }
+                }
+            }
 
-            RecieveData(server);
+            RecieveData(server, client);
+        }
+
+        /// <summary>
+        /// Listens for messages sent from the server to the client.
+        /// </summary>
+        private async static void RecieveDataFromServer(TcpClient client)
+        {
+            byte[] buffer = new byte[1024];
+
+            int n = 0;
+            try
+            {
+                n = await client.GetStream().ReadAsync(buffer, 0, buffer.Length);
+            }
+            catch (Exception err) { MessageBox.Show(err.Message, "Server error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+
+            string message = Encoding.UTF8.GetString(buffer, 0, n);
+
+            if (message != null)
+                FrmMain.HandleMessageRecievedByServer(message);
+
+            RecieveDataFromServer(client);
+        }
+
+        /// <summary>
+        /// Send the message to the server
+        /// </summary>
+        /// <param name="server">The server to send the message to</param>
+        /// <param name="message">The message to send</param>
+        private async static void SendMessage(Server server, string message)
+        {
+            byte[] msg = Encoding.UTF8.GetBytes(message);
+
+            try
+            {
+                    await server.client.GetStream().WriteAsync(msg, 0, msg.Length);
+            }
+            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till servern.\n{err.Message}", "Serverfel", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+        }
+
+        /// <summary>
+        /// Send a message to another client
+        /// </summary>
+        /// <param name="client">The client to send the message to</param>
+        /// <param name="message">The message to send</param>
+        private async static void SendMessage(TcpClient client, string message)
+        {
+            byte[] msg = Encoding.UTF8.GetBytes(message);
+
+            try
+            {
+                await client.GetStream().WriteAsync(msg, 0, msg.Length);
+            }
+            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till klienten.\n{err.Message}", "Serverfel", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
         }
     }
 }

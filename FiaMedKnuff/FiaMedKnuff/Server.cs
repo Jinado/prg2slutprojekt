@@ -25,7 +25,7 @@ namespace FiaMedKnuff
         /// <param name="port"></param>
         /// <param name="maxPlayers"></param>
         /// <exception cref="ArgumentException"></exception>
-        public Server(int port, int maxPlayers)
+        public Server(int port)
         {
             if (port < 0)
                 throw new ArgumentException();

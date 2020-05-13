@@ -52,8 +52,7 @@ namespace FiaMedKnuff
         private void btnLaunchServer_Click(object sender, EventArgs e)
         {
             int port = 6767;
-            int maxPlayers = 4;
-            host = new Server(port, maxPlayers);
+            host = new Server(port);
             Server.StartServer(host);
             MessageBox.Show("Server started");
         }

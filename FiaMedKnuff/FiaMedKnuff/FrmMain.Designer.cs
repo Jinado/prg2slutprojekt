@@ -91,6 +91,7 @@
             this.btnRules.TabIndex = 3;
             this.btnRules.Text = "SPELREGLER";
             this.btnRules.UseVisualStyleBackColor = false;
+            this.btnRules.Click += new System.EventHandler(this.btnRules_Click);
             this.btnRules.MouseEnter += new System.EventHandler(this.Button_MouseEnter);
             this.btnRules.MouseLeave += new System.EventHandler(this.Button_MouseLeave);
             // 
@@ -168,7 +169,7 @@
             this.MaximizeBox = false;
             this.Name = "FrmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Fia Med Knuff av Johannes Emmoth";
+            this.Text = "Fia med knuff - Johannes Emmoth";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);

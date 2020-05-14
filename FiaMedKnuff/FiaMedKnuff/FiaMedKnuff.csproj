@@ -54,9 +54,24 @@
     <Compile Include="FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMenu.Designer.cs">
+      <DependentUpon>FrmMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmRules.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmRules.Designer.cs">
+      <DependentUpon>FrmRules.cs</DependentUpon>
+    </Compile>
     <Compile Include="Game.cs" />
     <Compile Include="InvalidColourException.cs" />
     <Compile Include="InvalidValueOfMaximumPlayersException.cs" />
+    <Compile Include="LabeledTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Movement.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
@@ -67,6 +82,12 @@
     <Compile Include="StringConstants.cs" />
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMenu.resx">
+      <DependentUpon>FrmMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmRules.resx">
+      <DependentUpon>FrmRules.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -93,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="images\bakgrundsbild.png" />
+    <Content Include="images\border.png" />
     <Content Include="images\title.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

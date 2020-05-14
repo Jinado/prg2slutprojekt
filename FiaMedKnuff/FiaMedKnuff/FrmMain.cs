@@ -39,30 +39,37 @@ namespace FiaMedKnuff
             btn.Top += 5;
         }
 
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            new FrmMenu().ShowDialog();
+            this.Close();
+        }
+
+        private void btnRules_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            new FrmRules().ShowDialog();
+            this.Close();
+        }
+
         private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        private void btnPlay_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnLaunchServer_Click(object sender, EventArgs e)
         {
-            int port = 6767;
-            host = new Server(port);
+            host = new Server();
             Server.StartServer(host);
             MessageBox.Show("Server started");
         }
 
         private async void btnConnect_Click(object sender, EventArgs e)
         {
-            int port = 6767;
             TcpClient client = new TcpClient();
             client.NoDelay = true;
-            server = new Server(client, tbxIP.Text, port);
+            server = new Server(client, tbxIP.Text);
 
             if (await Server.JoinServer(server))
                 MessageBox.Show("Succesfully joined the server");

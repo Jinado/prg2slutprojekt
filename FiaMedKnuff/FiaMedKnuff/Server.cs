@@ -25,10 +25,10 @@ namespace FiaMedKnuff
         /// <param name="port"></param>
         /// <param name="maxPlayers"></param>
         /// <exception cref="ArgumentException"></exception>
-        public Server(int port)
+        public Server(int port = 6767)
         {
-            if (port < 0)
-                throw new ArgumentException();
+            if (port < 1024)
+                throw new ArgumentException("Invalid port number. The port cannot be within the range of 0 - 1023.");
 
             this.port = port;
         }
@@ -39,10 +39,10 @@ namespace FiaMedKnuff
         /// <param name="client"></param>
         /// <param name="port"></param>
         /// <exception cref="ArgumentException"></exception>
-        public Server(TcpClient client, string ip, int port)
+        public Server(TcpClient client, string ip, int port = 6767)
         {
-            if (port < 0)
-                throw new ArgumentException();
+            if (port < 1024)
+                throw new ArgumentException("Invalid port number. The port cannot be within the range of 0 - 1023.");
 
             try
             {
@@ -151,9 +151,9 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="server">The server the player has disconnected from</param>
         /// <param name="player">The player that has disconnected</param>
-        public static void PlayerDisconnected(Server server, Player player)
+        private static void PlayerDisconnected(Server server, Player player)
         {
-            // PLD stands for "PLAYER DISCONNECTED", this is used on the server side 
+            // PLD stands for "PLAYER DISCONNECTED", this is used on the client side 
             // to identify what type of message has been recieved
             string message = $"PLD|{player.Name}";
             SendMessage(server, message);           
@@ -167,7 +167,7 @@ namespace FiaMedKnuff
         /// <param name="character">The character to move</param>
         public static void MoveCharacter(Server server, Square square, Character character)
         {
-            // MVC stands for "MOVE CHARACTER", this is used on the server side 
+            // MVC stands for "MOVE CHARACTER", this is used on the client side 
             // to identify what type of message has been recieved
             string message = $"MVC|{square.Position}|{character.Position}";
             SendMessage(server, message);
@@ -180,7 +180,7 @@ namespace FiaMedKnuff
         /// <param name="player">The player that has won the game</param>
         public static void HasWon(Server server, Player player)
         {
-            // HAW stands for "HAS WON", this is used on the server side 
+            // HAW stands for "HAS WON", this is used on the client side 
             // to identify what type of message has been recieved
             string message = $"HAW|{player.Name}";
             SendMessage(server, message);
@@ -193,7 +193,7 @@ namespace FiaMedKnuff
         /// <param name="diceResult">The result of the dice throw</param>
         public static void ThrownDice(Server server, byte diceResult)
         {
-            // TRD stands for "THROWN DICE", this is used on the server side 
+            // TRD stands for "THROWN DICE", this is used on the client side 
             // to identify what type of message has been recieved
             string message = $"TRD|{diceResult}";
             SendMessage(server, message);
@@ -206,7 +206,7 @@ namespace FiaMedKnuff
         /// <param name="player">The player whose turn it is</param>
         public static void ChangeTurn(Server server, Player player)
         {
-            // CHT stands for "CHANGE TURN", this is used on the server side 
+            // CHT stands for "CHANGE TURN", this is used on the client side 
             // to identify what type of message has been recieved
             string message = $"CHT|{player.Name}";
             SendMessage(server, message);
@@ -219,7 +219,7 @@ namespace FiaMedKnuff
         /// <param name="player">The player object to send over</param>
         public static void SendPlayerData(Server server, Player player)
         {
-            // SPD stands for "SEND PLAYER DATA", this is used on the server side 
+            // SPD stands for "SEND PLAYER DATA", this is used on the client side 
             // to identify what type of message has been recieved
             string message = $"SPD|{player.Name}|{player.Characters[0].Colour}|{player.PlayersTurn}|{player.State}";
             SendMessage(server, message);
@@ -232,7 +232,7 @@ namespace FiaMedKnuff
         /// <param name="players">The list of players connected to the server</param>
         public static void SendReadyStatus(Server server, List<Player> players)
         {
-            // SRS stands for "SEND READY STATUS", this is used on the server side 
+            // SRS stands for "SEND READY STATUS", this is used on the client side 
             // to identify what type of message has been recieved
             string message = "SRS";
             foreach(Player p in players)

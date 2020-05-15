@@ -16,6 +16,7 @@ namespace FiaMedKnuff
         private TcpClient client;
         private int port;
         private IPAddress ip;
+        private int maxPlayers;
 
         /// <summary>
         /// This constructor is used for constructing a server to host
@@ -25,11 +26,16 @@ namespace FiaMedKnuff
         /// <param name="port"></param>
         /// <param name="maxPlayers"></param>
         /// <exception cref="ArgumentException"></exception>
-        public Server(int port = 6767)
+        /// <exception cref="InvalidValueOfMaximumPlayersException"></exception>
+        public Server(int maxPlayers, int port = 6767)
         {
             if (port < 1024)
                 throw new ArgumentException("Invalid port number. The port cannot be within the range of 0 - 1023.");
 
+            if (maxPlayers > 4 || maxPlayers < 2)
+                throw new InvalidValueOfMaximumPlayersException();
+
+            this.maxPlayers = maxPlayers;
             this.port = port;
         }
 
@@ -94,7 +100,14 @@ namespace FiaMedKnuff
                 if(tempClient != null)
                     server.clients.Add(tempClient);
             }
-            catch (Exception err) { MessageBox.Show(err.Message, "Connection error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception err)
+            {
+                // This is true when the server has been stopped. 
+                // The return statement makes sure we do not continue
+                // to listen for further connections.
+                if (err is ObjectDisposedException) return;
+                MessageBox.Show(err.Message, "Anslutningsfel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             RecieveData(server, tempClient);
             ListenForConnections(server);
@@ -141,9 +154,10 @@ namespace FiaMedKnuff
         /// <param name="server">The server to stop</param>
         public static void Stop(Server server)
         {
-            server.listener.Stop();
-            foreach(TcpClient c in server.clients)
+            foreach (TcpClient c in server.clients)
                 c.Close();
+
+            server.listener.Server.Close();
         }
 
         /// <summary>
@@ -221,7 +235,7 @@ namespace FiaMedKnuff
         {
             // SPD stands for "SEND PLAYER DATA", this is used on the client side 
             // to identify what type of message has been recieved
-            string message = $"SPD|{player.Name}|{player.Characters[0].Colour}|{player.PlayersTurn}|{player.State}";
+            string message = $"SPD|{player.Name}|{player.Characters[0].Colour}|{(int)player.State}";
             SendMessage(server, message);
         }
 
@@ -253,7 +267,9 @@ namespace FiaMedKnuff
             int n = 0;
             try
             {
-                n = await client.GetStream().ReadAsync(buffer, 0, buffer.Length);
+                if (client != null) // Is null when the server has been stopped
+                    n = await client.GetStream().ReadAsync(buffer, 0, buffer.Length);
+                else return;
             }
             catch (Exception err) { MessageBox.Show(err.Message, "Server error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
 
@@ -284,14 +300,20 @@ namespace FiaMedKnuff
             int n = 0;
             try
             {
-                n = await client.GetStream().ReadAsync(buffer, 0, buffer.Length);
+                if (client != null) // Is null when the server has been stopped
+                    n = await client.GetStream().ReadAsync(buffer, 0, buffer.Length);
+                else return;
             }
             catch (Exception err) { MessageBox.Show(err.Message, "Server error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
 
             string message = Encoding.UTF8.GetString(buffer, 0, n);
 
             if (message != null)
-                FrmMain.HandleMessageRecievedByServer(message);
+            {
+                FrmMenu menu = new FrmMenu();
+                menu.HandleMessageRecievedByServer(message);
+                menu.Dispose();
+            }
 
             RecieveDataFromServer(client);
         }

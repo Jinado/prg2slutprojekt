@@ -60,7 +60,7 @@ namespace FiaMedKnuff
 
         private void btnLaunchServer_Click(object sender, EventArgs e)
         {
-            host = new Server();
+            //host = new Server();
             Server.StartServer(host);
             MessageBox.Show("Server started");
         }
@@ -78,32 +78,6 @@ namespace FiaMedKnuff
         private void btnSendMessage_Click(object sender, EventArgs e)
         {
             Server.ThrownDice(server, 6);
-        }
-
-        /// <summary>
-        /// This methods handles the message recieved from the server
-        /// </summary>
-        public static void HandleMessageRecievedByServer(string message)
-        {
-            string msgType = $"{message[0]}{message[1]}{message[2]}";
-
-            switch (msgType)
-            {
-                case "PLD": // Player disconnected
-                    break;
-                case "MVC": // A character has been moved
-                    break;
-                case "HAW": // A player has won
-                    break;
-                case "TRD": // The dice have been thrown
-                    break;
-                case "CHT": // The turn has been changed
-                    break;
-                case "SPD": // Player data has been sent
-                    break;
-                case "SRS": // Ready status of all players have been sent
-                    break;
-            }
         }
     }
 }

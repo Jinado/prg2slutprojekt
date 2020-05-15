@@ -115,6 +115,8 @@
   <ItemGroup>
     <Content Include="images\bakgrundsbild.png" />
     <Content Include="images\border.png" />
+    <Content Include="images\not_ready.png" />
+    <Content Include="images\ready.png" />
     <Content Include="images\title.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

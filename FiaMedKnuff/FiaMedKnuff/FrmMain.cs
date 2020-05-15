@@ -67,9 +67,7 @@ namespace FiaMedKnuff
 
         private async void btnConnect_Click(object sender, EventArgs e)
         {
-            TcpClient client = new TcpClient();
-            client.NoDelay = true;
-            server = new Server(client, tbxIP.Text);
+            server = new Server(tbxIP.Text, this);
 
             if (await Server.JoinServer(server))
                 MessageBox.Show("Succesfully joined the server");
@@ -77,7 +75,7 @@ namespace FiaMedKnuff
 
         private void btnSendMessage_Click(object sender, EventArgs e)
         {
-            Server.ThrownDice(server, 6);
+           // Server.ThrownDice(server, 6);
         }
     }
 }

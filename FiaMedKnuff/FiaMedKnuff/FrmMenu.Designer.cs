@@ -63,11 +63,11 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.btnConnect = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
             this.ltbServerIP = new LabeledTextBox();
             this.ltbNameJoin = new LabeledTextBox();
             this.ltbMaxPlayers = new LabeledTextBox();
             this.ltbNameHost = new LabeledTextBox();
-            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbxHost)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxJoin)).BeginInit();
             this.gbxReadyHost.SuspendLayout();
@@ -498,8 +498,18 @@
             this.btnConnect.TabIndex = 14;
             this.btnConnect.Text = "ANSLUT";
             this.btnConnect.UseVisualStyleBackColor = false;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             this.btnConnect.MouseEnter += new System.EventHandler(this.Button_MouseEnter);
             this.btnConnect.MouseLeave += new System.EventHandler(this.Button_MouseLeave);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(308, 73);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(237, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "REMINDER: Sanitize the input! No | are allowed!";
             // 
             // ltbServerIP
             // 
@@ -511,6 +521,7 @@
             this.ltbServerIP.Size = new System.Drawing.Size(177, 26);
             this.ltbServerIP.TabIndex = 13;
             this.ltbServerIP.Text = "Serverns IP-adress";
+            this.ltbServerIP.TextChanged += new System.EventHandler(this.JoinTextBoxes_TextChanged);
             // 
             // ltbNameJoin
             // 
@@ -522,6 +533,7 @@
             this.ltbNameJoin.Size = new System.Drawing.Size(177, 26);
             this.ltbNameJoin.TabIndex = 12;
             this.ltbNameJoin.Text = "Ditt namn...";
+            this.ltbNameJoin.TextChanged += new System.EventHandler(this.JoinTextBoxes_TextChanged);
             // 
             // ltbMaxPlayers
             // 
@@ -546,15 +558,6 @@
             this.ltbNameHost.TabIndex = 4;
             this.ltbNameHost.Text = "Ditt namn...";
             this.ltbNameHost.TextChanged += new System.EventHandler(this.HostTextBoxes_TextChanged);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(308, 73);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(237, 13);
-            this.label7.TabIndex = 18;
-            this.label7.Text = "REMINDER: Sanitize the input! No | are allowed!";
             // 
             // FrmMenu
             // 

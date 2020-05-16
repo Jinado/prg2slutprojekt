@@ -69,7 +69,7 @@ namespace FiaMedKnuff
 
         public override string ToString()
         {
-            return $"Owner: {Player} | Colour: {Colour}";
+            return $"Colour: {Colour}";
         }
 
         public Player Player { get; set; }

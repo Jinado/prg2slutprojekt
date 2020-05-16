@@ -20,6 +20,18 @@ namespace FiaMedKnuff
             this.PlayersTurn = false;
         }
 
+        /// <summary>
+        /// Constructor for the Player class
+        /// </summary>
+        /// <param name="name">The name of the player</param>
+        /// <param name="state">The ready state of a player</param>
+        public Player(string name, PlayerState state)
+        {
+            this.Name = name;
+            this.State = state;
+            this.PlayersTurn = false;
+        }
+
         public override string ToString()
         {
             return $"{Name} : {State} : {PlayersTurn}";

@@ -10,7 +10,7 @@ namespace FiaMedKnuff
     /// <summary>
     /// A class of constants useful for this application
     /// </summary>
-    public static class StringConstants
+    public static class FilePath
     {
         /// <summary>
         /// The main path to the folder for this application

@@ -33,10 +33,6 @@
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnRules = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
-            this.tbxIP = new System.Windows.Forms.TextBox();
-            this.btnConnect = new System.Windows.Forms.Button();
-            this.btnLaunchServer = new System.Windows.Forms.Button();
-            this.btnSendMessage = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -112,54 +108,12 @@
             this.btnExit.MouseEnter += new System.EventHandler(this.Button_MouseEnter);
             this.btnExit.MouseLeave += new System.EventHandler(this.Button_MouseLeave);
             // 
-            // tbxIP
-            // 
-            this.tbxIP.Location = new System.Drawing.Point(536, 545);
-            this.tbxIP.Name = "tbxIP";
-            this.tbxIP.Size = new System.Drawing.Size(100, 20);
-            this.tbxIP.TabIndex = 5;
-            this.tbxIP.Text = "127.0.0.1";
-            // 
-            // btnConnect
-            // 
-            this.btnConnect.Location = new System.Drawing.Point(662, 543);
-            this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(75, 23);
-            this.btnConnect.TabIndex = 6;
-            this.btnConnect.Text = "Connect";
-            this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
-            // 
-            // btnLaunchServer
-            // 
-            this.btnLaunchServer.Location = new System.Drawing.Point(209, 543);
-            this.btnLaunchServer.Name = "btnLaunchServer";
-            this.btnLaunchServer.Size = new System.Drawing.Size(101, 23);
-            this.btnLaunchServer.TabIndex = 7;
-            this.btnLaunchServer.Text = "Launch Server";
-            this.btnLaunchServer.UseVisualStyleBackColor = true;
-            this.btnLaunchServer.Click += new System.EventHandler(this.btnLaunchServer_Click);
-            // 
-            // btnSendMessage
-            // 
-            this.btnSendMessage.Location = new System.Drawing.Point(959, 545);
-            this.btnSendMessage.Name = "btnSendMessage";
-            this.btnSendMessage.Size = new System.Drawing.Size(97, 23);
-            this.btnSendMessage.TabIndex = 8;
-            this.btnSendMessage.Text = "Send message";
-            this.btnSendMessage.UseVisualStyleBackColor = true;
-            this.btnSendMessage.Click += new System.EventHandler(this.btnSendMessage_Click);
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1350, 613);
-            this.Controls.Add(this.btnSendMessage);
-            this.Controls.Add(this.btnLaunchServer);
-            this.Controls.Add(this.btnConnect);
-            this.Controls.Add(this.tbxIP);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnRules);
             this.Controls.Add(this.btnPlay);
@@ -184,10 +138,6 @@
         private System.Windows.Forms.Button btnPlay;
         private System.Windows.Forms.Button btnRules;
         private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.TextBox tbxIP;
-        private System.Windows.Forms.Button btnConnect;
-        private System.Windows.Forms.Button btnLaunchServer;
-        private System.Windows.Forms.Button btnSendMessage;
     }
 }
 

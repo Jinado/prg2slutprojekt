@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FiaMedKnuff.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,12 +20,15 @@ namespace FiaMedKnuff
         private static Server host;
         private static List<Player> players = new List<Player>(4);
         private static int maxPlayers;
+        private static Color[] availableColours = { Color.Yellow, Color.Red, Color.Blue, Color.Green };
+        private static int colourIndex = 0;
 
         // Important for client
         private static Server server;
         private static Player player;
         private static List<Character> characters;
         private static ServerType serverType = ServerType.NOT_HOSTING;
+        private static int spdCount = 0;
 
         public FrmMenu()
         {
@@ -51,70 +55,102 @@ namespace FiaMedKnuff
 
         private async void btnConnect_Click(object sender, EventArgs e)
         {
-            // Check if the IP-address entered contains a port number
-            int port = 6767;
-            if (ltbServerIP.Text.Contains(":"))
+            if (btnConnect.Text.Equals("ANSLUT"))
             {
-                // Make sure the port is valid
-                string[] fullAddress = ltbServerIP.Text.Split(':');
-                if (!int.TryParse(fullAddress[1], out port))
+                // Make sure the name is does not include a | because that will interfer with
+                // the string when sending it over the network
+                if (ltbNameJoin.Text.Contains('|'))
                 {
-                    MessageBox.Show("Ogiltig IP-adress. Om du har med ett kolon måste en fyrsiffrig port som INTE finns i intervallet 0 - 1023 stå direkt efter.", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Teckent '|' får ej finnas med i namnet.", "Olagligt tecken", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ltbNameJoin.Text = ltbNameJoin.Text.Replace("|", "");
                     return;
+                }
+
+                // Check if the IP-address entered contains a port number
+                int port = 6767;
+                if (ltbServerIP.Text.Contains(":"))
+                {
+                    // Make sure the port is valid
+                    string[] fullAddress = ltbServerIP.Text.Split(':');
+                    if (!int.TryParse(fullAddress[1], out port))
+                    {
+                        MessageBox.Show("Ogiltig IP-adress. Om du har med ett kolon måste en fyrsiffrig port som INTE finns i intervallet 0 - 1023 stå direkt efter.", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    else
+                    {
+                        if (port < 1024)
+                        {
+                            MessageBox.Show("Ogiltig IP-adress. Om du har med ett kolon måste en fyrsiffrig port som INTE finns i intervallet 0 - 1023", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        else // The port is valid, check if the IP-address is too
+                        {
+                            if (IPAddress.TryParse(fullAddress[0], out IPAddress _))
+                            {
+                                server = new Server(fullAddress[0], this, port);
+                                if (await Server.JoinServer(server))
+                                {
+                                    serverType = ServerType.NOT_HOSTING;
+
+                                    // Create a Player object and send it to the server
+                                    player = new Player(ltbNameJoin.Text, Player.PlayerState.NOT_READY);
+                                    players.Add(player);
+                                    Server.SendPlayerData(server, player, serverType != 0);
+
+                                    btnConnect.Text = "LÄMNA";
+                                    btnStartServer.Enabled = false;
+                                    btnBack.Enabled = false;
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Ogiltig IP-adress. IP-adressen är skriven i fel format", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    if (port < 1024)
+                    if (IPAddress.TryParse(ltbServerIP.Text, out IPAddress _))
                     {
-                        MessageBox.Show("Ogiltig IP-adress. Om du har med ett kolon måste en fyrsiffrig port som INTE finns i intervallet 0 - 1023", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    else // The port is valid, check if the IP-address is too
-                    {
-                        if (IPAddress.TryParse(fullAddress[0], out IPAddress _))
+                        server = new Server(ltbServerIP.Text, this);
+                        if (await Server.JoinServer(server))
                         {
-                            server = new Server(fullAddress[0], this, port);
-                            if(await Server.JoinServer(server))
-                            {
-                                serverType = ServerType.NOT_HOSTING;
+                            serverType = ServerType.NOT_HOSTING;
 
-                                // Create a Player object and send it to the server
-                                player = new Player(ltbNameJoin.Text, Character.Assign(Color.Red), Player.PlayerState.NOT_READY);
-                                players.Add(player);
-                                UpdatePlayerList();
-                                Server.SendPlayerData(server, player, serverType != 0);
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Ogiltig IP-adress. IP-adressen är skriven i fel format", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
+                            // Create a Player object and send it to the server
+                            player = new Player(ltbNameJoin.Text, Player.PlayerState.NOT_READY);
+                            players.Add(player);
+                            Server.SendPlayerData(server, player, serverType != 0);
+
+                            btnConnect.Text = "LÄMNA";
+                            btnStartServer.Enabled = false;
+                            btnBack.Enabled = false;
                         }
                     }
                 }
             }
-            else
+            else // Disconnect from the server
             {
-                if (IPAddress.TryParse(ltbServerIP.Text, out IPAddress _))
-                {
-                    server = new Server(ltbServerIP.Text, this);
-                    if (await Server.JoinServer(server))
-                    {
-                        serverType = ServerType.NOT_HOSTING;
-
-                        // Create a Player object and send it to the server
-                        player = new Player(ltbNameJoin.Text, Character.Assign(Color.Red), Player.PlayerState.NOT_READY);
-                        players.Add(player);
-                        UpdatePlayerList();
-                        Server.SendPlayerData(server, player, serverType != 0);
-                    }
-                }
+                btnConnect.Text = "ANSLUT";
+                btnBack.Enabled = true;
             }
         }
 
         private void btnStartServer_Click(object sender, EventArgs e)
         {
-            if(btnStartServer.Text.Equals("STARTA SERVERN")) // Start the server
+            // Make sure the name is does not include a | because that will interfer with
+            // the string when sending it over the network
+            if (ltbNameHost.Text.Contains('|'))
+            {
+                MessageBox.Show("Teckent '|' får ej finnas med i namnet.", "Olagligt tecken", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ltbNameHost.Text = ltbNameHost.Text.Replace("|", "");
+                return;
+            }
+
+            if (btnStartServer.Text.Equals("STARTA SERVERN")) // Start the server
             {
                 if(int.TryParse(tbxPortHost.Text, out int port))
                 {
@@ -130,24 +166,23 @@ namespace FiaMedKnuff
                                 btnStartServer.Text = "STOPPA SERVERN";
                                 serverType = ServerType.HOSTING;
 
+                                // Display amount of connected players
+                                lblConnectedPlayersHost.Text = $"Antal spelare: 1/{maxPlayers}";
+
                                 // Disable the server configuration textboxes
                                 ltbNameHost.Enabled = false;
                                 ltbMaxPlayers.Enabled = false;
                                 tbxPortHost.Enabled = false;
 
-                                // Disable the "Back" button
+                                // Disable the "Back" and "Connect" button
                                 btnBack.Enabled = false;
+                                btnConnect.Enabled = false;
 
                                 // Create a player for the host
-                                characters = Character.Assign(Color.Yellow);
+                                characters = Character.Assign(availableColours[colourIndex++]);
                                 player = new Player(ltbNameHost.Text, characters, Player.PlayerState.READY);
                                 players.Add(player);
                                 UpdatePlayerList();
-
-                                // Inform all other clients of the player having connected
-                                /* MIGHT ACTUALLY BE UNNESSECARY, SINCE THE HOST IS ALWAYS THE FIRST
-                                PLAYER TO CONNECT */
-                                Server.SendPlayerData(host, player, true);
                             }
                             else
                             {
@@ -178,12 +213,18 @@ namespace FiaMedKnuff
                 ClearServer("Host");
                 players.Clear();
 
+                // Hide amount of connected players
+                lblConnectedPlayersHost.Text = "";
+
+                // Reset the colour index variable
+                colourIndex = 0;
+
                 // Enable the server configuration textboxes
                 ltbNameHost.Enabled = true;
                 ltbMaxPlayers.Enabled = true;
                 tbxPortHost.Enabled = true;
 
-                // Enable the "Back" button
+                // Enable the "Back"
                 btnBack.Enabled = true;
 
                 // Make the server startabel again
@@ -213,7 +254,7 @@ namespace FiaMedKnuff
                 Control[] pbxAsControl = Controls.Find($"pbxPlayer{i + 1}{srvType}", true);
                 PictureBox pbx = pbxAsControl[0] as PictureBox;
                 pbx.Tag = players[i].State.Equals(Player.PlayerState.READY) ? "ready" : "not_ready";
-                pbx.Image = pbx.Tag.Equals("ready") ? Properties.Resources.ready : Properties.Resources.not_ready;
+                pbx.Image = pbx.Tag.Equals("ready") ? Resources.ready : Resources.not_ready;
                 pbx.Visible = true;
             }
         }
@@ -233,7 +274,7 @@ namespace FiaMedKnuff
 
                     Control[] pbx = Controls.Find($"pbxPlayer{i}{type}", true);
                     ((PictureBox)pbx[0]).Visible = false;
-                    ((PictureBox)pbx[0]).Image = Properties.Resources.not_ready;
+                    ((PictureBox)pbx[0]).Image = Resources.not_ready;
                 }
             }
             else
@@ -268,10 +309,18 @@ namespace FiaMedKnuff
         /// </summary>
         private void HostTextBoxes_TextChanged(object sender, EventArgs e)
         {
-            if ((Regex.IsMatch(ltbMaxPlayers.Text, ".+") && !ltbMaxPlayers.Text.Equals(ltbMaxPlayers.Label)) && (Regex.IsMatch(ltbNameHost.Text, ".+") && !ltbNameHost.Text.Equals(ltbNameHost.Label)))
+            if (btnConnect.Enabled == false && (Regex.IsMatch(ltbMaxPlayers.Text, ".+") && !ltbMaxPlayers.Text.Equals(ltbMaxPlayers.Label)) && (Regex.IsMatch(ltbNameHost.Text, ".+") && !ltbNameHost.Text.Equals(ltbNameHost.Label)))
+            {
                 btnStartServer.Enabled = true;
+            }
             else
-                btnStartServer.Enabled = false; 
+            {
+                btnStartServer.Enabled = false;
+
+                // Enable the connect button in case it's textboxes are also filled out
+                if (btnStartServer.Enabled == false && (Regex.IsMatch(ltbServerIP.Text, ".+") && !ltbServerIP.Text.Equals(ltbServerIP.Label)) && (Regex.IsMatch(ltbNameJoin.Text, ".+") && !ltbNameJoin.Text.Equals(ltbNameJoin.Label)))
+                    btnConnect.Enabled = true;
+            }
         }
 
         /// <summary>
@@ -279,10 +328,18 @@ namespace FiaMedKnuff
         /// </summary>
         private void JoinTextBoxes_TextChanged(object sender, EventArgs e)
         {
-            if ((Regex.IsMatch(ltbServerIP.Text, ".+") && !ltbServerIP.Text.Equals(ltbServerIP.Label)) && (Regex.IsMatch(ltbNameJoin.Text, ".+") && !ltbNameJoin.Text.Equals(ltbNameJoin.Label)))
+            if (btnStartServer.Enabled == false &&  (Regex.IsMatch(ltbServerIP.Text, ".+") && !ltbServerIP.Text.Equals(ltbServerIP.Label)) && (Regex.IsMatch(ltbNameJoin.Text, ".+") && !ltbNameJoin.Text.Equals(ltbNameJoin.Label)))
+            {
                 btnConnect.Enabled = true;
+            }
             else
+            {
                 btnConnect.Enabled = false;
+
+                // Enable the startServer button in case it's textboxes are also filled out
+                if (btnConnect.Enabled == false && (Regex.IsMatch(ltbMaxPlayers.Text, ".+") && !ltbMaxPlayers.Text.Equals(ltbMaxPlayers.Label)) && (Regex.IsMatch(ltbNameHost.Text, ".+") && !ltbNameHost.Text.Equals(ltbNameHost.Label)))
+                    btnStartServer.Enabled = true;
+            }
         }
 
         private void tbxPortHost_Leave(object sender, EventArgs e)
@@ -306,13 +363,15 @@ namespace FiaMedKnuff
             {
                 if (pbx.Tag.Equals("not_ready"))
                 {
-                    pbx.Image = Properties.Resources.ready;
                     pbx.Tag = "ready";
+                    pbx.Image = Resources.ready;
+                    player.State = Player.PlayerState.READY;
                 }
                 else
                 {
-                    pbx.Image = Properties.Resources.not_ready;
                     pbx.Tag = "not_ready";
+                    pbx.Image = Resources.not_ready;
+                    player.State = Player.PlayerState.NOT_READY;
                 }
 
                 // Broadcast the ready status of each player to each client
@@ -326,30 +385,93 @@ namespace FiaMedKnuff
         public void HandleMessageRecievedByServer(string message)
         {
             string msgType = $"{message[0]}{message[1]}{message[2]}";
-            string[] data;
+            string[] data = message.Split('|');
             switch (msgType)
             {
-                case "SPD": // Player data has been sent
-                    data = message.Split('|');
+                case "SMP": // Data about the max amount of players has been sent
+                    maxPlayers = int.Parse(data[1]);
+                    lblConnectedPlayersJoin.Text = $"Antal spelare: {players.Count()}/{maxPlayers}";
+                    break;
+                case "SPD": // Player data has been sent and it includes a list of characters
 
                     // Create a Player object and add it to the list of players
                     if (Character.TryParseColour(data[2], out Color colour))
                     {
-                        string name = data[1];
-                        List<Character> tempChars = Character.Assign(colour);
-                            
-                        players.Add(new Player(data[1], tempChars, (Player.PlayerState)int.Parse(data[3])));
-                        UpdatePlayerList();
+                        List<Character> tempCharsSPD = Character.Assign(colour);
+
+                        // Make sure the recieved Player object does not already exist in the Player list
+                        Player playerSPD = new Player(data[1], tempCharsSPD, (Player.PlayerState)int.Parse(data[3]));
+                        foreach(Player p in players)
+                        {
+                            if (p.Name == playerSPD.Name)
+                            {
+                                // If the player is the same as the client player, make sure the client's
+                                // local variable copies the colour from one sent by the server
+                                if (player.Name == playerSPD.Name) player.Characters = playerSPD.Characters;
+
+                                if (data.Length == 5)
+                                {
+                                    spdCount++;
+                                    if (spdCount == int.Parse(data[4]))
+                                    {
+                                        UpdatePlayerList();
+                                        spdCount = 0;
+                                    }
+                                }
+
+                                return;
+                            }
+                        }
+
+                        // If the player is unique, add it to the list
+                        players.Add(playerSPD);
+
+                        // This makes sure to update the player list ONLY when every player has been sent over
+                        // from the server.
+                        if(data.Length == 5)
+                        {
+                            spdCount++;
+                            if (spdCount == int.Parse(data[4]))
+                            {
+                                UpdatePlayerList();
+                                spdCount = 0;
+                            }
+                        }
+                        else
+                        {
+                            UpdatePlayerList();
+                        }
                     }
                     else
                     {
                         MessageBox.Show("Inkorrekt data överskickad från servern", "Fel vid överskickning av data", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+
+                    break;
+                case "SPN": // Player data has been sent but it doesn't include a list of characters
+
+                    // Only handle this event if you are the host of the server
+                    if(serverType == ServerType.HOSTING)
+                    {
+                        // Create a Player object and add it to the list of players
+                        List<Character> tempCharsSPN = Character.Assign(availableColours[colourIndex++]);
+
+                        players.Add(new Player(data[1], tempCharsSPN, (Player.PlayerState)int.Parse(data[2])));
+                        lblConnectedPlayersHost.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
+                        UpdatePlayerList();
+
+                        // Broadcast the player list to all other clients
+                        foreach (Player p in players)
+                        {
+                            Server.SendPlayerData(host, p, players.Count);
+                            Server.SendMaxPlayers(host, maxPlayers);
+                        }
+                    }
+                    
                     break;
                 case "SRS": // Ready status of all players have been sent
-                    data = message.Split('|');
 
-                    for(int i = 0; i < (data.Length / 2); i++)
+                    for(int i = 1; i < ((data.Length / 2) + 1); i++)
                     {
                         foreach(Player p in players)
                         {
@@ -360,6 +482,7 @@ namespace FiaMedKnuff
                         }
                     }
 
+                    UpdatePlayerList();
                     CheckReadyStatus();
                     break;
             }

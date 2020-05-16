@@ -30,9 +30,9 @@ namespace FiaMedKnuff
             try
             {
                 // Makes sure to create the FiaMedKnuff/users directory
-                Directory.CreateDirectory(StringConstants.USER_PATH);
+                Directory.CreateDirectory(FilePath.USER_PATH);
 
-                FileStream fs = new FileStream(Path.Combine(StringConstants.USER_PATH, name + ".fmk"), FileMode.Create, FileAccess.Write);
+                FileStream fs = new FileStream(Path.Combine(FilePath.USER_PATH, name + ".fmk"), FileMode.Create, FileAccess.Write);
                 BinaryWriter bw = new BinaryWriter(fs);
 
                 bw.Write(name);
@@ -61,9 +61,9 @@ namespace FiaMedKnuff
             try
             {
                 // Makes sure to create the FiaMedKnuff/config directory
-                Directory.CreateDirectory(StringConstants.CONFIG_PATH);
+                Directory.CreateDirectory(FilePath.CONFIG_PATH);
 
-                FileStream fs = new FileStream(Path.Combine(StringConstants.CONFIG_PATH, "config.fmkc"), FileMode.Create, FileAccess.Write);
+                FileStream fs = new FileStream(Path.Combine(FilePath.CONFIG_PATH, "config.fmkc"), FileMode.Create, FileAccess.Write);
                 BinaryWriter bw = new BinaryWriter(fs);
 
                 bw.Write(ip);
@@ -92,9 +92,9 @@ namespace FiaMedKnuff
             try
             {
                 // Makes sure to create the FiaMedKnuff/users directory
-                Directory.CreateDirectory(StringConstants.USER_PATH);
+                Directory.CreateDirectory(FilePath.USER_PATH);
 
-                FileStream fs = new FileStream(Path.Combine(StringConstants.USER_PATH, name + ".fmk"), FileMode.Open, FileAccess.Read);
+                FileStream fs = new FileStream(Path.Combine(FilePath.USER_PATH, name + ".fmk"), FileMode.Open, FileAccess.Read);
                 BinaryReader br = new BinaryReader(fs);
 
                 br.ReadString();
@@ -123,9 +123,9 @@ namespace FiaMedKnuff
             try
             {
                 // Makes sure to create the FiaMedKnuff/config directory
-                Directory.CreateDirectory(StringConstants.CONFIG_PATH);
+                Directory.CreateDirectory(FilePath.CONFIG_PATH);
 
-                FileStream fs = new FileStream(Path.Combine(StringConstants.CONFIG_PATH, "config.fmkc"), FileMode.Open, FileAccess.Read);
+                FileStream fs = new FileStream(Path.Combine(FilePath.CONFIG_PATH, "config.fmkc"), FileMode.Open, FileAccess.Read);
                 BinaryReader br = new BinaryReader(fs);
 
                 string ip = br.ReadString();

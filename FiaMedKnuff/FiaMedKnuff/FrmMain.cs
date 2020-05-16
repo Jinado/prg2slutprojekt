@@ -13,9 +13,6 @@ namespace FiaMedKnuff
 {
     public partial class FrmMain : Form
     {
-        Server host;
-        Server server;
-
         public FrmMain()
         {
             InitializeComponent();
@@ -56,26 +53,6 @@ namespace FiaMedKnuff
         private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-
-        private void btnLaunchServer_Click(object sender, EventArgs e)
-        {
-            //host = new Server();
-            Server.StartServer(host);
-            MessageBox.Show("Server started");
-        }
-
-        private async void btnConnect_Click(object sender, EventArgs e)
-        {
-            server = new Server(tbxIP.Text, this);
-
-            if (await Server.JoinServer(server))
-                MessageBox.Show("Succesfully joined the server");
-        }
-
-        private void btnSendMessage_Click(object sender, EventArgs e)
-        {
-           // Server.ThrownDice(server, 6);
         }
     }
 }

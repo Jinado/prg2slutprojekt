@@ -85,7 +85,7 @@
     <Compile Include="FileHandler.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Square.cs" />
-    <Compile Include="StringConstants.cs" />
+    <Compile Include="FilePath.cs" />
     <EmbeddedResource Include="FrmGame.resx">
       <DependentUpon>FrmGame.cs</DependentUpon>
     </EmbeddedResource>

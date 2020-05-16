@@ -63,11 +63,12 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.btnConnect = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
+            this.lblConnectedPlayersJoin = new System.Windows.Forms.Label();
             this.ltbServerIP = new LabeledTextBox();
             this.ltbNameJoin = new LabeledTextBox();
             this.ltbMaxPlayers = new LabeledTextBox();
             this.ltbNameHost = new LabeledTextBox();
+            this.lblConnectedPlayersHost = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbxHost)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxJoin)).BeginInit();
             this.gbxReadyHost.SuspendLayout();
@@ -119,11 +120,11 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial Rounded MT Bold", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(822, 36);
+            this.label2.Location = new System.Drawing.Point(810, 36);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(458, 33);
+            this.label2.Size = new System.Drawing.Size(480, 33);
             this.label2.TabIndex = 3;
-            this.label2.Text = "GÅ MED I NÅGON ANNAS SPEL";
+            this.label2.Text = "GÅ MED I NÅGON ANNANS SPEL";
             // 
             // btnStartServer
             // 
@@ -133,7 +134,7 @@
             this.btnStartServer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartServer.Font = new System.Drawing.Font("Arial Rounded MT Bold", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnStartServer.ForeColor = System.Drawing.Color.White;
-            this.btnStartServer.Location = new System.Drawing.Point(299, 128);
+            this.btnStartServer.Location = new System.Drawing.Point(297, 113);
             this.btnStartServer.Name = "btnStartServer";
             this.btnStartServer.Size = new System.Drawing.Size(232, 36);
             this.btnStartServer.TabIndex = 7;
@@ -146,7 +147,7 @@
             // tbxPortHost
             // 
             this.tbxPortHost.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbxPortHost.Location = new System.Drawing.Point(442, 96);
+            this.tbxPortHost.Location = new System.Drawing.Point(440, 81);
             this.tbxPortHost.Name = "tbxPortHost";
             this.tbxPortHost.Size = new System.Drawing.Size(89, 26);
             this.tbxPortHost.TabIndex = 8;
@@ -157,7 +158,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial Rounded MT Bold", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(376, 98);
+            this.label3.Location = new System.Drawing.Point(374, 83);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(60, 24);
             this.label3.TabIndex = 9;
@@ -205,7 +206,7 @@
             // 
             // pbxPlayer4Host
             // 
-            this.pbxPlayer4Host.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pbxPlayer4Host.Cursor = System.Windows.Forms.Cursors.Default;
             this.pbxPlayer4Host.Image = global::FiaMedKnuff.Properties.Resources.not_ready;
             this.pbxPlayer4Host.Location = new System.Drawing.Point(415, 228);
             this.pbxPlayer4Host.Name = "pbxPlayer4Host";
@@ -215,11 +216,10 @@
             this.pbxPlayer4Host.TabStop = false;
             this.pbxPlayer4Host.Tag = "not_ready";
             this.pbxPlayer4Host.Visible = false;
-            this.pbxPlayer4Host.Click += new System.EventHandler(this.PictureBoxReadyStatus_Click);
             // 
             // pbxPlayer3Host
             // 
-            this.pbxPlayer3Host.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pbxPlayer3Host.Cursor = System.Windows.Forms.Cursors.Default;
             this.pbxPlayer3Host.Image = global::FiaMedKnuff.Properties.Resources.not_ready;
             this.pbxPlayer3Host.Location = new System.Drawing.Point(415, 173);
             this.pbxPlayer3Host.Name = "pbxPlayer3Host";
@@ -229,11 +229,10 @@
             this.pbxPlayer3Host.TabStop = false;
             this.pbxPlayer3Host.Tag = "not_ready";
             this.pbxPlayer3Host.Visible = false;
-            this.pbxPlayer3Host.Click += new System.EventHandler(this.PictureBoxReadyStatus_Click);
             // 
             // pbxPlayer2Host
             // 
-            this.pbxPlayer2Host.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pbxPlayer2Host.Cursor = System.Windows.Forms.Cursors.Default;
             this.pbxPlayer2Host.Image = global::FiaMedKnuff.Properties.Resources.not_ready;
             this.pbxPlayer2Host.Location = new System.Drawing.Point(415, 117);
             this.pbxPlayer2Host.Name = "pbxPlayer2Host";
@@ -243,7 +242,6 @@
             this.pbxPlayer2Host.TabStop = false;
             this.pbxPlayer2Host.Tag = "not_ready";
             this.pbxPlayer2Host.Visible = false;
-            this.pbxPlayer2Host.Click += new System.EventHandler(this.PictureBoxReadyStatus_Click);
             // 
             // pbxPlayer1Host
             // 
@@ -374,7 +372,7 @@
             // 
             // pbxPlayer4Join
             // 
-            this.pbxPlayer4Join.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pbxPlayer4Join.Cursor = System.Windows.Forms.Cursors.Default;
             this.pbxPlayer4Join.Image = global::FiaMedKnuff.Properties.Resources.not_ready;
             this.pbxPlayer4Join.Location = new System.Drawing.Point(415, 228);
             this.pbxPlayer4Join.Name = "pbxPlayer4Join";
@@ -384,11 +382,10 @@
             this.pbxPlayer4Join.TabStop = false;
             this.pbxPlayer4Join.Tag = "not_ready";
             this.pbxPlayer4Join.Visible = false;
-            this.pbxPlayer4Join.Click += new System.EventHandler(this.PictureBoxReadyStatus_Click);
             // 
             // pbxPlayer3Join
             // 
-            this.pbxPlayer3Join.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pbxPlayer3Join.Cursor = System.Windows.Forms.Cursors.Default;
             this.pbxPlayer3Join.Image = global::FiaMedKnuff.Properties.Resources.not_ready;
             this.pbxPlayer3Join.Location = new System.Drawing.Point(415, 173);
             this.pbxPlayer3Join.Name = "pbxPlayer3Join";
@@ -398,11 +395,10 @@
             this.pbxPlayer3Join.TabStop = false;
             this.pbxPlayer3Join.Tag = "not_ready";
             this.pbxPlayer3Join.Visible = false;
-            this.pbxPlayer3Join.Click += new System.EventHandler(this.PictureBoxReadyStatus_Click);
             // 
             // pbxPlayer2Join
             // 
-            this.pbxPlayer2Join.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pbxPlayer2Join.Cursor = System.Windows.Forms.Cursors.Default;
             this.pbxPlayer2Join.Image = global::FiaMedKnuff.Properties.Resources.not_ready;
             this.pbxPlayer2Join.Location = new System.Drawing.Point(415, 117);
             this.pbxPlayer2Join.Name = "pbxPlayer2Join";
@@ -412,7 +408,6 @@
             this.pbxPlayer2Join.TabStop = false;
             this.pbxPlayer2Join.Tag = "not_ready";
             this.pbxPlayer2Join.Visible = false;
-            this.pbxPlayer2Join.Click += new System.EventHandler(this.PictureBoxReadyStatus_Click);
             // 
             // pbxPlayer1Join
             // 
@@ -492,7 +487,7 @@
             this.btnConnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConnect.Font = new System.Drawing.Font("Arial Rounded MT Bold", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnConnect.ForeColor = System.Drawing.Color.White;
-            this.btnConnect.Location = new System.Drawing.Point(1071, 113);
+            this.btnConnect.Location = new System.Drawing.Point(1077, 92);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(169, 36);
             this.btnConnect.TabIndex = 14;
@@ -502,21 +497,21 @@
             this.btnConnect.MouseEnter += new System.EventHandler(this.Button_MouseEnter);
             this.btnConnect.MouseLeave += new System.EventHandler(this.Button_MouseLeave);
             // 
-            // label7
+            // lblConnectedPlayersJoin
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(308, 73);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(237, 13);
-            this.label7.TabIndex = 18;
-            this.label7.Text = "REMINDER: Sanitize the input! No | are allowed!";
+            this.lblConnectedPlayersJoin.AutoSize = true;
+            this.lblConnectedPlayersJoin.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblConnectedPlayersJoin.Location = new System.Drawing.Point(1077, 153);
+            this.lblConnectedPlayersJoin.Name = "lblConnectedPlayersJoin";
+            this.lblConnectedPlayersJoin.Size = new System.Drawing.Size(0, 22);
+            this.lblConnectedPlayersJoin.TabIndex = 18;
             // 
             // ltbServerIP
             // 
             this.ltbServerIP.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ltbServerIP.ForeColor = System.Drawing.Color.Gray;
             this.ltbServerIP.Label = "Serverns IP-adress";
-            this.ltbServerIP.Location = new System.Drawing.Point(838, 137);
+            this.ltbServerIP.Location = new System.Drawing.Point(844, 116);
             this.ltbServerIP.Name = "ltbServerIP";
             this.ltbServerIP.Size = new System.Drawing.Size(177, 26);
             this.ltbServerIP.TabIndex = 13;
@@ -528,7 +523,7 @@
             this.ltbNameJoin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ltbNameJoin.ForeColor = System.Drawing.Color.Gray;
             this.ltbNameJoin.Label = "Ditt namn...";
-            this.ltbNameJoin.Location = new System.Drawing.Point(838, 105);
+            this.ltbNameJoin.Location = new System.Drawing.Point(844, 84);
             this.ltbNameJoin.Name = "ltbNameJoin";
             this.ltbNameJoin.Size = new System.Drawing.Size(177, 26);
             this.ltbNameJoin.TabIndex = 12;
@@ -540,7 +535,7 @@
             this.ltbMaxPlayers.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ltbMaxPlayers.ForeColor = System.Drawing.Color.Gray;
             this.ltbMaxPlayers.Label = "Max antal spelare (2-4)";
-            this.ltbMaxPlayers.Location = new System.Drawing.Point(66, 135);
+            this.ltbMaxPlayers.Location = new System.Drawing.Point(64, 120);
             this.ltbMaxPlayers.Name = "ltbMaxPlayers";
             this.ltbMaxPlayers.Size = new System.Drawing.Size(177, 26);
             this.ltbMaxPlayers.TabIndex = 5;
@@ -552,18 +547,28 @@
             this.ltbNameHost.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ltbNameHost.ForeColor = System.Drawing.Color.Gray;
             this.ltbNameHost.Label = "Ditt namn...";
-            this.ltbNameHost.Location = new System.Drawing.Point(66, 96);
+            this.ltbNameHost.Location = new System.Drawing.Point(64, 81);
             this.ltbNameHost.Name = "ltbNameHost";
             this.ltbNameHost.Size = new System.Drawing.Size(177, 26);
             this.ltbNameHost.TabIndex = 4;
             this.ltbNameHost.Text = "Ditt namn...";
             this.ltbNameHost.TextChanged += new System.EventHandler(this.HostTextBoxes_TextChanged);
             // 
+            // lblConnectedPlayersHost
+            // 
+            this.lblConnectedPlayersHost.AutoSize = true;
+            this.lblConnectedPlayersHost.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblConnectedPlayersHost.Location = new System.Drawing.Point(325, 158);
+            this.lblConnectedPlayersHost.Name = "lblConnectedPlayersHost";
+            this.lblConnectedPlayersHost.Size = new System.Drawing.Size(0, 22);
+            this.lblConnectedPlayersHost.TabIndex = 19;
+            // 
             // FrmMenu
             // 
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1350, 613);
-            this.Controls.Add(this.label7);
+            this.Controls.Add(this.lblConnectedPlayersHost);
+            this.Controls.Add(this.lblConnectedPlayersJoin);
             this.Controls.Add(this.gbxReadyJoin);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.ltbServerIP);
@@ -583,7 +588,7 @@
             this.MaximizeBox = false;
             this.Name = "FrmMenu";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Fia med knuff - Johannes Emmoth";
+            this.Text = "             ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMenu_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.pbxHost)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxJoin)).EndInit();
@@ -647,6 +652,7 @@
         private System.Windows.Forms.Button btnConnect;
         private LabeledTextBox ltbNameJoin;
         private LabeledTextBox ltbServerIP;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblConnectedPlayersJoin;
+        private System.Windows.Forms.Label lblConnectedPlayersHost;
     }
 }

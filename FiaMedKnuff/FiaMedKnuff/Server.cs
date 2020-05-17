@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace FiaMedKnuff
     {
         private TcpListener listener;
         private List<TcpClient> clients = new List<TcpClient>();
-        private TcpClient client = new TcpClient();
+        private TcpClient client;
         private int port;
         private IPAddress ip;
         private int maxPlayers;
@@ -46,10 +47,13 @@ namespace FiaMedKnuff
         /// <param name="ip">The IP-adress the server is running on</param>
         /// <param name="port">The port the server is running on</param>
         /// <exception cref="ArgumentException"></exception>
-        public Server(string ip, Form form, int port = 6767)
+        public Server(TcpClient client, string ip, Form form, int port = 6767)
         {
             if (port < 1024)
                 throw new ArgumentException("Invalid port number. The port cannot be within the range of 0 - 1023.");
+
+            if (client == null)
+                throw new ArgumentNullException();
 
             try
             {
@@ -67,6 +71,7 @@ namespace FiaMedKnuff
                 return;
             }
 
+            this.client = client;
             this.client.NoDelay = true;
             this.port = port;
             this.form = form;
@@ -108,10 +113,11 @@ namespace FiaMedKnuff
                 // The return statement makes sure we do not continue
                 // to listen for further connections.
                 if (err is ObjectDisposedException) return;
-                MessageBox.Show(err.Message, "Anslutningsfel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(err.Message, "Anslutningsfel 1", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            RecieveData(server, tempClient);
+            if(tempClient != null)
+                RecieveData(server, tempClient);
             ListenForConnections(server);
         }
 
@@ -133,7 +139,7 @@ namespace FiaMedKnuff
                     return true;
                 }
             }
-            catch (Exception err) { MessageBox.Show(err.Message, "Connection error", MessageBoxButtons.OK, MessageBoxIcon.Error); return false; }
+            catch (Exception err) { MessageBox.Show(err.Message, "Anslutningsfel 2", MessageBoxButtons.OK, MessageBoxIcon.Error); return false; }
 
             return false;
         }
@@ -141,12 +147,10 @@ namespace FiaMedKnuff
         /// <summary>
         /// Disconnect a <see cref="Player">Player</see> from a <see cref="Server">Server</see>
         /// </summary>
-        /// <param name="client">The <see cref="TcpClient">Client</see> to disconnect</param>
         /// <param name="player">The <see cref="Player">Player</see> to disconnect</param>
         /// <param name="server">The <see cref="Server">Server</see> to disconnect from</param>
-        public static void Disconnect(TcpClient client, Player player, Server server)
+        public static void Disconnect(Player player, Server server)
         {
-            client.Close();
             Server.PlayerDisconnected(server, player);
         }
 
@@ -344,22 +348,50 @@ namespace FiaMedKnuff
         /// <param name="client">The client that will listen to messages (I.E. The server's client itself)</param>
         private async static void RecieveData(Server server, TcpClient client)
         {
+            // Client is null if the server has been stopped, in that case, don't continue
+            // execution of this method
+            if (client != null)
+            {
+                // If the client isn't null, check if the client has disconnected. If it has, client.Client is equal to NULL
+                if (client.Client == null || !client.Connected)
+                {
+                    server.clients.Remove(client);
+                    return;
+                }
+            }
+            else
+            {
+                return;
+            }
+
             byte[] buffer = new byte[1024];
 
             int n = 0;
             try
             {
-                if (client != null) // Is null when the server has been stopped
-                    n = await client.GetStream().ReadAsync(buffer, 0, buffer.Length);
-                else return;
+                n = await client.GetStream().ReadAsync(buffer, 0, buffer.Length);
             }
-            catch (Exception err) { MessageBox.Show(err.Message, "Server error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            catch (Exception err)
+            {
+                // One of these errors get caught when a client has disconnected
+                if(err is InvalidOperationException)
+                {
+                    server.clients.Remove(client);
+                    return;
+                }
+                else if(err.InnerException is SocketException)
+                {
+                    server.clients.Remove(client);
+                    return;
+                }
+                MessageBox.Show(err.Message, "Serverfel 1", MessageBoxButtons.OK, MessageBoxIcon.Error); return; 
+            }
 
             string message = Encoding.UTF8.GetString(buffer, 0, n);
             if(message != null && message != "")
             {
                 // Broadcast the message
-                foreach(TcpClient clt in server.clients)
+                foreach (TcpClient clt in server.clients)
                 {
                     // Make sure NOT to send the message back to origin UNLESS it's the user's ready status
                     if (!clt.Equals(client) || $"{message[0]}{message[1]}{message[2]}".Equals("SRS"))
@@ -422,7 +454,14 @@ namespace FiaMedKnuff
                     n = await server.client.GetStream().ReadAsync(buffer, 0, buffer.Length);
                 else return;
             }
-            catch (Exception err) { MessageBox.Show(err.Message, "Server error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            catch (Exception err)
+            {
+                // This is true when the client has disconnnected. 
+                // The return statement makes sure we do not continue
+                // to listen for more data.
+                if (err is ObjectDisposedException || err.InnerException is ObjectDisposedException) return;
+                MessageBox.Show(err.Message, "Serverfel 2", MessageBoxButtons.OK, MessageBoxIcon.Error); return; 
+            }
 
             string message = Encoding.UTF8.GetString(buffer, 0, n);
 
@@ -432,7 +471,10 @@ namespace FiaMedKnuff
                 switch (msgType)
                 {
                     case "PLD": // Player disconnected
-                        // (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        else
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "MVC": // A character has been moved
                         // (server.form as FrmGame).HandleMessageRecievedByServer(message);
@@ -477,7 +519,22 @@ namespace FiaMedKnuff
             {
                     await server.client.GetStream().WriteAsync(msg, 0, msg.Length);
             }
-            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till servern.\n{err.Message}", "Serverfel", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till servern.\n{err.Message}", "Serverfel 3", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+
+            // If the message is that a player has disconnected, close the client
+            // linked to that player
+            if ($"{message[0]}{message[1]}{message[2]}".Equals("PLD"))
+            {
+                
+                /*
+                server.client.GetStream().Close();
+                server.client.Close();
+                */
+
+                //server.client.Dispose();
+                server.client.Client.Dispose();
+                //server.client.Client.Close();
+            }
         }
 
         /// <summary>
@@ -510,7 +567,16 @@ namespace FiaMedKnuff
             {
                 await client.GetStream().WriteAsync(msg, 0, msg.Length);
             }
-            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till klienten.\n{err.Message}", "Serverfel", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till klienten.\n{err.Message}", "Serverfel 4", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+        }
+
+        public TcpClient Client
+        {
+            private set { this.client = value; }
+            get
+            {
+                return this.client;
+            }
         }
     }
 }

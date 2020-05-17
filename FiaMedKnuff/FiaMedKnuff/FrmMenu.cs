@@ -6,6 +6,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -20,8 +22,8 @@ namespace FiaMedKnuff
         private static Server host;
         private static List<Player> players = new List<Player>(4);
         private static int maxPlayers;
-        private static Color[] availableColours = { Color.Yellow, Color.Red, Color.Blue, Color.Green };
-        private static int colourIndex = 0;
+        private static readonly Color[] availableColours = { Color.Yellow, Color.Red, Color.Blue, Color.Green };
+        private static List<Color> usedColours = new List<Color>(4);
 
         // Important for client
         private static Server server;
@@ -88,7 +90,7 @@ namespace FiaMedKnuff
                         {
                             if (IPAddress.TryParse(fullAddress[0], out IPAddress _))
                             {
-                                server = new Server(fullAddress[0], this, port);
+                                server = new Server(new TcpClient(), fullAddress[0], this, port);
                                 if (await Server.JoinServer(server))
                                 {
                                     serverType = ServerType.NOT_HOSTING;
@@ -115,7 +117,7 @@ namespace FiaMedKnuff
                 {
                     if (IPAddress.TryParse(ltbServerIP.Text, out IPAddress _))
                     {
-                        server = new Server(ltbServerIP.Text, this);
+                        server = new Server(new TcpClient(), ltbServerIP.Text, this);
                         if (await Server.JoinServer(server))
                         {
                             serverType = ServerType.NOT_HOSTING;
@@ -134,8 +136,12 @@ namespace FiaMedKnuff
             }
             else // Disconnect from the server
             {
+                Server.Disconnect(player, server);
+                ClearPlayerList("Join");
                 btnConnect.Text = "ANSLUT";
                 btnBack.Enabled = true;
+                lblConnectedPlayersJoin.Text = "";
+                players.Clear();
             }
         }
 
@@ -179,7 +185,7 @@ namespace FiaMedKnuff
                                 btnConnect.Enabled = false;
 
                                 // Create a player for the host
-                                characters = Character.Assign(availableColours[colourIndex++]);
+                                characters = Character.Assign(FindAvailableColour());
                                 player = new Player(ltbNameHost.Text, characters, Player.PlayerState.READY);
                                 players.Add(player);
                                 UpdatePlayerList();
@@ -210,14 +216,11 @@ namespace FiaMedKnuff
             {
                 // Stop the server and clear the player list
                 Server.Stop(host);
-                ClearServer("Host");
+                ClearPlayerList("Host");
                 players.Clear();
 
                 // Hide amount of connected players
                 lblConnectedPlayersHost.Text = "";
-
-                // Reset the colour index variable
-                colourIndex = 0;
 
                 // Enable the server configuration textboxes
                 ltbNameHost.Enabled = true;
@@ -233,6 +236,52 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
+        /// Finds an available colour to be assigned to a player
+        /// </summary>
+        /// <returns>The colour to be used for the player's characters</returns>
+        private Color FindAvailableColour()
+        {
+            if(usedColours.Count != 0)
+            {
+                int i = 0;
+                foreach (Color ac in availableColours)
+                {
+                    do
+                    {
+                        // If you find the colour inside the used colours list, break out
+                        // of the do-while loop and look at the next colour
+                        if (usedColours[i].Equals(ac))
+                        {
+                            i = 0;
+                            break;
+                        }
+
+                        // If this is true, none of the colours in the used colours list matched
+                        // the searched colour (ac)
+                        if (i == (usedColours.Count - 1))
+                        {
+                            usedColours.Add(ac);
+                            return ac;
+                        }
+
+                        i++;
+                    } while (i < usedColours.Count);
+
+                    i = 0;
+                }
+            }
+            else
+            {
+                int rnd = new Random().Next(4);
+                usedColours.Add(availableColours[rnd]);
+                return availableColours[rnd];
+            }
+            
+
+            return Color.White;
+        }
+
+        /// <summary>
         /// This method is called each time a player gets added to the list of players
         /// </summary>
         private void UpdatePlayerList()
@@ -242,7 +291,9 @@ namespace FiaMedKnuff
             if (serverType == ServerType.HOSTING)
                 srvType = "Host";
 
-            for(int i = 0; i < players.Count; i++)
+            ClearPlayerList(srvType);
+
+            for (int i = 0; i < players.Count; i++)
             {
                 // Colours the labels correctly as well as writes the user's name to them
                 Control[] lblAsControl = Controls.Find($"lblPlayer{i + 1}{srvType}", true);
@@ -262,8 +313,8 @@ namespace FiaMedKnuff
         /// <summary>
         /// Resets everything when someone stops the server
         /// </summary>
-        /// <param name="type">Whether it is the host or the join part that should be reset</param>
-        private void ClearServer(string type)
+        /// <param name="type">Whether it is the host, join or both parts that should be reset</param>
+        private void ClearPlayerList(string type)
         {
             if (!type.Equals("both"))
             {
@@ -279,8 +330,8 @@ namespace FiaMedKnuff
             }
             else
             {
-                ClearServer("Host");
-                ClearServer("Join");
+                ClearPlayerList("Host");
+                ClearPlayerList("Join");
             }
         }
 
@@ -388,6 +439,41 @@ namespace FiaMedKnuff
             string[] data = message.Split('|');
             switch (msgType)
             {
+                case "PLD": // Player disconnected
+
+                    // Loop through the player list and remove the disconnected player
+                    Color colourPLD = Color.White;
+                    for(int i = 0; i < players.Count; i++)
+                    {
+                        if(players[i].Name == data[1])
+                        {
+                            colourPLD = players[i].Characters[0].Colour;
+                            players.RemoveAt(i);
+                            break;
+                        }
+                    }
+
+                    UpdatePlayerList();
+
+                    // Update the number of connected players
+                    if (serverType == ServerType.HOSTING)
+                        lblConnectedPlayersHost.Text = $"Anslutna spelare: {players.Count}/{maxPlayers}";
+                    else
+                        lblConnectedPlayersJoin.Text = $"Anslutna spelare: {players.Count}/{maxPlayers}";
+
+                    // Make sure the next player who joins will get the colour of the player who disconnected
+                    if (serverType == ServerType.HOSTING)
+                    {
+                        for(int i = 0; i < usedColours.Count; i++)
+                        {
+                            if (usedColours[i].Equals(colourPLD))
+                            {
+                                usedColours.RemoveAt(i);
+                                break;
+                            }
+                        }
+                    }
+                    break;
                 case "SMP": // Data about the max amount of players has been sent
                     maxPlayers = int.Parse(data[1]);
                     lblConnectedPlayersJoin.Text = $"Antal spelare: {players.Count()}/{maxPlayers}";
@@ -454,7 +540,7 @@ namespace FiaMedKnuff
                     if(serverType == ServerType.HOSTING)
                     {
                         // Create a Player object and add it to the list of players
-                        List<Character> tempCharsSPN = Character.Assign(availableColours[colourIndex++]);
+                        List<Character> tempCharsSPN = Character.Assign(FindAvailableColour());
 
                         players.Add(new Player(data[1], tempCharsSPN, (Player.PlayerState)int.Parse(data[2])));
                         lblConnectedPlayersHost.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
@@ -490,10 +576,19 @@ namespace FiaMedKnuff
 
         private void FrmMenu_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(host != null) // Check if there even is a server currently running
+            if(host != null) // Check if the user is currently hosting a server
             {
                 Server.Stop(host);
-                ClearServer("both");
+            }
+            else if(server.Client.Connected) // Check if the user is currently connected to a server
+            {
+                // Disconnect the user and reset the values of different controls
+                Server.Disconnect(player, server);
+                ClearPlayerList("Join");
+                btnConnect.Text = "ANSLUT";
+                btnBack.Enabled = true;
+                lblConnectedPlayersJoin.Text = "";
+                players.Clear();
             }
         }
     }

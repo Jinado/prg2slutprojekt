@@ -466,34 +466,44 @@ namespace FiaMedKnuff
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "MVC": // A character has been moved
-                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "HAW": // A player has won
-                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "TRD": // The dice have been thrown
-                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "CHT": // The turn has been changed
-                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "SMP": // Send an number informing the clients of the max amount of players
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "INA": // A client wishes to know if a name is available
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "NAR": // A result from the above request has been recieved
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "SPD": // Player data has been sent
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "SPN":
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "SRS": // Ready status of all players have been sent
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     default:
                         break;
@@ -558,34 +568,44 @@ namespace FiaMedKnuff
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "MVC": // A character has been moved
-                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        if(server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "HAW": // A player has won
-                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "TRD": // The dice have been thrown
-                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "CHT": // The turn has been changed
-                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "SMP": // Send an number informing the clients of the max amount of players
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "INA": // A client wishes to know if a name is available
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "NAR": // A result from the above request has been recieved
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "SPD": // Player data has been sent
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "SPN":
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "SRS": // Ready status of all players have been sent
-                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        if (server.form is FrmMenu)
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     default:
                         break;
@@ -654,6 +674,14 @@ namespace FiaMedKnuff
             catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till klienten.\n{err.Message}", "Serverfel 4", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
         }
 
+        public override string ToString()
+        {
+            if (this.ip != null)
+                return $"{this.ip}:{this.port}";
+            else
+                return $"Port: {this.port}";
+        }
+
         public TcpClient Client
         {
             private set { this.client = value; }
@@ -663,12 +691,6 @@ namespace FiaMedKnuff
             }
         }
 
-        public override string ToString()
-        {
-            if (this.ip != null)
-                return $"{this.ip}:{this.port}";
-            else
-                return $"Port: {this.port}";
-        }
+        public Form Form { get; set; }
     }
 }

@@ -73,9 +73,9 @@ namespace FiaMedKnuff.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap black_path {
+        internal static System.Drawing.Bitmap blue_path {
             get {
-                object obj = ResourceManager.GetObject("black_path", resourceCulture);
+                object obj = ResourceManager.GetObject("blue_path", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace FiaMedKnuff.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap blue_path {
+        internal static System.Drawing.Bitmap blue_path_border {
             get {
-                object obj = ResourceManager.GetObject("blue_path", resourceCulture);
+                object obj = ResourceManager.GetObject("blue_path_border", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,79 @@ namespace FiaMedKnuff.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap char_blue {
+            get {
+                object obj = ResourceManager.GetObject("char_blue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap char_green {
+            get {
+                object obj = ResourceManager.GetObject("char_green", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap char_red {
+            get {
+                object obj = ResourceManager.GetObject("char_red", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap char_yellow {
+            get {
+                object obj = ResourceManager.GetObject("char_yellow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap goal {
+            get {
+                object obj = ResourceManager.GetObject("goal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap goal_border {
+            get {
+                object obj = ResourceManager.GetObject("goal_border", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap green_path {
             get {
                 object obj = ResourceManager.GetObject("green_path", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap green_path_border {
+            get {
+                object obj = ResourceManager.GetObject("green_path_border", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -141,6 +211,56 @@ namespace FiaMedKnuff.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap red_path_border {
+            get {
+                object obj = ResourceManager.GetObject("red_path_border", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap spawn_blue {
+            get {
+                object obj = ResourceManager.GetObject("spawn_blue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap spawn_green {
+            get {
+                object obj = ResourceManager.GetObject("spawn_green", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap spawn_red {
+            get {
+                object obj = ResourceManager.GetObject("spawn_red", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap spawn_yellow {
+            get {
+                object obj = ResourceManager.GetObject("spawn_yellow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string String1 {
@@ -165,6 +285,16 @@ namespace FiaMedKnuff.Properties {
         internal static System.Drawing.Bitmap yellow_path {
             get {
                 object obj = ResourceManager.GetObject("yellow_path", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap yellow_path_border {
+            get {
+                object obj = ResourceManager.GetObject("yellow_path_border", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -18,7 +18,7 @@ namespace FiaMedKnuff
 {
     public partial class FrmMenu : Form
     {
-        private enum ServerType { NOT_HOSTING, HOSTING };
+        public enum ServerType { NOT_HOSTING, HOSTING };
 
         // Important for server
         private static Server host;
@@ -422,8 +422,15 @@ namespace FiaMedKnuff
                 // If the code got here, everyone is ready
                 this.Hide();
                 FrmGame frmGame = new FrmGame();
+
+                // Send over the necessary information
                 frmGame.players = players;
+                frmGame.player = player;
                 frmGame.maxPlayers = maxPlayers;
+                frmGame.serverType = serverType;
+                frmGame.server = serverType == ServerType.HOSTING ? host : server;
+
+                // Show the game form
                 frmGame.ShowDialog();
                 this.Close();
             }

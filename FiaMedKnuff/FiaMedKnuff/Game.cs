@@ -11,7 +11,6 @@ namespace FiaMedKnuff
     {
         // public enum GameState { } ???
 
-        static private List<Player> players = new List<Player>(4);
         static private List<Square> squares = new List<Square>(56);
         static private int maxPlayers = 4;
         static private int ammountOfPlayers;
@@ -91,18 +90,15 @@ namespace FiaMedKnuff
             // Max amount of players
             Game.maxPlayers = maxPlayers;
 
-            // Populate player list
-            Game.players = players;
-
             // Choose random player to begin
-            //Game.currentTurn = players[new Random().Next(0, maxPlayers)];
+            Game.currentTurn = players[new Random().Next(0, maxPlayers)];
         }
 
         /// <summary>
         /// Changes the current turn so that it's the next player's turn
         /// </summary>
         /// <returns>The player whose turn it now is</returns>
-        public Player ChangeTurn()
+        public Player ChangeTurn(List<Player> players)
         {
             int index = -1;
             for (int i = 0; i < players.Count; i++)
@@ -120,10 +116,6 @@ namespace FiaMedKnuff
         }
 
         // Getters and Setters for the private variables at the top of this class
-        static public List<Player> Players
-        {
-            get { return players; }
-        }
         static public List<Square> Squares
         {
             get { return squares; }

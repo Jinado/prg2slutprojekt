@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -31,10 +32,24 @@ namespace FiaMedKnuff
         private static List<Character> characters;
         private static ServerType serverType = ServerType.NOT_HOSTING;
         private static int spdCount = 0;
+        private int gamesWon = 0;
+        private int gamesLost = 0;
 
         public FrmMenu()
         {
             InitializeComponent();
+        }
+
+
+        private void FrmMenu_Shown(object sender, EventArgs e)
+        {
+            try
+            {
+                string ip = FileHandler.ReadConfigData();
+                ltbServerIP.Text = ip;
+                ltbServerIP.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+            }
+            catch(Exception) { /* Do nothing */ }
         }
 
         private void Button_MouseEnter(object sender, EventArgs e)
@@ -54,7 +69,9 @@ namespace FiaMedKnuff
             this.Close();
         }
 
-
+        /// <summary>
+        /// Connect a user to the server, if the user is already connected, disconnect him
+        /// </summary>
         private async void btnConnect_Click(object sender, EventArgs e)
         {
             if (btnConnect.Text.Equals("ANSLUT"))
@@ -108,6 +125,12 @@ namespace FiaMedKnuff
                                     // Disable the input fields
                                     ltbNameJoin.Enabled = false;
                                     ltbServerIP.Enabled = false;
+
+                                    // Save IP because connection was successful
+                                    FileHandler.SaveConfigData($"{fullAddress[0]}:{fullAddress[1]}");
+
+                                    // Load or save user data
+                                    HandleUserData();
                                 }
                             }
                             else
@@ -140,6 +163,12 @@ namespace FiaMedKnuff
                             // Disable the input fields
                             ltbNameJoin.Enabled = false;
                             ltbServerIP.Enabled = false;
+
+                            // Save IP because connection was successful
+                            FileHandler.SaveConfigData(ltbServerIP.Text);
+
+                            // Load or save user data
+                            HandleUserData();
                         }
                     }
                 }
@@ -148,19 +177,7 @@ namespace FiaMedKnuff
             {
                 // Send a disconnect message to the server
                 Server.Disconnect(player, server);
-
-                // Change the disconnect button to a connect button
-                btnConnect.Text = "ANSLUT";
-
-                // Clear the amount of connected players and clear the Player list
-                lblConnectedPlayersJoin.Text = "";
-                players.Clear();
-                ClearPlayerList("Join");
-
-                // Enable the input fields and the back button
-                ltbNameJoin.Enabled = false;
-                ltbServerIP.Enabled = false;
-                btnBack.Enabled = true;
+                ResetFormOnDisconnect();
             }
         }
 
@@ -208,6 +225,9 @@ namespace FiaMedKnuff
                                 player = new Player(ltbNameHost.Text, characters, Player.PlayerState.READY);
                                 players.Add(player);
                                 UpdatePlayerList();
+
+                                // Load or save user data
+                                HandleUserData();
                             }
                             else
                             {
@@ -233,24 +253,48 @@ namespace FiaMedKnuff
             }
             else // Stop the server
             {
-                // Stop the server and clear the player list
                 Server.Stop(host);
-                ClearPlayerList("Host");
-                players.Clear();
+                ResetFormOnStop();
+            }
+        }
 
-                // Hide amount of connected players
-                lblConnectedPlayersHost.Text = "";
-
-                // Enable the server configuration textboxes
-                ltbNameHost.Enabled = true;
-                ltbMaxPlayers.Enabled = true;
-                tbxPortHost.Enabled = true;
-
-                // Enable the "Back"
-                btnBack.Enabled = true;
-
-                // Make the server startabel again
-                btnStartServer.Text = "STARTA SERVERN";
+        /// <summary>
+        /// Try to load the data of a connected user, if there is no data to load, save the data instead
+        /// </summary>
+        private void HandleUserData()
+        {
+            try
+            {
+                if (serverType == ServerType.HOSTING)
+                {
+                    FileHandler.ReadUserData(ltbNameHost.Text, ref gamesWon, ref gamesLost);
+                    lblUserDataHost.Text = $"Vunnit: {gamesWon} | Förlorat: {gamesLost}";
+                }
+                else
+                {
+                    FileHandler.ReadUserData(ltbNameJoin.Text, ref gamesWon, ref gamesLost);
+                    lblUserDataJoin.Text = $"Vunnit: {gamesWon} | Förlorat: {gamesLost}";
+                }
+            }
+            catch (Exception err)
+            {
+                if (err is FileNotFoundException)
+                {
+                    try
+                    {
+                        if (serverType == ServerType.HOSTING)
+                        {
+                            FileHandler.SaveUserData(ltbNameHost.Text, gamesWon, gamesLost);
+                            lblUserDataHost.Text = $"Vunnit: {gamesWon} | Förlorat: {gamesLost}";
+                        }
+                        else
+                        {
+                            FileHandler.SaveUserData(ltbNameJoin.Text, gamesWon, gamesLost);
+                            lblUserDataJoin.Text = $"Vunnit: {gamesWon} | Förlorat: {gamesLost}";
+                        }
+                    }
+                    catch (Exception) { /* Do nothing */ }
+                }
             }
         }
 
@@ -495,26 +539,11 @@ namespace FiaMedKnuff
                     break;
                 case "FDP":
 
-                    // Remove each player
-                    players.Clear();
-
-                    // Clear the number of connected players
+                    // Reset the form
                     if (serverType == ServerType.HOSTING)
-                    {
-                        lblConnectedPlayersHost.Text = "";
-                        ClearPlayerList("Host");
-                    }
+                        ResetFormOnStop();
                     else
-                    {
-                        lblConnectedPlayersJoin.Text = "";
-                        ClearPlayerList("Join");
-                    }
-
-                    // Enable all buttons again
-                    btnConnect.Text = "ANSLUT";
-                    ltbNameJoin.Enabled = true;
-                    ltbServerIP.Enabled = true;
-                    btnBack.Enabled = true;
+                        ResetFormOnDisconnect();
 
                     break;
                 case "SMP": // Data about the max amount of players has been sent
@@ -622,17 +651,61 @@ namespace FiaMedKnuff
             if(host != null) // Check if the user is currently hosting a server
             {
                 Server.Stop(host);
+                ResetFormOnStop();
+                return;
             }
-            else if(server.Client.Connected) // Check if the user is currently connected to a server
+            
+            if(server != null)
             {
-                // Disconnect the user and reset the values of different controls
-                Server.Disconnect(player, server);
-                ClearPlayerList("Join");
-                btnConnect.Text = "ANSLUT";
-                btnBack.Enabled = true;
-                lblConnectedPlayersJoin.Text = "";
-                players.Clear();
+                if (server.Client.Connected) // Check if the user is currently connected to a server
+                {
+                    // Send a disconnect message to the server
+                    Server.Disconnect(player, server);
+                    ResetFormOnDisconnect();
+                }
+
+                return;
             }
+        }
+
+        private void ResetFormOnStop()
+        {
+            // Clear the player list
+            ClearPlayerList("Host");
+            players.Clear();
+            usedColours.Clear();
+
+            // Hide amount of connected players and the user's data
+            lblConnectedPlayersHost.Text = "";
+            lblUserDataHost.Text = "";
+
+            // Enable the server configuration textboxes
+            ltbNameHost.Enabled = true;
+            ltbMaxPlayers.Enabled = true;
+            tbxPortHost.Enabled = true;
+
+            // Enable the "Back"
+            btnBack.Enabled = true;
+
+            // Make the server startable again
+            btnStartServer.Text = "STARTA SERVERN";
+        }
+
+        private void ResetFormOnDisconnect()
+        {
+            // Change the disconnect button to a connect button
+            btnConnect.Text = "ANSLUT";
+
+            // Clear the amount of connected players and clear the Player list
+            lblConnectedPlayersJoin.Text = "";
+            lblUserDataJoin.Text = "";
+            players.Clear();
+            ClearPlayerList("Join");
+
+            // Enable the input fields and the back button
+            ltbNameJoin.Enabled = true;
+            ltbServerIP.Enabled = true;
+            btnBack.Enabled = true;
         }
     }
 }

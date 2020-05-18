@@ -52,12 +52,8 @@ namespace FiaMedKnuff
         /// Saves the last used IP into a file so that it may be read and automatically filled out
         /// </summary>
         /// <param name="ip">IP-address to store</param>
-        /// <exception cref="ArgumentException"></exception>
         public static void SaveConfigData(string ip)
         {
-            if (!IPAddress.TryParse(ip, out _))
-                throw new ArgumentException("The provided argument was not correctly formatted");
-
             try
             {
                 // Makes sure to create the FiaMedKnuff/config directory
@@ -83,8 +79,9 @@ namespace FiaMedKnuff
         /// <param name="name">The name of the user</param>
         /// <param name="gamesWon">The amount of games the user has won</param>
         /// <param name="gamesLost">The amount of games the user has lost</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public static void ReadUserData(string name, out int gamesWon, out int gamesLost)
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="FileNotFoundException"/>
+        public static void ReadUserData(string name, ref int gamesWon, ref int gamesLost)
         {
             if (name == null)
                 throw new ArgumentNullException();
@@ -107,17 +104,16 @@ namespace FiaMedKnuff
             }
             catch(Exception err)
             {
+                if (err is FileNotFoundException) throw err;
                 MessageBox.Show($"Fel vid läsning av användardata.\n{err.Message}", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            gamesWon = 0;
-            gamesLost = 0;
         }
 
         /// <summary>
         /// Reads config data for the application
         /// </summary>
         /// <returns>The last used IP</returns>
+        /// <exception cref="FileNotFoundException"/>
         public static string ReadConfigData()
         {
             try
@@ -136,10 +132,12 @@ namespace FiaMedKnuff
             }
             catch (Exception err)
             {
+                if (err is FileNotFoundException)
+                    throw err;
                 MessageBox.Show($"Fel vid läsning av användardata.\n{err.Message}", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            return "Error";
+            throw new Exception("Something wennt wrong and we're not sure what");
         }
     }
 }

@@ -64,11 +64,13 @@
             this.label12 = new System.Windows.Forms.Label();
             this.btnConnect = new System.Windows.Forms.Button();
             this.lblConnectedPlayersJoin = new System.Windows.Forms.Label();
+            this.lblConnectedPlayersHost = new System.Windows.Forms.Label();
             this.ltbServerIP = new LabeledTextBox();
             this.ltbNameJoin = new LabeledTextBox();
             this.ltbMaxPlayers = new LabeledTextBox();
             this.ltbNameHost = new LabeledTextBox();
-            this.lblConnectedPlayersHost = new System.Windows.Forms.Label();
+            this.lblUserDataJoin = new System.Windows.Forms.Label();
+            this.lblUserDataHost = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbxHost)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxJoin)).BeginInit();
             this.gbxReadyHost.SuspendLayout();
@@ -501,10 +503,19 @@
             // 
             this.lblConnectedPlayersJoin.AutoSize = true;
             this.lblConnectedPlayersJoin.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblConnectedPlayersJoin.Location = new System.Drawing.Point(1077, 153);
+            this.lblConnectedPlayersJoin.Location = new System.Drawing.Point(1126, 158);
             this.lblConnectedPlayersJoin.Name = "lblConnectedPlayersJoin";
             this.lblConnectedPlayersJoin.Size = new System.Drawing.Size(0, 22);
             this.lblConnectedPlayersJoin.TabIndex = 18;
+            // 
+            // lblConnectedPlayersHost
+            // 
+            this.lblConnectedPlayersHost.AutoSize = true;
+            this.lblConnectedPlayersHost.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblConnectedPlayersHost.Location = new System.Drawing.Point(389, 158);
+            this.lblConnectedPlayersHost.Name = "lblConnectedPlayersHost";
+            this.lblConnectedPlayersHost.Size = new System.Drawing.Size(0, 22);
+            this.lblConnectedPlayersHost.TabIndex = 19;
             // 
             // ltbServerIP
             // 
@@ -554,19 +565,30 @@
             this.ltbNameHost.Text = "Ditt namn...";
             this.ltbNameHost.TextChanged += new System.EventHandler(this.HostTextBoxes_TextChanged);
             // 
-            // lblConnectedPlayersHost
+            // lblUserDataJoin
             // 
-            this.lblConnectedPlayersHost.AutoSize = true;
-            this.lblConnectedPlayersHost.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblConnectedPlayersHost.Location = new System.Drawing.Point(325, 158);
-            this.lblConnectedPlayersHost.Name = "lblConnectedPlayersHost";
-            this.lblConnectedPlayersHost.Size = new System.Drawing.Size(0, 22);
-            this.lblConnectedPlayersHost.TabIndex = 19;
+            this.lblUserDataJoin.AutoSize = true;
+            this.lblUserDataJoin.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUserDataJoin.Location = new System.Drawing.Point(782, 158);
+            this.lblUserDataJoin.Name = "lblUserDataJoin";
+            this.lblUserDataJoin.Size = new System.Drawing.Size(0, 22);
+            this.lblUserDataJoin.TabIndex = 20;
+            // 
+            // lblUserDataHost
+            // 
+            this.lblUserDataHost.AutoSize = true;
+            this.lblUserDataHost.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUserDataHost.Location = new System.Drawing.Point(45, 158);
+            this.lblUserDataHost.Name = "lblUserDataHost";
+            this.lblUserDataHost.Size = new System.Drawing.Size(0, 22);
+            this.lblUserDataHost.TabIndex = 21;
             // 
             // FrmMenu
             // 
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1350, 613);
+            this.Controls.Add(this.lblUserDataHost);
+            this.Controls.Add(this.lblUserDataJoin);
             this.Controls.Add(this.lblConnectedPlayersHost);
             this.Controls.Add(this.lblConnectedPlayersJoin);
             this.Controls.Add(this.gbxReadyJoin);
@@ -590,6 +612,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "             ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMenu_FormClosing);
+            this.Shown += new System.EventHandler(this.FrmMenu_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pbxHost)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxJoin)).EndInit();
             this.gbxReadyHost.ResumeLayout(false);
@@ -654,5 +677,7 @@
         private LabeledTextBox ltbServerIP;
         private System.Windows.Forms.Label lblConnectedPlayersJoin;
         private System.Windows.Forms.Label lblConnectedPlayersHost;
+        private System.Windows.Forms.Label lblUserDataJoin;
+        private System.Windows.Forms.Label lblUserDataHost;
     }
 }

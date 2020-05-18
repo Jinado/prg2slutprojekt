@@ -100,9 +100,14 @@ namespace FiaMedKnuff
                                     players.Add(player);
                                     Server.SendPlayerData(server, player, serverType != 0);
 
+                                    // Disable buttons and change the connect button to a disconnect button
                                     btnConnect.Text = "LÄMNA";
                                     btnStartServer.Enabled = false;
                                     btnBack.Enabled = false;
+
+                                    // Disable the input fields
+                                    ltbNameJoin.Enabled = false;
+                                    ltbServerIP.Enabled = false;
                                 }
                             }
                             else
@@ -127,21 +132,35 @@ namespace FiaMedKnuff
                             players.Add(player);
                             Server.SendPlayerData(server, player, serverType != 0);
 
+                            // Disable buttons and change the connect button to a disconnect button
                             btnConnect.Text = "LÄMNA";
                             btnStartServer.Enabled = false;
                             btnBack.Enabled = false;
+
+                            // Disable the input fields
+                            ltbNameJoin.Enabled = false;
+                            ltbServerIP.Enabled = false;
                         }
                     }
                 }
             }
             else // Disconnect from the server
             {
+                // Send a disconnect message to the server
                 Server.Disconnect(player, server);
-                ClearPlayerList("Join");
+
+                // Change the disconnect button to a connect button
                 btnConnect.Text = "ANSLUT";
-                btnBack.Enabled = true;
+
+                // Clear the amount of connected players and clear the Player list
                 lblConnectedPlayersJoin.Text = "";
                 players.Clear();
+                ClearPlayerList("Join");
+
+                // Enable the input fields and the back button
+                ltbNameJoin.Enabled = false;
+                ltbServerIP.Enabled = false;
+                btnBack.Enabled = true;
             }
         }
 
@@ -473,6 +492,30 @@ namespace FiaMedKnuff
                             }
                         }
                     }
+                    break;
+                case "FDP":
+
+                    // Remove each player
+                    players.Clear();
+
+                    // Clear the number of connected players
+                    if (serverType == ServerType.HOSTING)
+                    {
+                        lblConnectedPlayersHost.Text = "";
+                        ClearPlayerList("Host");
+                    }
+                    else
+                    {
+                        lblConnectedPlayersJoin.Text = "";
+                        ClearPlayerList("Join");
+                    }
+
+                    // Enable all buttons again
+                    btnConnect.Text = "ANSLUT";
+                    ltbNameJoin.Enabled = true;
+                    ltbServerIP.Enabled = true;
+                    btnBack.Enabled = true;
+
                     break;
                 case "SMP": // Data about the max amount of players has been sent
                     maxPlayers = int.Parse(data[1]);

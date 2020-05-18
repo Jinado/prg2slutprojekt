@@ -160,9 +160,7 @@ namespace FiaMedKnuff
         /// <param name="server">The <see cref="Server">Server</see> to stop</param>
         public static void Stop(Server server)
         {
-            foreach (TcpClient c in server.clients)
-                c.Close();
-
+            Server.ForceDisconnectPlayers(server);
             server.listener.Server.Close();
         }
 
@@ -177,6 +175,18 @@ namespace FiaMedKnuff
             // to identify what type of message has been recieved/sent
             string message = $"PLD|{player.Name}";
             SendMessage(server, message);           
+        }
+
+        /// <summary>
+        /// Send a message to each client from the host that a player has been disconnected
+        /// </summary>
+        /// <param name="server">The server to disconnect from</param>
+        private static void ForceDisconnectPlayers(Server server)
+        {
+            // FDP stands for "FORCE DISCONNECT PLAYER", this is used
+            // to identify what type of message has been recieved/sent
+            string message = "FDP|";
+            SendMessageFromHost(server, message);
         }
 
         /// <summary>
@@ -410,6 +420,12 @@ namespace FiaMedKnuff
                         else
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
+                    case "FDP": // Player forcefully disconnected
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        else
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        break;
                     case "MVC": // A character has been moved
                         // (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
@@ -476,6 +492,12 @@ namespace FiaMedKnuff
                         else
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
+                    case "FDP": // Player forcefully disconnected
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        else
+                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        break;
                     case "MVC": // A character has been moved
                         // (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
@@ -525,15 +547,7 @@ namespace FiaMedKnuff
             // linked to that player
             if ($"{message[0]}{message[1]}{message[2]}".Equals("PLD"))
             {
-                
-                /*
-                server.client.GetStream().Close();
-                server.client.Close();
-                */
-
-                //server.client.Dispose();
                 server.client.Client.Dispose();
-                //server.client.Client.Close();
             }
         }
 
@@ -550,6 +564,16 @@ namespace FiaMedKnuff
                 foreach (TcpClient clt in server.clients)
                 {
                     SendMessage(clt, message);
+
+                    // If the message is that a player has been forcefully 
+                    // disconnected, close the client linked to that player
+                    if ($"{message[0]}{message[1]}{message[2]}".Equals("PLD"))
+                    {
+                        // Wait a short while to make sure the message is fully sent before disposing the client
+                        Thread.Sleep(50);
+                        clt.Client.Dispose();
+                        server.clients.Remove(clt);
+                    }
                 }
             }
         }

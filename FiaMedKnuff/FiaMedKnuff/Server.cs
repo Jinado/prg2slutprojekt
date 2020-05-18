@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,7 +106,7 @@ namespace FiaMedKnuff
             try
             {
                 tempClient = await server.listener.AcceptTcpClientAsync();
-                if(tempClient != null)
+                if (tempClient != null)
                     server.clients.Add(tempClient);
             }
             catch (Exception err)
@@ -116,7 +118,7 @@ namespace FiaMedKnuff
                 MessageBox.Show(err.Message, "Anslutningsfel 1", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            if(tempClient != null)
+            if (tempClient != null)
                 RecieveData(server, tempClient);
             ListenForConnections(server);
         }
@@ -149,9 +151,21 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="player">The <see cref="Player">Player</see> to disconnect</param>
         /// <param name="server">The <see cref="Server">Server</see> to disconnect from</param>
-        public static void Disconnect(Player player, Server server)
+        /// <param name="host">True if the sender of the message is the host</param>
+        public static void Disconnect(Player player, Server server, bool host)
         {
-            Server.PlayerDisconnected(server, player);
+            Server.PlayerDisconnected(server, player, host);
+        }
+
+        /// <summary>
+        /// Disconnect a specific client
+        /// </summary>
+        /// <param name="server">The server to disconnect from</param>
+        public static void Disconnect(Server server)
+        {
+            // NAD stands for "NAME AVAILABLE DISCONNECT", this is used
+            // to identify what type of message has been recieved/sent
+            SendMessageToServer(server, "NAD");
         }
 
         /// <summary>
@@ -169,12 +183,16 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="server">The <see cref="Server">Server</see> the <see cref="Player">Player</see> has disconnected from</param>
         /// <param name="player">The <see cref="Player">Player</see> that has disconnected</param>
-        private static void PlayerDisconnected(Server server, Player player)
+        /// <param name="host">True if the sender of the message is the host</param>
+        private static void PlayerDisconnected(Server server, Player player, bool host)
         {
             // PLD stands for "PLAYER DISCONNECTED", this is used
             // to identify what type of message has been recieved/sent
             string message = $"PLD|{player.Name}";
-            SendMessage(server, message);           
+            if (host)
+                SendMessageFromHost(server, message);
+            else
+                SendMessageToServer(server, message);           
         }
 
         /// <summary>
@@ -186,6 +204,27 @@ namespace FiaMedKnuff
             // FDP stands for "FORCE DISCONNECT PLAYER", this is used
             // to identify what type of message has been recieved/sent
             string message = "FDP|";
+            SendMessageFromHost(server, message);
+        }
+
+        /// <summary>
+        /// Check with the server if a name is available
+        /// </summary>
+        /// <param name="server">The server to ask</param>
+        /// <param name="name">The name you wish to use</param>
+        public static void IsNameAvailable(Server server, string name)
+        {
+            // INA stands for "IS NAME AVAILABLE", this is used
+            // to identify what type of message has been recieved/sent
+            string message = $"INA|{name}";
+            SendMessageToServer(server, message);
+        }
+
+        public static void NameAvailableResult(Server server, string result)
+        {
+            // NAR stands for "NAME AVAILABLE RESULT", this is used
+            // to identify what type of message has been recieved/sent
+            string message = $"NAR|{result}";
             SendMessageFromHost(server, message);
         }
 
@@ -204,7 +243,7 @@ namespace FiaMedKnuff
             if (host)
                 SendMessageFromHost(server, message);
             else
-                SendMessage(server, message);
+                SendMessageToServer(server, message);
         }
 
         /// <summary>
@@ -221,7 +260,7 @@ namespace FiaMedKnuff
             if (host)
                 SendMessageFromHost(server, message);
             else
-                SendMessage(server, message);
+                SendMessageToServer(server, message);
         }
 
         /// <summary>
@@ -238,7 +277,7 @@ namespace FiaMedKnuff
             if (host)
                 SendMessageFromHost(server, message);
             else
-                SendMessage(server, message);
+                SendMessageToServer(server, message);
         }
 
         /// <summary>
@@ -255,7 +294,7 @@ namespace FiaMedKnuff
             if (host)
                 SendMessageFromHost(server, message);
             else
-                SendMessage(server, message);
+                SendMessageToServer(server, message);
         }
 
         /// <summary>
@@ -279,7 +318,7 @@ namespace FiaMedKnuff
             if (host)
                 SendMessageFromHost(server, message);
             else
-                SendMessage(server, message);
+                SendMessageToServer(server, message);
         }
 
         /// <summary>
@@ -348,7 +387,7 @@ namespace FiaMedKnuff
             if (host)
                 SendMessageFromHost(server, message);
             else
-                SendMessage(server, message);
+                SendMessageToServer(server, message);
         }
 
         /// <summary>
@@ -398,7 +437,7 @@ namespace FiaMedKnuff
             }
 
             string message = Encoding.UTF8.GetString(buffer, 0, n);
-            if(message != null && message != "")
+            if (message != null && message != "")
             {
                 // Broadcast the message
                 foreach (TcpClient clt in server.clients)
@@ -427,18 +466,24 @@ namespace FiaMedKnuff
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "MVC": // A character has been moved
-                        // (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "HAW": // A player has won
-                        // (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "TRD": // The dice have been thrown
-                        // (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "CHT": // The turn has been changed
-                        // (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "SMP": // Send an number informing the clients of the max amount of players
+                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        break;
+                    case "INA": // A client wishes to know if a name is available
+                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        break;
+                    case "NAR": // A result from the above request has been recieved
                         (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "SPD": // Player data has been sent
@@ -450,7 +495,16 @@ namespace FiaMedKnuff
                     case "SRS": // Ready status of all players have been sent
                         (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
+                    default:
+                        break;
                 }
+            }
+            else
+            {
+                server.clients.Remove(client);
+                client.Client.Dispose();
+                client.Dispose();
+                return;
             }
 
             RecieveData(server, client);
@@ -467,7 +521,9 @@ namespace FiaMedKnuff
             try
             {
                 if (server.client != null) // Is null when the server has been stopped
-                    n = await server.client.GetStream().ReadAsync(buffer, 0, buffer.Length);
+                    if (server.client.Connected)
+                        n = await server.client.GetStream().ReadAsync(buffer, 0, buffer.Length);
+                    else return;
                 else return;
             }
             catch (Exception err)
@@ -476,6 +532,9 @@ namespace FiaMedKnuff
                 // The return statement makes sure we do not continue
                 // to listen for more data.
                 if (err is ObjectDisposedException || err.InnerException is ObjectDisposedException) return;
+
+                // This is true if the host stops the server and exists the application before the other clients exit
+                if (err.InnerException is SocketException) return;
                 MessageBox.Show(err.Message, "Serverfel 2", MessageBoxButtons.OK, MessageBoxIcon.Error); return; 
             }
 
@@ -499,18 +558,24 @@ namespace FiaMedKnuff
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "MVC": // A character has been moved
-                        // (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "HAW": // A player has won
-                        // (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "TRD": // The dice have been thrown
-                        // (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "CHT": // The turn has been changed
-                        // (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     case "SMP": // Send an number informing the clients of the max amount of players
+                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        break;
+                    case "INA": // A client wishes to know if a name is available
+                        (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        break;
+                    case "NAR": // A result from the above request has been recieved
                         (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "SPD": // Player data has been sent
@@ -521,6 +586,8 @@ namespace FiaMedKnuff
                         break;
                     case "SRS": // Ready status of all players have been sent
                         (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                        break;
+                    default:
                         break;
                 }
             }
@@ -533,7 +600,7 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="server">The server to send the message to</param>
         /// <param name="message">The message to send</param>
-        private async static void SendMessage(Server server, string message)
+        private async static void SendMessageToServer(Server server, string message)
         {
             byte[] msg = Encoding.UTF8.GetBytes(message);
 
@@ -545,7 +612,7 @@ namespace FiaMedKnuff
 
             // If the message is that a player has disconnected, close the client
             // linked to that player
-            if ($"{message[0]}{message[1]}{message[2]}".Equals("PLD"))
+            if ($"{message[0]}{message[1]}{message[2]}".Equals("PLD") || $"{message[0]}{message[1]}{message[2]}".Equals("NAD"))
             {
                 server.client.Client.Dispose();
             }
@@ -564,19 +631,10 @@ namespace FiaMedKnuff
                 foreach (TcpClient clt in server.clients)
                 {
                     SendMessage(clt, message);
-
-                    // If the message is that a player has been forcefully 
-                    // disconnected, close the client linked to that player
-                    if ($"{message[0]}{message[1]}{message[2]}".Equals("PLD"))
-                    {
-                        // Wait a short while to make sure the message is fully sent before disposing the client
-                        Thread.Sleep(50);
-                        clt.Client.Dispose();
-                        server.clients.Remove(clt);
-                    }
                 }
             }
         }
+
 
         /// <summary>
         /// Send a message to another client
@@ -589,7 +647,9 @@ namespace FiaMedKnuff
 
             try
             {
-                await client.GetStream().WriteAsync(msg, 0, msg.Length);
+                if (client != null)
+                    await client.GetStream().WriteAsync(msg, 0, msg.Length);
+                else return;
             }
             catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till klienten.\n{err.Message}", "Serverfel 4", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
         }
@@ -601,6 +661,14 @@ namespace FiaMedKnuff
             {
                 return this.client;
             }
+        }
+
+        public override string ToString()
+        {
+            if (this.ip != null)
+                return $"{this.ip}:{this.port}";
+            else
+                return $"Port: {this.port}";
         }
     }
 }

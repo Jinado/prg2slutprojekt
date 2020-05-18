@@ -27,6 +27,8 @@ namespace FiaMedKnuff
             {
                 case "PLD": // Player disconnected
                     break;
+                case "FDP": // The player has been forcefully disconnected
+                    break;
                 case "MVC": // A character has been moved
                     break;
                 case "HAW": // A player has won
@@ -36,6 +38,11 @@ namespace FiaMedKnuff
                 case "CHT": // The turn has been changed
                     break;
             }
+        }
+
+        private void FrmGame_Shown(object sender, EventArgs e)
+        {
+            Game.Initialize();
         }
     }
 }

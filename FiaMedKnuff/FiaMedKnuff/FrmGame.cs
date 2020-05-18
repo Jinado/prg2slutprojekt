@@ -7,11 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FiaMedKnuff.Properties;
 
 namespace FiaMedKnuff
 {
     public partial class FrmGame : Form
     {
+        public List<Player> players = new List<Player>();
+        public int maxPlayers = 0;
+
         public FrmGame()
         {
             InitializeComponent();
@@ -42,7 +46,12 @@ namespace FiaMedKnuff
 
         private void FrmGame_Shown(object sender, EventArgs e)
         {
-            Game.Initialize();
+            Game.Initialize(players, maxPlayers);
+        }
+
+        private void PictureBox_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("You clicked on " + ((PictureBox)sender).Name);
         }
     }
 }

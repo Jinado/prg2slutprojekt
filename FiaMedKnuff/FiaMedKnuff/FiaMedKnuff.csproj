@@ -123,10 +123,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="images\bakgrundsbild.png" />
+    <Content Include="images\black_path.png" />
+    <Content Include="images\blue_path.png" />
     <Content Include="images\border.png" />
+    <Content Include="images\green_path.png" />
     <Content Include="images\not_ready.png" />
     <Content Include="images\ready.png" />
+    <Content Include="images\red_path.png" />
     <Content Include="images\title.png" />
+    <Content Include="images\yellow_path.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -421,7 +421,10 @@ namespace FiaMedKnuff
 
                 // If the code got here, everyone is ready
                 this.Hide();
-                new FrmGame().ShowDialog();
+                FrmGame frmGame = new FrmGame();
+                frmGame.players = players;
+                frmGame.maxPlayers = maxPlayers;
+                frmGame.ShowDialog();
                 this.Close();
             }
         }

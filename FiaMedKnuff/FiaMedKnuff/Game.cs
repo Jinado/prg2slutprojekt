@@ -11,31 +11,18 @@ namespace FiaMedKnuff
     {
         // public enum GameState { } ???
 
-        static private List<Player> players = new List<Player>();
-        static private List<Square> squares = new List<Square>();
-        static private byte maxPlayers = 4;
-        static private byte ammountOfPlayers;
+        static private List<Player> players = new List<Player>(4);
+        static private List<Square> squares = new List<Square>(56);
+        static private int maxPlayers = 4;
+        static private int ammountOfPlayers;
         static private Player currentTurn;
-
-        /// <summary>
-        /// Check if everyone is ready to start the game
-        /// </summary>
-        /// <returns>True if everyone is ready</returns>
-        public bool ReadyToStart()
-        {
-            foreach (Player p in players)
-            {
-                if (p.State == Player.PlayerState.NOT_READY)
-                    return false;
-            }
-
-            return true;
-        }
 
         /// <summary>
         /// Initialize a game
         /// </summary>
-        public void Initialize(List<Player> players)
+        /// <param name="players">A list of connected players</param>
+        /// <param name="maxPlayers">The amount of max players</param>
+        public static void Initialize(List<Player> players, int maxPlayers)
         {
             // Populate the Game.Squares list
             // Below is the full path around the map
@@ -81,13 +68,34 @@ namespace FiaMedKnuff
             Game.squares.Add(new Square(Color.Green, 39));
 
             // Below is the final stretches before the players reach the black dot
+            Game.squares.Add(new Square(Color.Green, 40, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Green, 41, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Green, 42, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Green, 43, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Yellow, 44, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Yellow, 45, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Yellow, 46, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Yellow, 47, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Red, 48, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Red, 49, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Red, 50, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Red, 51, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Blue, 52, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Blue, 53, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Blue, 54, Square.PathType.FINAL));
+            Game.squares.Add(new Square(Color.Blue, 55, Square.PathType.FINAL));
 
+            // Below is the black dot in the center. The goal.
+            Game.squares.Add(new Square(Color.Black, 56, Square.PathType.GOAL));
+
+            // Max amount of players
+            Game.maxPlayers = maxPlayers;
 
             // Populate player list
             Game.players = players;
 
             // Choose random player to begin
-            Game.currentTurn = players[new Random().Next(0, maxPlayers)];
+            //Game.currentTurn = players[new Random().Next(0, maxPlayers)];
         }
 
         /// <summary>
@@ -120,12 +128,12 @@ namespace FiaMedKnuff
         {
             get { return squares; }
         }
-        static public byte MaxPlayers
+        static public int MaxPlayers
         {
             get { return maxPlayers; }
             set { maxPlayers = value; }
         }
-        static public byte AmmountOfPlayers
+        static public int AmmountOfPlayers
         {
             get { return ammountOfPlayers; }
             set { ammountOfPlayers = value; }

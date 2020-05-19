@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmGame));
             this.pbx3 = new System.Windows.Forms.PictureBox();
             this.pbx43 = new System.Windows.Forms.PictureBox();
             this.pbx56 = new System.Windows.Forms.PictureBox();
@@ -89,10 +90,16 @@
             this.lblPlayerYellow = new System.Windows.Forms.Label();
             this.lblPlayerRed = new System.Windows.Forms.Label();
             this.lblPlayerBlue = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.pbxSpawnPointRed = new System.Windows.Forms.PictureBox();
+            this.pbxSpawnPointYellow = new System.Windows.Forms.PictureBox();
+            this.pbxSpawnPointGreen = new System.Windows.Forms.PictureBox();
+            this.pbxSpawnPointBlue = new System.Windows.Forms.PictureBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblScoreBlue = new System.Windows.Forms.Label();
+            this.lblScoreRed = new System.Windows.Forms.Label();
+            this.lblScoreYellow = new System.Windows.Forms.Label();
+            this.lblScoreGreen = new System.Windows.Forms.Label();
+            this.pbxDice = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbx3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx43)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx56)).BeginInit();
@@ -150,10 +157,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbx36)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx37)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx38)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxSpawnPointRed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxSpawnPointYellow)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxSpawnPointGreen)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxSpawnPointBlue)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDice)).BeginInit();
             this.SuspendLayout();
             // 
             // pbx3
@@ -165,8 +174,8 @@
             this.pbx3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx3.TabIndex = 3;
             this.pbx3.TabStop = false;
-            this.pbx3.Tag = "borderless";
-            this.pbx3.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx3.Tag = "";
+            this.pbx3.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx43
             // 
@@ -177,8 +186,8 @@
             this.pbx43.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx43.TabIndex = 17;
             this.pbx43.TabStop = false;
-            this.pbx43.Tag = "borderless";
-            this.pbx43.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx43.Tag = "";
+            this.pbx43.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx56
             // 
@@ -189,8 +198,8 @@
             this.pbx56.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx56.TabIndex = 18;
             this.pbx56.TabStop = false;
-            this.pbx56.Tag = "borderless";
-            this.pbx56.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx56.Tag = "";
+            this.pbx56.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx7
             // 
@@ -201,8 +210,8 @@
             this.pbx7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx7.TabIndex = 21;
             this.pbx7.TabStop = false;
-            this.pbx7.Tag = "borderless";
-            this.pbx7.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx7.Tag = "";
+            this.pbx7.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx9
             // 
@@ -213,8 +222,8 @@
             this.pbx9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx9.TabIndex = 26;
             this.pbx9.TabStop = false;
-            this.pbx9.Tag = "borderless";
-            this.pbx9.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx9.Tag = "";
+            this.pbx9.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx42
             // 
@@ -225,8 +234,8 @@
             this.pbx42.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx42.TabIndex = 27;
             this.pbx42.TabStop = false;
-            this.pbx42.Tag = "borderless";
-            this.pbx42.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx42.Tag = "";
+            this.pbx42.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx41
             // 
@@ -237,8 +246,8 @@
             this.pbx41.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx41.TabIndex = 28;
             this.pbx41.TabStop = false;
-            this.pbx41.Tag = "borderless";
-            this.pbx41.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx41.Tag = "";
+            this.pbx41.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx40
             // 
@@ -249,8 +258,8 @@
             this.pbx40.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx40.TabIndex = 29;
             this.pbx40.TabStop = false;
-            this.pbx40.Tag = "borderless";
-            this.pbx40.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx40.Tag = "";
+            this.pbx40.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx39
             // 
@@ -261,8 +270,8 @@
             this.pbx39.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx39.TabIndex = 30;
             this.pbx39.TabStop = false;
-            this.pbx39.Tag = "borderless";
-            this.pbx39.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx39.Tag = "";
+            this.pbx39.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx0
             // 
@@ -273,8 +282,8 @@
             this.pbx0.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx0.TabIndex = 31;
             this.pbx0.TabStop = false;
-            this.pbx0.Tag = "borderless";
-            this.pbx0.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx0.Tag = "";
+            this.pbx0.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx10
             // 
@@ -285,8 +294,8 @@
             this.pbx10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx10.TabIndex = 32;
             this.pbx10.TabStop = false;
-            this.pbx10.Tag = "borderless";
-            this.pbx10.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx10.Tag = "";
+            this.pbx10.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx44
             // 
@@ -297,8 +306,8 @@
             this.pbx44.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx44.TabIndex = 33;
             this.pbx44.TabStop = false;
-            this.pbx44.Tag = "borderless";
-            this.pbx44.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx44.Tag = "";
+            this.pbx44.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx45
             // 
@@ -309,8 +318,8 @@
             this.pbx45.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx45.TabIndex = 34;
             this.pbx45.TabStop = false;
-            this.pbx45.Tag = "borderless";
-            this.pbx45.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx45.Tag = "";
+            this.pbx45.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx46
             // 
@@ -321,8 +330,8 @@
             this.pbx46.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx46.TabIndex = 35;
             this.pbx46.TabStop = false;
-            this.pbx46.Tag = "borderless";
-            this.pbx46.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx46.Tag = "";
+            this.pbx46.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx47
             // 
@@ -333,8 +342,8 @@
             this.pbx47.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx47.TabIndex = 36;
             this.pbx47.TabStop = false;
-            this.pbx47.Tag = "borderless";
-            this.pbx47.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx47.Tag = "";
+            this.pbx47.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx51
             // 
@@ -345,8 +354,8 @@
             this.pbx51.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx51.TabIndex = 41;
             this.pbx51.TabStop = false;
-            this.pbx51.Tag = "borderless";
-            this.pbx51.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx51.Tag = "";
+            this.pbx51.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx50
             // 
@@ -357,8 +366,8 @@
             this.pbx50.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx50.TabIndex = 40;
             this.pbx50.TabStop = false;
-            this.pbx50.Tag = "borderless";
-            this.pbx50.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx50.Tag = "";
+            this.pbx50.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx49
             // 
@@ -369,8 +378,8 @@
             this.pbx49.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx49.TabIndex = 39;
             this.pbx49.TabStop = false;
-            this.pbx49.Tag = "borderless";
-            this.pbx49.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx49.Tag = "";
+            this.pbx49.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx48
             // 
@@ -381,8 +390,8 @@
             this.pbx48.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx48.TabIndex = 38;
             this.pbx48.TabStop = false;
-            this.pbx48.Tag = "borderless";
-            this.pbx48.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx48.Tag = "";
+            this.pbx48.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx19
             // 
@@ -393,8 +402,8 @@
             this.pbx19.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx19.TabIndex = 37;
             this.pbx19.TabStop = false;
-            this.pbx19.Tag = "borderless";
-            this.pbx19.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx19.Tag = "";
+            this.pbx19.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx20
             // 
@@ -405,8 +414,8 @@
             this.pbx20.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx20.TabIndex = 42;
             this.pbx20.TabStop = false;
-            this.pbx20.Tag = "borderless";
-            this.pbx20.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx20.Tag = "";
+            this.pbx20.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx29
             // 
@@ -417,8 +426,8 @@
             this.pbx29.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx29.TabIndex = 47;
             this.pbx29.TabStop = false;
-            this.pbx29.Tag = "borderless";
-            this.pbx29.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx29.Tag = "";
+            this.pbx29.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx30
             // 
@@ -429,8 +438,8 @@
             this.pbx30.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx30.TabIndex = 48;
             this.pbx30.TabStop = false;
-            this.pbx30.Tag = "borderless";
-            this.pbx30.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx30.Tag = "";
+            this.pbx30.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx52
             // 
@@ -441,8 +450,8 @@
             this.pbx52.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx52.TabIndex = 49;
             this.pbx52.TabStop = false;
-            this.pbx52.Tag = "borderless";
-            this.pbx52.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx52.Tag = "";
+            this.pbx52.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx53
             // 
@@ -453,8 +462,8 @@
             this.pbx53.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx53.TabIndex = 50;
             this.pbx53.TabStop = false;
-            this.pbx53.Tag = "borderless";
-            this.pbx53.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx53.Tag = "";
+            this.pbx53.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx54
             // 
@@ -465,8 +474,8 @@
             this.pbx54.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx54.TabIndex = 51;
             this.pbx54.TabStop = false;
-            this.pbx54.Tag = "borderless";
-            this.pbx54.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx54.Tag = "";
+            this.pbx54.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx55
             // 
@@ -477,8 +486,8 @@
             this.pbx55.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx55.TabIndex = 52;
             this.pbx55.TabStop = false;
-            this.pbx55.Tag = "borderless";
-            this.pbx55.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx55.Tag = "";
+            this.pbx55.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx1
             // 
@@ -489,8 +498,8 @@
             this.pbx1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx1.TabIndex = 53;
             this.pbx1.TabStop = false;
-            this.pbx1.Tag = "borderless";
-            this.pbx1.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx1.Tag = "";
+            this.pbx1.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx2
             // 
@@ -501,8 +510,8 @@
             this.pbx2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx2.TabIndex = 54;
             this.pbx2.TabStop = false;
-            this.pbx2.Tag = "borderless";
-            this.pbx2.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx2.Tag = "";
+            this.pbx2.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx4
             // 
@@ -513,8 +522,8 @@
             this.pbx4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx4.TabIndex = 55;
             this.pbx4.TabStop = false;
-            this.pbx4.Tag = "borderless";
-            this.pbx4.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx4.Tag = "";
+            this.pbx4.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx5
             // 
@@ -525,8 +534,8 @@
             this.pbx5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx5.TabIndex = 56;
             this.pbx5.TabStop = false;
-            this.pbx5.Tag = "borderless";
-            this.pbx5.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx5.Tag = "";
+            this.pbx5.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx6
             // 
@@ -537,8 +546,8 @@
             this.pbx6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx6.TabIndex = 57;
             this.pbx6.TabStop = false;
-            this.pbx6.Tag = "borderless";
-            this.pbx6.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx6.Tag = "";
+            this.pbx6.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx8
             // 
@@ -549,8 +558,8 @@
             this.pbx8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx8.TabIndex = 58;
             this.pbx8.TabStop = false;
-            this.pbx8.Tag = "borderless";
-            this.pbx8.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx8.Tag = "";
+            this.pbx8.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx11
             // 
@@ -561,8 +570,8 @@
             this.pbx11.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx11.TabIndex = 59;
             this.pbx11.TabStop = false;
-            this.pbx11.Tag = "borderless";
-            this.pbx11.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx11.Tag = "";
+            this.pbx11.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx12
             // 
@@ -573,8 +582,8 @@
             this.pbx12.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx12.TabIndex = 60;
             this.pbx12.TabStop = false;
-            this.pbx12.Tag = "borderless";
-            this.pbx12.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx12.Tag = "";
+            this.pbx12.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx13
             // 
@@ -585,8 +594,8 @@
             this.pbx13.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx13.TabIndex = 61;
             this.pbx13.TabStop = false;
-            this.pbx13.Tag = "borderless";
-            this.pbx13.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx13.Tag = "";
+            this.pbx13.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx14
             // 
@@ -597,8 +606,8 @@
             this.pbx14.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx14.TabIndex = 62;
             this.pbx14.TabStop = false;
-            this.pbx14.Tag = "borderless";
-            this.pbx14.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx14.Tag = "";
+            this.pbx14.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx15
             // 
@@ -609,8 +618,8 @@
             this.pbx15.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx15.TabIndex = 63;
             this.pbx15.TabStop = false;
-            this.pbx15.Tag = "borderless";
-            this.pbx15.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx15.Tag = "";
+            this.pbx15.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx16
             // 
@@ -621,8 +630,8 @@
             this.pbx16.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx16.TabIndex = 64;
             this.pbx16.TabStop = false;
-            this.pbx16.Tag = "borderless";
-            this.pbx16.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx16.Tag = "";
+            this.pbx16.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx17
             // 
@@ -633,8 +642,8 @@
             this.pbx17.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx17.TabIndex = 65;
             this.pbx17.TabStop = false;
-            this.pbx17.Tag = "borderless";
-            this.pbx17.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx17.Tag = "";
+            this.pbx17.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx18
             // 
@@ -645,8 +654,8 @@
             this.pbx18.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx18.TabIndex = 66;
             this.pbx18.TabStop = false;
-            this.pbx18.Tag = "borderless";
-            this.pbx18.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx18.Tag = "";
+            this.pbx18.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx21
             // 
@@ -657,8 +666,8 @@
             this.pbx21.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx21.TabIndex = 67;
             this.pbx21.TabStop = false;
-            this.pbx21.Tag = "borderless";
-            this.pbx21.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx21.Tag = "";
+            this.pbx21.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx22
             // 
@@ -669,8 +678,8 @@
             this.pbx22.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx22.TabIndex = 68;
             this.pbx22.TabStop = false;
-            this.pbx22.Tag = "borderless";
-            this.pbx22.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx22.Tag = "";
+            this.pbx22.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx23
             // 
@@ -681,8 +690,8 @@
             this.pbx23.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx23.TabIndex = 69;
             this.pbx23.TabStop = false;
-            this.pbx23.Tag = "borderless";
-            this.pbx23.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx23.Tag = "";
+            this.pbx23.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx24
             // 
@@ -693,8 +702,8 @@
             this.pbx24.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx24.TabIndex = 70;
             this.pbx24.TabStop = false;
-            this.pbx24.Tag = "borderless";
-            this.pbx24.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx24.Tag = "";
+            this.pbx24.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx25
             // 
@@ -705,8 +714,8 @@
             this.pbx25.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx25.TabIndex = 71;
             this.pbx25.TabStop = false;
-            this.pbx25.Tag = "borderless";
-            this.pbx25.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx25.Tag = "";
+            this.pbx25.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx26
             // 
@@ -717,8 +726,8 @@
             this.pbx26.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx26.TabIndex = 72;
             this.pbx26.TabStop = false;
-            this.pbx26.Tag = "borderless";
-            this.pbx26.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx26.Tag = "";
+            this.pbx26.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx27
             // 
@@ -729,8 +738,8 @@
             this.pbx27.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx27.TabIndex = 73;
             this.pbx27.TabStop = false;
-            this.pbx27.Tag = "borderless";
-            this.pbx27.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx27.Tag = "";
+            this.pbx27.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx28
             // 
@@ -741,8 +750,8 @@
             this.pbx28.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx28.TabIndex = 74;
             this.pbx28.TabStop = false;
-            this.pbx28.Tag = "borderless";
-            this.pbx28.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx28.Tag = "";
+            this.pbx28.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx31
             // 
@@ -753,8 +762,8 @@
             this.pbx31.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx31.TabIndex = 75;
             this.pbx31.TabStop = false;
-            this.pbx31.Tag = "borderless";
-            this.pbx31.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx31.Tag = "";
+            this.pbx31.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx32
             // 
@@ -765,8 +774,8 @@
             this.pbx32.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx32.TabIndex = 76;
             this.pbx32.TabStop = false;
-            this.pbx32.Tag = "borderless";
-            this.pbx32.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx32.Tag = "";
+            this.pbx32.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx33
             // 
@@ -777,8 +786,8 @@
             this.pbx33.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx33.TabIndex = 77;
             this.pbx33.TabStop = false;
-            this.pbx33.Tag = "borderless";
-            this.pbx33.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx33.Tag = "";
+            this.pbx33.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx34
             // 
@@ -789,8 +798,8 @@
             this.pbx34.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx34.TabIndex = 78;
             this.pbx34.TabStop = false;
-            this.pbx34.Tag = "borderless";
-            this.pbx34.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx34.Tag = "";
+            this.pbx34.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx35
             // 
@@ -801,8 +810,8 @@
             this.pbx35.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx35.TabIndex = 79;
             this.pbx35.TabStop = false;
-            this.pbx35.Tag = "borderless";
-            this.pbx35.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx35.Tag = "";
+            this.pbx35.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx36
             // 
@@ -813,8 +822,8 @@
             this.pbx36.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx36.TabIndex = 80;
             this.pbx36.TabStop = false;
-            this.pbx36.Tag = "borderless";
-            this.pbx36.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx36.Tag = "";
+            this.pbx36.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx37
             // 
@@ -825,8 +834,8 @@
             this.pbx37.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx37.TabIndex = 81;
             this.pbx37.TabStop = false;
-            this.pbx37.Tag = "borderless";
-            this.pbx37.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx37.Tag = "";
+            this.pbx37.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // pbx38
             // 
@@ -837,8 +846,8 @@
             this.pbx38.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbx38.TabIndex = 82;
             this.pbx38.TabStop = false;
-            this.pbx38.Tag = "borderless";
-            this.pbx38.Click += new System.EventHandler(this.PictureBox_Click);
+            this.pbx38.Tag = "";
+            this.pbx38.Click += new System.EventHandler(this.PictureBoxPath_Click);
             // 
             // lblPlayerGreen
             // 
@@ -876,56 +885,120 @@
             this.lblPlayerBlue.Size = new System.Drawing.Size(0, 32);
             this.lblPlayerBlue.TabIndex = 86;
             // 
-            // pictureBox1
+            // pbxSpawnPointRed
             // 
-            this.pictureBox1.Image = global::FiaMedKnuff.Properties.Resources.spawn_red;
-            this.pictureBox1.Location = new System.Drawing.Point(540, 42);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(222, 208);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 87;
-            this.pictureBox1.TabStop = false;
+            this.pbxSpawnPointRed.Image = global::FiaMedKnuff.Properties.Resources.spawn_red;
+            this.pbxSpawnPointRed.Location = new System.Drawing.Point(540, 42);
+            this.pbxSpawnPointRed.Name = "pbxSpawnPointRed";
+            this.pbxSpawnPointRed.Size = new System.Drawing.Size(222, 208);
+            this.pbxSpawnPointRed.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbxSpawnPointRed.TabIndex = 87;
+            this.pbxSpawnPointRed.TabStop = false;
             // 
-            // pictureBox2
+            // pbxSpawnPointYellow
             // 
-            this.pictureBox2.Image = global::FiaMedKnuff.Properties.Resources.spawn_yellow;
-            this.pictureBox2.Location = new System.Drawing.Point(12, 42);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(222, 208);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 88;
-            this.pictureBox2.TabStop = false;
+            this.pbxSpawnPointYellow.Image = global::FiaMedKnuff.Properties.Resources.spawn_yellow;
+            this.pbxSpawnPointYellow.Location = new System.Drawing.Point(12, 42);
+            this.pbxSpawnPointYellow.Name = "pbxSpawnPointYellow";
+            this.pbxSpawnPointYellow.Size = new System.Drawing.Size(222, 208);
+            this.pbxSpawnPointYellow.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbxSpawnPointYellow.TabIndex = 88;
+            this.pbxSpawnPointYellow.TabStop = false;
             // 
-            // pictureBox3
+            // pbxSpawnPointGreen
             // 
-            this.pictureBox3.Image = global::FiaMedKnuff.Properties.Resources.spawn_green;
-            this.pictureBox3.Location = new System.Drawing.Point(12, 483);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(222, 208);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox3.TabIndex = 89;
-            this.pictureBox3.TabStop = false;
+            this.pbxSpawnPointGreen.Image = global::FiaMedKnuff.Properties.Resources.spawn_green;
+            this.pbxSpawnPointGreen.Location = new System.Drawing.Point(12, 483);
+            this.pbxSpawnPointGreen.Name = "pbxSpawnPointGreen";
+            this.pbxSpawnPointGreen.Size = new System.Drawing.Size(222, 208);
+            this.pbxSpawnPointGreen.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbxSpawnPointGreen.TabIndex = 89;
+            this.pbxSpawnPointGreen.TabStop = false;
             // 
-            // pictureBox4
+            // pbxSpawnPointBlue
             // 
-            this.pictureBox4.Image = global::FiaMedKnuff.Properties.Resources.spawn_blue;
-            this.pictureBox4.Location = new System.Drawing.Point(540, 483);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(222, 208);
-            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox4.TabIndex = 90;
-            this.pictureBox4.TabStop = false;
+            this.pbxSpawnPointBlue.Image = global::FiaMedKnuff.Properties.Resources.spawn_blue;
+            this.pbxSpawnPointBlue.Location = new System.Drawing.Point(540, 483);
+            this.pbxSpawnPointBlue.Name = "pbxSpawnPointBlue";
+            this.pbxSpawnPointBlue.Size = new System.Drawing.Size(222, 208);
+            this.pbxSpawnPointBlue.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbxSpawnPointBlue.TabIndex = 90;
+            this.pbxSpawnPointBlue.TabStop = false;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.lblScoreBlue);
+            this.groupBox1.Controls.Add(this.lblScoreRed);
+            this.groupBox1.Controls.Add(this.lblScoreYellow);
+            this.groupBox1.Controls.Add(this.lblScoreGreen);
+            this.groupBox1.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(804, 42);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(235, 208);
+            this.groupBox1.TabIndex = 91;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Antal karaktärer i mål";
+            // 
+            // lblScoreBlue
+            // 
+            this.lblScoreBlue.AutoSize = true;
+            this.lblScoreBlue.Location = new System.Drawing.Point(6, 163);
+            this.lblScoreBlue.Name = "lblScoreBlue";
+            this.lblScoreBlue.Size = new System.Drawing.Size(53, 18);
+            this.lblScoreBlue.TabIndex = 3;
+            this.lblScoreBlue.Text = "Blå: 0";
+            // 
+            // lblScoreRed
+            // 
+            this.lblScoreRed.AutoSize = true;
+            this.lblScoreRed.Location = new System.Drawing.Point(6, 116);
+            this.lblScoreRed.Name = "lblScoreRed";
+            this.lblScoreRed.Size = new System.Drawing.Size(59, 18);
+            this.lblScoreRed.TabIndex = 2;
+            this.lblScoreRed.Text = "Röd: 0";
+            // 
+            // lblScoreYellow
+            // 
+            this.lblScoreYellow.AutoSize = true;
+            this.lblScoreYellow.Location = new System.Drawing.Point(6, 73);
+            this.lblScoreYellow.Name = "lblScoreYellow";
+            this.lblScoreYellow.Size = new System.Drawing.Size(54, 18);
+            this.lblScoreYellow.TabIndex = 1;
+            this.lblScoreYellow.Text = "Gul: 0";
+            // 
+            // lblScoreGreen
+            // 
+            this.lblScoreGreen.AutoSize = true;
+            this.lblScoreGreen.Location = new System.Drawing.Point(6, 31);
+            this.lblScoreGreen.Name = "lblScoreGreen";
+            this.lblScoreGreen.Size = new System.Drawing.Size(67, 18);
+            this.lblScoreGreen.TabIndex = 0;
+            this.lblScoreGreen.Text = "Grön: 0";
+            // 
+            // pbxDice
+            // 
+            this.pbxDice.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pbxDice.Image = ((System.Drawing.Image)(resources.GetObject("pbxDice.Image")));
+            this.pbxDice.Location = new System.Drawing.Point(821, 265);
+            this.pbxDice.Name = "pbxDice";
+            this.pbxDice.Size = new System.Drawing.Size(200, 200);
+            this.pbxDice.TabIndex = 92;
+            this.pbxDice.TabStop = false;
+            this.pbxDice.Tag = "6";
+            this.pbxDice.Click += new System.EventHandler(this.pbxDice_Click);
             // 
             // FrmGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(774, 735);
-            this.Controls.Add(this.pictureBox4);
-            this.Controls.Add(this.pictureBox3);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
+            this.ClientSize = new System.Drawing.Size(1051, 735);
+            this.Controls.Add(this.pbxDice);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.pbxSpawnPointBlue);
+            this.Controls.Add(this.pbxSpawnPointGreen);
+            this.Controls.Add(this.pbxSpawnPointYellow);
+            this.Controls.Add(this.pbxSpawnPointRed);
             this.Controls.Add(this.lblPlayerBlue);
             this.Controls.Add(this.lblPlayerRed);
             this.Controls.Add(this.lblPlayerYellow);
@@ -1050,10 +1123,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbx36)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx37)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx38)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxSpawnPointRed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxSpawnPointYellow)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxSpawnPointGreen)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxSpawnPointBlue)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxDice)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1121,9 +1197,15 @@
         private System.Windows.Forms.Label lblPlayerYellow;
         private System.Windows.Forms.Label lblPlayerRed;
         private System.Windows.Forms.Label lblPlayerBlue;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox pbxSpawnPointRed;
+        private System.Windows.Forms.PictureBox pbxSpawnPointYellow;
+        private System.Windows.Forms.PictureBox pbxSpawnPointGreen;
+        private System.Windows.Forms.PictureBox pbxSpawnPointBlue;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label lblScoreBlue;
+        private System.Windows.Forms.Label lblScoreRed;
+        private System.Windows.Forms.Label lblScoreYellow;
+        private System.Windows.Forms.Label lblScoreGreen;
+        private System.Windows.Forms.PictureBox pbxDice;
     }
 }

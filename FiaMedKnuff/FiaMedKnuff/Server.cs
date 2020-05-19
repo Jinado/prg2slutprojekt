@@ -269,7 +269,7 @@ namespace FiaMedKnuff
         /// <param name="server">The server to broadcast the message to</param>
         /// <param name="diceResult">The result of the dice throw</param>
         /// <param name="host">True if the sender of the message is the host</param>
-        public static void ThrownDice(Server server, byte diceResult, bool host)
+        public static void ThrownDice(Server server, int diceResult, bool host)
         {
             // TRD stands for "THROWN DICE", this is used 
             // to identify what type of message has been recieved/sent
@@ -394,9 +394,18 @@ namespace FiaMedKnuff
         /// Begin recieving data from the server
         /// </summary>
         /// <param name="server">The server to recieve data from</param>
-        public static void StartRecievingDataFromServer(Server server)
+        /// <param name="host">Wether or not the caller of the method is the host of the server</param>
+        public static void BeginListeningForMessages(Server server, bool host)
         {
-            RecieveDataFromServer(server);
+            if (host)
+            {
+                foreach(TcpClient clt in server.clients)
+                    RecieveData(server, clt);
+            }
+            else
+            {
+                RecieveDataFromServer(server);
+            }
         }
 
         /// <summary>

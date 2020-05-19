@@ -97,8 +97,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Changes the current turn so that it's the next player's turn
         /// </summary>
-        /// <returns>The player whose turn it now is</returns>
-        public Player ChangeTurn(List<Player> players)
+        public static void ChangeTurn(List<Player> players)
         {
             int index = -1;
             for (int i = 0; i < players.Count; i++)
@@ -107,7 +106,7 @@ namespace FiaMedKnuff
                 if (index != -1) break;
             }
 
-            return index == (players.Count - 1) ? players[0] : players[index + 1];
+            Game.CurrentTurn = index == (players.Count - 1) ? players[0] : players[index + 1];
         }
 
         public override string ToString()

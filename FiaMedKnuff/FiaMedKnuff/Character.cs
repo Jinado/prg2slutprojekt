@@ -1,11 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using FiaMedKnuff.Properties;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace FiaMedKnuff
 {
     public class Character
     {
         public enum CharacterState { HOME, OUTSIDE };
+
+        // The ARGB colour value of the colours used in the form
+        public static readonly Color GREEN = Color.FromArgb(0, 166, 81);
+        public static readonly Color YELLOW = Color.FromArgb(255, 204, 1);
+        public static readonly Color RED = Color.FromArgb(252, 8, 37);
+        public static readonly Color BLUE = Color.FromArgb(54, 68, 206);
 
         /// <summary>
         /// Constructor for the Character class
@@ -65,6 +73,85 @@ namespace FiaMedKnuff
 
             colour = Color.White;
             return false;
+        }
+
+        public static string ColourToString(Color colour)
+        {
+            return colour.ToString().Split('[')[1].Trim(']');
+        }
+
+        public static PictureBox[] CreateCharacters(Color colour)
+        {
+            PictureBox[] pictureBoxes = new PictureBox[4];
+            for(int i = 0; i < 4; i++)
+            {
+                PictureBox pbx = new PictureBox();
+                pbx.Size = new Size(64, 60);
+                string colourAsString = ColourToString(colour);
+                pbx.Name = $"pbxChar{i}{colourAsString}";
+                pbx.SizeMode = PictureBoxSizeMode.Zoom;
+                pbx.Cursor = Cursors.Hand;
+
+                // The tag will contain the position of the character
+                // -1 indicates that it is located at its spawn
+                pbx.Tag = -1;
+
+                switch (colourAsString)
+                {
+                    case "Green":
+                        pbx.Image = Resources.char_green;
+                        pbx.BackColor = GREEN;
+                        if (i == 0)
+                            pbx.Location = new Point(54, 590);
+                        else if (i == 1)
+                            pbx.Location = new Point(133, 524);
+                        else if (i == 2)
+                            pbx.Location = new Point(133, 590);
+                        else
+                            pbx.Location = new Point(54, 524);
+                        break;
+                    case "Yellow":
+                        pbx.Image = Resources.char_yellow;
+                        pbx.BackColor = YELLOW;
+                        if (i == 0)
+                            pbx.Location = new Point(54, 82);
+                        else if (i == 1)
+                            pbx.Location = new Point(133, 148);
+                        else if (i == 2)
+                            pbx.Location = new Point(54, 148);
+                        else
+                            pbx.Location = new Point(133, 82);
+                        break;
+                    case "Red":
+                        pbx.Image = Resources.char_red;
+                        pbx.BackColor = RED;
+                        if (i == 0)
+                            pbx.Location = new Point(659, 82);
+                        else if (i == 1)
+                            pbx.Location = new Point(580, 148);
+                        else if (i == 2)
+                            pbx.Location = new Point(580, 82);
+                        else
+                            pbx.Location = new Point(659, 148);
+                        break;
+                    case "Blue":
+                        pbx.Image = Resources.char_blue;
+                        pbx.BackColor = BLUE;
+                        if (i == 0)
+                            pbx.Location = new Point(659, 590);
+                        else if (i == 1)
+                            pbx.Location = new Point(580, 524);
+                        else if (i == 2)
+                            pbx.Location = new Point(659, 524);
+                        else
+                            pbx.Location = new Point(580, 590);
+                        break;
+                }
+
+                pictureBoxes[i] = pbx;
+            }
+
+            return pictureBoxes;
         }
 
         public override string ToString()

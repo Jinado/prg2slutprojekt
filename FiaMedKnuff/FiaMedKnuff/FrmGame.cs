@@ -68,9 +68,8 @@ namespace FiaMedKnuff
 
         private void FrmGame_Shown(object sender, EventArgs e)
         {
-            // Change the form of the server to be this one so that when
-            // a message is sent to the server it gets sent here
-            server.Form = this;
+            if(serverType == FrmMenu.ServerType.NOT_HOSTING)
+                Server.StartRecievingDataFromServer(server);
 
             Game.Initialize(players, maxPlayers);
             foreach(Player p in players)
@@ -85,7 +84,7 @@ namespace FiaMedKnuff
                     lblPlayerBlue.Text = p.Name;
             }
 
-            if(serverType == FrmMenu.ServerType.HOSTING)
+            if(serverType == FrmMenu.ServerType.HOSTING) 
             {
                 Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
                 foreach(Player p in players)

@@ -391,6 +391,15 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
+        /// Begin recieving data from the server
+        /// </summary>
+        /// <param name="server">The server to recieve data from</param>
+        public static void StartRecievingDataFromServer(Server server)
+        {
+            RecieveDataFromServer(server);
+        }
+
+        /// <summary>
         /// Recieve data sent to the server and broadcast it to all clients
         /// </summary>
         /// <param name="server">The server to broadcast the message to</param>
@@ -691,6 +700,10 @@ namespace FiaMedKnuff
             }
         }
 
-        public Form Form { get; set; }
+        public Form Form
+        { 
+            get { return this.form; }
+            set { this.form = value; }
+        }
     }
 }

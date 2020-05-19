@@ -429,6 +429,7 @@ namespace FiaMedKnuff
                 frmGame.maxPlayers = maxPlayers;
                 frmGame.serverType = serverType;
                 frmGame.server = serverType == ServerType.HOSTING ? host : server;
+                frmGame.server.Form = frmGame;
 
                 // Show the game form
                 frmGame.ShowDialog();

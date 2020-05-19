@@ -28,6 +28,7 @@ namespace FiaMedKnuff
         private static bool diceThrown = false;
         private static bool reThrowAllowed = false;
         private static PictureBox[] paths = new PictureBox[57];
+        private static PictureBox selectedCharacter;
 
         public FrmGame()
         {
@@ -36,38 +37,32 @@ namespace FiaMedKnuff
 
         private void PictureBoxPath_Click(object sender, EventArgs e)
         {
-            /*
-            PictureBox pbx = (PictureBox)sender;
-
-            int pos = int.Parse(pbx.Name.Substring(3));
-            Color colour = Game.Squares[pos].Colour;
-            if (colour.Equals(Color.Green))
-                pbx.Image = pbx.Image = pbx.Tag.Equals("borderless") ? Resources.green_path_border : Resources.green_path;
-            else if (colour.Equals(Color.Yellow))
-                pbx.Image = pbx.Tag.Equals("borderless") ? Resources.yellow_path_border : Resources.yellow_path;
-            else if (colour.Equals(Color.Red))
-                pbx.Image = pbx.Tag.Equals("borderless") ? Resources.red_path_border : Resources.red_path;
-            else if (colour.Equals(Color.Blue))
-                pbx.Image = pbx.Tag.Equals("borderless") ? Resources.blue_path_border : Resources.blue_path;
-
-            if (pbx.Tag.Equals("borderless"))
-                pbx.Tag = "border";
-            else
-                pbx.Tag = "borderless";
-            */
-
-            // The user has moved
-            if (!reThrowAllowed && player.PlayersTurn)
+            Square path = Game.Squares[int.Parse(((PictureBox)sender).Name.Substring(3))];
+            // Make sure the user pressed a bordered path
+            if (path.Border == Square.SquareBorder.BORDER)
             {
-                Game.ChangeTurn(players);
-                player.PlayersTurn = false;
-                TurnChanged();
+                string number = selectedCharacter.Name.Replace("pbxChar", "").Replace(Character.ColourToString(player.Characters[0].Colour), "");
+                int index = int.Parse(number);
 
-                // Notify the other clients of the new turn
-                Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+                // Get the Character object
+                Character character = player.Characters[index];
+                Movement.MoveCharacter(path, character, ((PictureBox)sender), selectedCharacter);
+                selectedCharacter = null;
+
+                // The user has moved, change the turn unless the user may move again
+                if (!reThrowAllowed && player.PlayersTurn)
+                {
+                    // Change turn
+                    Game.ChangeTurn(players);
+                    player.PlayersTurn = false;
+                    TurnChanged();
+
+                    // Notify the other clients of the new turn
+                    Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+                }
+
+                diceThrown = false;
             }
-
-            diceThrown = false;
         }
 
         private void pbxCharacter_Click(object sender, EventArgs e)
@@ -75,35 +70,35 @@ namespace FiaMedKnuff
             // You may only move if you've thrown the dice
             if (diceThrown)
             {
+                // Get the index of the character pressed
                 PictureBox pbx = (PictureBox)sender;
-                if (pbx.Tag.Equals(-1))
+                selectedCharacter = pbx;
+                string number = pbx.Name.Replace("pbxChar", "").Replace(Character.ColourToString(player.Characters[0].Colour), "");
+                int index = int.Parse(number);
+
+                // Get the Character object
+                Character character = player.Characters[index];
+
+                // Check if and where a player may move
+                if (Movement.DrawMovementLine(diceResult, character))
                 {
-                    // Get the index of the character pressed
-                    string number = pbx.Name.Replace("pbxChar", "").Replace(Character.ColourToString(player.Characters[0].Colour), "");
-                    int index = int.Parse(number);
-                    Character character = player.Characters[index];
+                    UpdateBoard();
+                }
+                else if (!reThrowAllowed)
+                {
+                    MessageBox.Show("Det finns inget drag att göra", "Du har inga drag", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Check if and where a player may move
-                    if (Movement.DrawMovementLine(diceResult, character))
-                    {
-                        UpdateBoard();
-                    }
-                    else if(!reThrowAllowed)
-                    {
-                        MessageBox.Show("Det finns inget drag att göra", "Du har inga drag", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    player.PlayersTurn = false;
+                    diceThrown = false;
+                    Game.ChangeTurn(players);
+                    TurnChanged();
 
-                        player.PlayersTurn = false;
-                        diceThrown = false;
-                        Game.ChangeTurn(players);
-                        TurnChanged();
-
-                        // Notify the other clients of the new turn
-                        Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Det finns inget drag att göra men du kan kasta tärningen igen!", "Du har inga drag. Kasta igen!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    // Notify the other clients of the new turn
+                    Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+                }
+                else
+                {
+                    MessageBox.Show("Det finns inget drag att göra men du kan kasta tärningen igen!", "Du har inga drag. Kasta igen!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -112,7 +107,7 @@ namespace FiaMedKnuff
         private void pbxDice_Click(object sender, EventArgs e)
         {
             // Only throw the dice if it is the players turn
-            if (player.PlayersTurn)
+            if (player.PlayersTurn && (!diceThrown || reThrowAllowed))
             {
                 // Get a result
                 diceResult = new Random().Next(7);
@@ -355,6 +350,9 @@ namespace FiaMedKnuff
                         case "Blue":
                             paths[i].Image = Resources.blue_path_border;
                             break;
+                        case "Black":
+                            paths[i].Image = Resources.goal_border;
+                            break;
                     }
                 }
                 else
@@ -372,6 +370,9 @@ namespace FiaMedKnuff
                             break;
                         case "Blue":
                             paths[i].Image = Resources.blue_path;
+                            break;
+                        case "Black":
+                            paths[i].Image = Resources.goal;
                             break;
                     }
                 }

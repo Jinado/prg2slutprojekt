@@ -14,6 +14,7 @@ namespace FiaMedKnuff
         public static readonly Color YELLOW = Color.FromArgb(255, 204, 1);
         public static readonly Color RED = Color.FromArgb(252, 8, 37);
         public static readonly Color BLUE = Color.FromArgb(54, 68, 206);
+        public static readonly Color BLACK = Color.FromArgb(0, 0, 0);
 
         /// <summary>
         /// Constructor for the Character class

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace FiaMedKnuff
 {
@@ -190,9 +193,55 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="square">The square to move to</param>
         /// <param name="character">The character to move</param>
-        public static void MoveCharacter(Square square, Character character)
+        /// <param name="path">The path's picturebox</param>
+        /// <param name="pbxCharacter">The character's picturebox</param>
+        public static void MoveCharacter(Square square, Character character, PictureBox path, PictureBox pbxCharacter)
         {
-            throw new NotImplementedException();
+            // Change the state of the square the character to be moved is standning on to free
+            // as he is now moving away from it
+            Game.Squares[character.Position].State = Square.SquareState.FREE;
+            character.Position = square.Position;
+
+            // Remove the border from the square
+            square.Border = Square.SquareBorder.BORDERLESS;
+
+            // Position the character in the middle of the path he went to (The character is shrunk down to half its size when it leaves its home)
+            pbxCharacter.Size = new Size(32, 30);
+            pbxCharacter.Location = new Point(path.Location.X + 16, path.Location.Y + 15);
+
+            // Check the colour of the new square the character has moved to and make sure his picturebox's BackColor matches with the square's
+            switch (Character.ColourToString(square.Colour))
+            {
+                case "Green":
+                    pbxCharacter.BackColor = Character.GREEN;
+                    break;
+                case "Yellow":
+                    pbxCharacter.BackColor = Character.YELLOW;
+                    break;
+                case "Red":
+                    pbxCharacter.BackColor = Character.RED;
+                    break;
+                case "Blue":
+                    pbxCharacter.BackColor = Character.BLUE;
+                    break;
+                case "Black":
+                    pbxCharacter.BackColor = Character.BLACK;
+                    break;
+            }
+
+            // Make sure the characters state is marked as "outside"
+            character.State = Character.CharacterState.OUTSIDE;
+
+            if(square.State == Square.SquareState.FREE)
+            {
+                square.State = Square.SquareState.OCCUPIED;
+                square.Character = character;
+            }
+            else
+            {
+                PushOpponent(square.Character);
+                square.Character = character;
+            }
         }
 
         /// <summary>
@@ -201,7 +250,9 @@ namespace FiaMedKnuff
         /// <param name="opponent">The opponent to push</param>
         private static void PushOpponent(Character opponent)
         {
-            throw new NotImplementedException();
+            // The opponent is pushed back to his home, so his state must change
+            opponent.State = Character.CharacterState.HOME;
+            opponent.Position = 0;
         }
     }
 }

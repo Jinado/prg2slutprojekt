@@ -87,7 +87,7 @@ namespace FiaMedKnuff
             PictureBox pbx = (PictureBox)sender;
 
             // Make sure you're pressing one of your own characters
-            if (pbx.Tag.Equals(Character.ColourToString(player.Characters[0].Colour)))
+            if (pbx.Name.Substring(8).Equals(Character.ColourToString(player.Characters[0].Colour)))
             {
                 // You may only move if you've thrown the dice
                 if (diceThrown)
@@ -323,6 +323,8 @@ namespace FiaMedKnuff
         private void FrmGame_Shown(object sender, EventArgs e)
         {
             this.Text += $" : {player.Name}";
+
+            Movement.Form = this;
 
             Server.BeginListeningForMessages(server, serverType != 0);
 

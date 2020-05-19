@@ -1,4 +1,5 @@
 ﻿using FiaMedKnuff.Properties;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -15,6 +16,27 @@ namespace FiaMedKnuff
         public static readonly Color RED = Color.FromArgb(252, 8, 37);
         public static readonly Color BLUE = Color.FromArgb(54, 68, 206);
         public static readonly Color BLACK = Color.FromArgb(0, 0, 0);
+
+        // Constant variables that keep track of the charcters' spawn positions
+        public static readonly Point GREEN_POS1 = new Point(54, 590);
+        public static readonly Point GREEN_POS2 = new Point(133, 524);
+        public static readonly Point GREEN_POS3 = new Point(133, 590);
+        public static readonly Point GREEN_POS4 = new Point(54, 524);
+        //
+        public static readonly Point YELLOW_POS1 = new Point(54, 82);
+        public static readonly Point YELLOW_POS2 = new Point(133, 148);
+        public static readonly Point YELLOW_POS3 = new Point(54, 148);
+        public static readonly Point YELLOW_POS4 = new Point(133, 82);
+        //
+        public static readonly Point RED_POS1 = new Point(659, 82);
+        public static readonly Point RED_POS2 = new Point(580, 148);
+        public static readonly Point RED_POS3 = new Point(580, 82);
+        public static readonly Point RED_POS4 = new Point(659, 148);
+        //
+        public static readonly Point BLUE_POS1 = new Point(659, 590);
+        public static readonly Point BLUE_POS2 = new Point(580, 524);
+        public static readonly Point BLUE_POS3 = new Point(659, 524);
+        public static readonly Point BLUE_POS4 = new Point(580, 590);
 
         /// <summary>
         /// Constructor for the Character class
@@ -94,8 +116,9 @@ namespace FiaMedKnuff
                 pbx.SizeMode = PictureBoxSizeMode.Zoom;
                 pbx.Cursor = Cursors.Hand;
 
-                // The tag will contain the colour of the character
-                pbx.Tag = Character.ColourToString(colour);
+                // The tag will contain the position of the character
+                // -1 means it's home
+                pbx.Tag = -1;
 
                 switch (colourAsString)
                 {
@@ -103,49 +126,49 @@ namespace FiaMedKnuff
                         pbx.Image = Resources.char_green;
                         pbx.BackColor = GREEN;
                         if (i == 0)
-                            pbx.Location = new Point(54, 590);
+                            pbx.Location = GREEN_POS1;
                         else if (i == 1)
-                            pbx.Location = new Point(133, 524);
+                            pbx.Location = GREEN_POS2;
                         else if (i == 2)
-                            pbx.Location = new Point(133, 590);
+                            pbx.Location = GREEN_POS3;
                         else
-                            pbx.Location = new Point(54, 524);
+                            pbx.Location = GREEN_POS4;
                         break;
                     case "Yellow":
                         pbx.Image = Resources.char_yellow;
                         pbx.BackColor = YELLOW;
                         if (i == 0)
-                            pbx.Location = new Point(54, 82);
+                            pbx.Location = YELLOW_POS1;
                         else if (i == 1)
-                            pbx.Location = new Point(133, 148);
+                            pbx.Location = YELLOW_POS2;
                         else if (i == 2)
-                            pbx.Location = new Point(54, 148);
+                            pbx.Location = YELLOW_POS3;
                         else
-                            pbx.Location = new Point(133, 82);
+                            pbx.Location = YELLOW_POS4;
                         break;
                     case "Red":
                         pbx.Image = Resources.char_red;
                         pbx.BackColor = RED;
                         if (i == 0)
-                            pbx.Location = new Point(659, 82);
+                            pbx.Location = RED_POS1;
                         else if (i == 1)
-                            pbx.Location = new Point(580, 148);
+                            pbx.Location = RED_POS2;
                         else if (i == 2)
-                            pbx.Location = new Point(580, 82);
+                            pbx.Location = RED_POS3;
                         else
-                            pbx.Location = new Point(659, 148);
+                            pbx.Location = RED_POS4;
                         break;
                     case "Blue":
                         pbx.Image = Resources.char_blue;
                         pbx.BackColor = BLUE;
                         if (i == 0)
-                            pbx.Location = new Point(659, 590);
+                            pbx.Location = BLUE_POS1;
                         else if (i == 1)
-                            pbx.Location = new Point(580, 524);
+                            pbx.Location = BLUE_POS2;
                         else if (i == 2)
-                            pbx.Location = new Point(659, 524);
+                            pbx.Location = BLUE_POS3;
                         else
-                            pbx.Location = new Point(580, 590);
+                            pbx.Location = BLUE_POS4;
                         break;
                 }
 

@@ -12,7 +12,7 @@ namespace FiaMedKnuff
 {
     public static class Movement
     {
-        // Constant values to help orienting the map
+        // Constant values to help orient the map
         private const int GREEN_HOME = 0;
         private const int YELLOW_HOME = 10;
         private const int RED_HOME = 20;
@@ -513,6 +513,7 @@ namespace FiaMedKnuff
             if(character.Position != -1)
                 Game.Squares[character.Position].State = Square.SquareState.FREE;
             character.Position = square.Position;
+            pbxCharacter.Tag = character.Position;
 
             // Remove the border from the square
             square.Border = Square.SquareBorder.BORDERLESS;
@@ -562,9 +563,74 @@ namespace FiaMedKnuff
         /// <param name="opponent">The opponent to push</param>
         private static void PushOpponent(Character opponent)
         {
+            PictureBox pbxOpponent = null;
+            foreach(Control c in Form.Controls)
+            {
+                if(c is PictureBox)
+                {
+                    PictureBox pbx = (PictureBox)c;
+                    if (pbx.Tag.Equals(opponent.Position))
+                    {
+                        pbxOpponent = pbx;
+                        break;
+                    }
+                }
+            }
+
+            pbxOpponent.Tag = -1;
+            pbxOpponent.Size = new Size(64, 60);
+            // Place the picturebox at an empty location in its spawn
+            switch (Character.ColourToString(opponent.Colour))
+            {
+                case "Green":
+                    if (Form.GetChildAtPoint(Character.GREEN_POS1) == null)
+                        pbxOpponent.Location = Character.GREEN_POS1;
+                    else if (Form.GetChildAtPoint(Character.GREEN_POS2) == null)
+                        pbxOpponent.Location = Character.GREEN_POS2;
+                    else if (Form.GetChildAtPoint(Character.GREEN_POS3) == null)
+                        pbxOpponent.Location = Character.GREEN_POS3;
+                    else if (Form.GetChildAtPoint(Character.GREEN_POS4) == null)
+                        pbxOpponent.Location = Character.GREEN_POS4;
+                    break;
+                case "Yellow":
+                    if (Form.GetChildAtPoint(Character.YELLOW_POS1) == null)
+                        pbxOpponent.Location = Character.YELLOW_POS1;
+                    else if (Form.GetChildAtPoint(Character.YELLOW_POS2) == null)
+                        pbxOpponent.Location = Character.YELLOW_POS2;
+                    else if (Form.GetChildAtPoint(Character.YELLOW_POS3) == null)
+                        pbxOpponent.Location = Character.YELLOW_POS3;
+                    else if (Form.GetChildAtPoint(Character.YELLOW_POS4) == null)
+                        pbxOpponent.Location = Character.YELLOW_POS4;
+                    break;
+                case "Red":
+                    if (Form.GetChildAtPoint(Character.RED_POS1) == null)
+                        pbxOpponent.Location = Character.RED_POS1;
+                    else if (Form.GetChildAtPoint(Character.RED_POS2) == null)
+                        pbxOpponent.Location = Character.RED_POS2;
+                    else if (Form.GetChildAtPoint(Character.RED_POS3) == null)
+                        pbxOpponent.Location = Character.RED_POS3;
+                    else if (Form.GetChildAtPoint(Character.RED_POS4) == null)
+                        pbxOpponent.Location = Character.RED_POS4;
+                    break;
+                case "Blue":
+                    if (Form.GetChildAtPoint(Character.BLUE_POS1) == null)
+                        pbxOpponent.Location = Character.BLUE_POS1;
+                    else if (Form.GetChildAtPoint(Character.BLUE_POS2) == null)
+                        pbxOpponent.Location = Character.BLUE_POS2;
+                    else if (Form.GetChildAtPoint(Character.BLUE_POS3) == null)
+                        pbxOpponent.Location = Character.BLUE_POS3;
+                    else if (Form.GetChildAtPoint(Character.BLUE_POS4) == null)
+                        pbxOpponent.Location = Character.BLUE_POS4;
+                    break;
+            }
+
             // The opponent is pushed back to his home, so his state must change
             opponent.State = Character.CharacterState.HOME;
-            opponent.Position = 0;
+            opponent.Position = -1;
         }
+
+
+        // The FrmGame form to be able to access its list of Controls
+        public static FrmGame Form { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace FiaMedKnuff
 {
     public class Character
     {
-        public enum CharacterState { HOME, OUTSIDE };
+        public enum CharacterState { HOME, OUTSIDE, WON };
 
         // The ARGB colour value of the colours used in the form
         public static readonly Color GREEN = Color.FromArgb(0, 166, 81);
@@ -93,9 +93,8 @@ namespace FiaMedKnuff
                 pbx.SizeMode = PictureBoxSizeMode.Zoom;
                 pbx.Cursor = Cursors.Hand;
 
-                // The tag will contain the position of the character
-                // -1 indicates that it is located at its spawn
-                pbx.Tag = -1;
+                // The tag will contain the colour of the character
+                pbx.Tag = Character.ColourToString(colour);
 
                 switch (colourAsString)
                 {
@@ -160,7 +159,6 @@ namespace FiaMedKnuff
             return $"Colour: {Colour}";
         }
 
-        public Player Player { get; set; }
         public Color Colour { get; set; }
         public int Position { get; set; }
         public CharacterState State { get; set; }

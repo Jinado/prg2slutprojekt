@@ -29,6 +29,7 @@ namespace FiaMedKnuff
         private static bool reThrowAllowed = false;
         private static PictureBox[] paths = new PictureBox[57];
         private static PictureBox selectedCharacter;
+        private static int score = 0;
 
         public FrmGame()
         {
@@ -49,6 +50,18 @@ namespace FiaMedKnuff
                 Movement.MoveCharacter(path, character, ((PictureBox)sender), selectedCharacter);
                 selectedCharacter = null;
 
+                // If the path the character was moved to was the goal path, add one to the player's score
+                // and remove the character from the game
+                if(path.Path == Square.PathType.GOAL)
+                {
+                    score++;
+                    character.State = Character.CharacterState.WON;
+                    selectedCharacter.Enabled = false;
+                    selectedCharacter.Visible = false;
+
+                    CheckScore();
+                }
+
                 // The user has moved, change the turn unless the user may move again
                 if (!reThrowAllowed && player.PlayersTurn)
                 {
@@ -61,44 +74,35 @@ namespace FiaMedKnuff
                     Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
                 }
 
+                UpdateBoard();
+
                 diceThrown = false;
             }
         }
 
         private void pbxCharacter_Click(object sender, EventArgs e)
         {
-            // You may only move if you've thrown the dice
-            if (diceThrown)
+            PictureBox pbx = (PictureBox)sender;
+
+            // Make sure you're pressing one of your own characters
+            if (pbx.Tag.Equals(Character.ColourToString(player.Characters[0].Colour)))
             {
-                // Get the index of the character pressed
-                PictureBox pbx = (PictureBox)sender;
-                selectedCharacter = pbx;
-                string number = pbx.Name.Replace("pbxChar", "").Replace(Character.ColourToString(player.Characters[0].Colour), "");
-                int index = int.Parse(number);
-
-                // Get the Character object
-                Character character = player.Characters[index];
-
-                // Check if and where a player may move
-                if (Movement.DrawMovementLine(diceResult, character))
+                // You may only move if you've thrown the dice
+                if (diceThrown)
                 {
-                    UpdateBoard();
-                }
-                else if (!reThrowAllowed)
-                {
-                    MessageBox.Show("Det finns inget drag att göra", "Du har inga drag", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Get the index of the character pressed
+                    selectedCharacter = pbx;
+                    string number = pbx.Name.Replace("pbxChar", "").Replace(Character.ColourToString(player.Characters[0].Colour), "");
+                    int index = int.Parse(number);
 
-                    player.PlayersTurn = false;
-                    diceThrown = false;
-                    Game.ChangeTurn(players);
-                    TurnChanged();
+                    // Get the Character object
+                    Character character = player.Characters[index];
 
-                    // Notify the other clients of the new turn
-                    Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
-                }
-                else
-                {
-                    MessageBox.Show("Det finns inget drag att göra men du kan kasta tärningen igen!", "Du har inga drag. Kasta igen!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Check if and where a player may move
+                    if (Movement.DrawMovementLine(diceResult, character))
+                    {
+                        UpdateBoard();
+                    }
                 }
             }
         }
@@ -152,6 +156,36 @@ namespace FiaMedKnuff
                     case 6:
                         pbxDice.Image = Resources.dice_6;
                         break;
+                }
+
+                // Check if and where a player may move
+                int noMove = 0;
+                foreach(Character c in player.Characters)
+                {
+                    // Check if the character c, can move. If it cannot, increment noMove by one
+                    if (!Movement.DrawMovementLine(diceResult, c, true))
+                        noMove++;
+                    else break;
+                }
+
+                if(noMove == player.Characters.Count)
+                {
+                    if (reThrowAllowed)
+                    {
+                        MessageBox.Show("Det finns inget drag att göra men du kan kasta tärningen igen!", "Du har inga drag. Kasta igen!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Det finns inget drag att göra", "Du har inga drag", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        player.PlayersTurn = false;
+                        diceThrown = false;
+                        Game.ChangeTurn(players);
+                        TurnChanged();
+
+                        // Notify the other clients of the new turn
+                        Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+                    }
                 }
             }
         }
@@ -277,7 +311,6 @@ namespace FiaMedKnuff
                 {
                     p.PlayersTurn = true;
                     ((Label)control[0]).ForeColor = Color.Magenta;
-                    break;
                 }
                 else
                 {
@@ -378,6 +411,33 @@ namespace FiaMedKnuff
                 }
                     
             }
+        }
+
+        /// <summary>
+        /// Check the player's score to determine if he has won
+        /// </summary>
+        private void CheckScore()
+        {
+            string colour = Character.ColourToString(player.Characters[0].Colour);
+            Control[] control = Controls.Find($"lblScore{colour}", true);
+            switch (colour)
+            {
+                case "Green":
+                    ((Label)control[0]).Text = $"Grön: {score}";
+                    break;
+                case "Yellow":
+                    ((Label)control[0]).Text = $"Gul: {score}";
+                    break;
+                case "Red":
+                    ((Label)control[0]).Text = $"Röd: {score}";
+                    break;
+                case "Blue":
+                    ((Label)control[0]).Text = $"Blå: {score}";
+                    break;
+            }
+
+            if (score == 4)
+                Server.HasWon(server, player, serverType != 0);
         }
     }
 }

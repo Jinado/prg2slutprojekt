@@ -191,6 +191,7 @@
             // 
             // pbx56
             // 
+            this.pbx56.Cursor = System.Windows.Forms.Cursors.Cross;
             this.pbx56.Image = global::FiaMedKnuff.Properties.Resources.goal;
             this.pbx56.Location = new System.Drawing.Point(354, 337);
             this.pbx56.Name = "pbx56";

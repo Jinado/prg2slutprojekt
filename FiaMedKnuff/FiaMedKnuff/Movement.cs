@@ -28,8 +28,9 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="diceResult">The result of a dice throw</param>
         /// <param name="character">The character the player wishes to move</param>
+        /// <param name="silent">If true, no borders will be added to squares that you may move to</param>
         /// <returns>True if there was a possible move</returns>
-        public static bool DrawMovementLine(int diceResult, Character character)
+        public static bool DrawMovementLine(int diceResult, Character character, bool silent = false)
         {
             int charPos = character.Position;
             Color charColour = character.Colour;
@@ -42,37 +43,37 @@ namespace FiaMedKnuff
                 {
                     if (charColour.Equals(Color.Green))
                     {
-                        int index = diceResult == 1 ? GREEN_HOME : (GREEN_HOME + 6);
+                        int index = diceResult == 1 ? GREEN_HOME : (GREEN_HOME + 5);
                         if (CheckIfPossible(Game.Squares[index], character))
                         {
-                            Game.Squares[index].Border = Square.SquareBorder.BORDER;
+                            Game.Squares[index].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                             return true;
                         }
                     }
                     else if (charColour.Equals(Color.Yellow))
                     {
-                        int index = diceResult == 1 ? YELLOW_HOME : (YELLOW_HOME + 6);
+                        int index = diceResult == 1 ? YELLOW_HOME : (YELLOW_HOME + 5);
                         if (CheckIfPossible(Game.Squares[index], character))
                         {
-                            Game.Squares[index].Border = Square.SquareBorder.BORDER;
+                            Game.Squares[index].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                             return true;
                         }
                     }
                     else if (charColour.Equals(Color.Red))
                     {
-                        int index = diceResult == 1 ? RED_HOME : (RED_HOME + 6);
+                        int index = diceResult == 1 ? RED_HOME : (RED_HOME + 5);
                         if (CheckIfPossible(Game.Squares[index], character))
                         {
-                            Game.Squares[index].Border = Square.SquareBorder.BORDER;
+                            Game.Squares[index].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                             return true;
                         }
                     }
                     else if (charColour.Equals(Color.Blue))
                     {
-                        int index = diceResult == 1 ? BLUE_HOME : (BLUE_HOME + 6);
+                        int index = diceResult == 1 ? BLUE_HOME : (BLUE_HOME + 5);
                         if (CheckIfPossible(Game.Squares[index], character))
                         {
-                            Game.Squares[index].Border = Square.SquareBorder.BORDER;
+                            Game.Squares[index].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                             return true;
                         }
                             
@@ -82,75 +83,351 @@ namespace FiaMedKnuff
             }
             else if(charColour.Equals(Color.Green) && charPos == 39) // The green character is just outside the final stretch
             {
-                if(diceResult == 6) // The green character may enter the goal
+                if (diceResult == 6) return false;
+                else if (diceResult == 5) // The green character may enter the goal
                 {
-                    Game.Squares[GOAL].Border = Square.SquareBorder.BORDER;
+                    Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                     return true;
                 }
                 else
                 {
-                    if (CheckIfPossible(Game.Squares[(FIRST_GREEN_FINAL - 1) + diceResult], character))
+                    if (CheckIfPossible(Game.Squares[FIRST_GREEN_FINAL + (diceResult - 1)], character))
                     {
-                        Game.Squares[(FIRST_GREEN_FINAL - 1) + diceResult].Border = Square.SquareBorder.BORDER;
+                        Game.Squares[FIRST_GREEN_FINAL + (diceResult - 1)].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                         return true;
                     }
                 }
             }
             else if (charColour.Equals(Color.Yellow) && charPos == 9) // The yellow character is just outside the final stretch
             {
-                if (diceResult == 6) // The yellow character may enter the goal
+                if (diceResult == 6) return false;
+                else if (diceResult == 5) // The yellow character may enter the goal
                 {
-                    Game.Squares[GOAL].Border = Square.SquareBorder.BORDER;
+                    Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                     return true;
                 }
                 else
                 {
-                    if (CheckIfPossible(Game.Squares[(FIRST_YELLOW_FINAL - 1) + diceResult], character))
+                    if (CheckIfPossible(Game.Squares[FIRST_YELLOW_FINAL + (diceResult - 1)], character))
                     {
-                        Game.Squares[(FIRST_YELLOW_FINAL - 1) + diceResult].Border = Square.SquareBorder.BORDER;
+                        Game.Squares[FIRST_YELLOW_FINAL + (diceResult - 1)].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                         return true;
                     }
                 }
             }
             else if (charColour.Equals(Color.Red) && charPos == 19) // The red character is just outside the final stretch
             {
-                if (diceResult == 6) // The red character may enter the goal
+                if (diceResult == 6) return false;
+                else if (diceResult == 5) // The red character may enter the goal
                 {
-                    Game.Squares[GOAL].Border = Square.SquareBorder.BORDER;
+                    Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                     return true;
                 }
                 else
                 {
-                    if (CheckIfPossible(Game.Squares[(FIRST_RED_FINAL - 1) + diceResult], character))
+                    if (CheckIfPossible(Game.Squares[FIRST_RED_FINAL + (diceResult - 1)], character))
                     {
-                        Game.Squares[(FIRST_RED_FINAL - 1) + diceResult].Border = Square.SquareBorder.BORDER;
+                        Game.Squares[FIRST_RED_FINAL + (diceResult - 1)].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                         return true;
                     }
                 }
             }
             else if (charColour.Equals(Color.Blue) && charPos == 29) // The blue character is just outside the final stretch
             {
-                if (diceResult == 6) // The blue character may enter the goal
+                if (diceResult == 6) return false;
+                else if (diceResult == 5) // The blue character may enter the goal
                 {
-                    Game.Squares[GOAL].Border = Square.SquareBorder.BORDER;
+                    Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                     return true;
                 }
                 else
                 {
-                    if (CheckIfPossible(Game.Squares[(FIRST_BLUE_FINAL - 1) + diceResult], character))
+                    if (CheckIfPossible(Game.Squares[FIRST_BLUE_FINAL + (diceResult - 1)], character))
                     {
-                        Game.Squares[(FIRST_BLUE_FINAL - 1) + diceResult].Border = Square.SquareBorder.BORDER;
+                        Game.Squares[FIRST_BLUE_FINAL + (diceResult - 1)].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
                         return true;
                     }
                 }
             }
-            else // The character is not home nor on the final stetch, see where he may move to
+            else if(charColour.Equals(Color.Green) && Game.Squares[charPos].Path == Square.PathType.FINAL) // The green character is somewhere in his final stretch
             {
-                if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                // The indexes for the final stretch for green are 40, 41, 42, 43
+                switch (charPos)
                 {
-                    Game.Squares[charPos + diceResult].Border = Square.SquareBorder.BORDER;
-                    return true;
+                    case 40:
+                        if (diceResult > 4) return false;
+                        else if (diceResult == 4) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 41:
+                        if (diceResult > 3) return false;
+                        else if (diceResult == 3) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 42:
+                        if (diceResult > 2) return false;
+                        else if (diceResult == 2) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 43:
+                        if (diceResult > 1) return false;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
                 }
+
+                return false;
+            }
+            else if (charColour.Equals(Color.Yellow) && Game.Squares[charPos].Path == Square.PathType.FINAL) // The yellow character is somewhere in his final stretch
+            {
+                // The indexes for the final stretch for yellow are 44, 45, 46, 47
+                switch (charPos)
+                {
+                    case 44:
+                        if (diceResult > 4) return false;
+                        else if (diceResult == 4) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 45:
+                        if (diceResult > 3) return false;
+                        else if (diceResult == 3) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 46:
+                        if (diceResult > 2) return false;
+                        else if (diceResult == 2) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 47:
+                        if (diceResult > 1) return false;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                }
+
+                return false;
+            }
+            else if (charColour.Equals(Color.Red) && Game.Squares[charPos].Path == Square.PathType.FINAL) // The red character is somewhere in his final stretch
+            {
+                // The indexes for the final stretch for red are 48, 49, 50, 51
+                switch (charPos)
+                {
+                    case 48:
+                        if (diceResult > 4) return false;
+                        else if (diceResult == 4) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 49:
+                        if (diceResult > 3) return false;
+                        else if (diceResult == 3) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 50:
+                        if (diceResult > 2) return false;
+                        else if (diceResult == 2) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 51:
+                        if (diceResult > 1) return false;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                }
+
+                return false;
+            }
+            else if (charColour.Equals(Color.Blue) && Game.Squares[charPos].Path == Square.PathType.FINAL) // The blue character is somewhere in his final stretch
+            {
+                // The indexes for the final stretch for blue are 52, 53, 54, 55
+                switch (charPos)
+                {
+                    case 52:
+                        if (diceResult > 4) return false;
+                        else if (diceResult == 4) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 53:
+                        if (diceResult > 3) return false;
+                        else if (diceResult == 3) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 54:
+                        if (diceResult > 2) return false;
+                        else if (diceResult == 2) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                    case 55:
+                        if (diceResult > 1) return false;
+                        else
+                        {
+                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                            {
+                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                                return true;
+                            }
+                        }
+                        break;
+                }
+
+                return false;
+            }
+            else // The character is not home nor on the final stretch, see where he may move to
+            {
+ 
+                // Check if the current character IS NOT green and if this character is able to move past square #39
+                // If he can, make sure the counting gets reset and begins from 0 as not to enter green's final stretch
+                if(!charColour.Equals(Color.Green) && (charPos + diceResult) > 39)
+                {
+                    int stepsTo39 = 39 - charPos;
+                    int stepsLeftOnDice = diceResult - stepsTo39;
+                    if(CheckIfPossible(Game.Squares[-1 + stepsLeftOnDice], character))
+                    {
+                        Game.Squares[-1 + stepsLeftOnDice].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                }
+                // Look if the characters are able to enter their final stretch
+                else if (charColour.Equals(Color.Yellow) && (charPos + diceResult) > 9 && charPos < 9)
+                {
+                    int stepsTo9 = 9 - charPos;
+                    int stepsLeftOnDice = diceResult - stepsTo9;
+                    if (CheckIfPossible(Game.Squares[FIRST_YELLOW_FINAL + (stepsLeftOnDice - 1)], character))
+                    {
+                        Game.Squares[FIRST_YELLOW_FINAL + (stepsLeftOnDice - 1)].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                }
+                else if (charColour.Equals(Color.Red) && (charPos + diceResult) > 19 && charPos < 19)
+                {
+                    int stepsTo19 = 19 - charPos;
+                    int stepsLeftOnDice = diceResult - stepsTo19;
+                    if (CheckIfPossible(Game.Squares[FIRST_RED_FINAL + (stepsLeftOnDice - 1)], character))
+                    {
+                        Game.Squares[FIRST_RED_FINAL + (stepsLeftOnDice - 1)].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                }
+                else if (charColour.Equals(Color.Blue) && (charPos + diceResult) > 29 && charPos < 29)
+                {
+                    int stepsTo29 = 29 - charPos;
+                    int stepsLeftOnDice = diceResult - stepsTo29;
+                    if (CheckIfPossible(Game.Squares[FIRST_BLUE_FINAL + (stepsLeftOnDice - 1)], character))
+                    {
+                        Game.Squares[FIRST_BLUE_FINAL + (stepsLeftOnDice - 1)].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                }
+                else if ((charPos + diceResult) <= 56) // Make sure they cannot move past the goal
+                {
+                    if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                    {
+                        Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                }
+                else return false;
             }
 
             return false;

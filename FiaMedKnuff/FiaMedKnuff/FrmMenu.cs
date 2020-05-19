@@ -116,7 +116,7 @@ namespace FiaMedKnuff
                                     serverType = ServerType.NOT_HOSTING;
 
                                     // Create a Player object and send it to the server
-                                    player = new Player(ltbNameJoin.Text.Trim(' '), Player.PlayerState.NOT_READY);
+                                    player = new Player(ltbNameJoin.Text.Replace(" ", ""), Player.PlayerState.NOT_READY);
 
                                     // Ask the server if the name is available
                                     Server.IsNameAvailable(server, player.Name);
@@ -156,7 +156,7 @@ namespace FiaMedKnuff
                             serverType = ServerType.NOT_HOSTING;
 
                             // Create a Player object and send it to the server
-                            player = new Player(ltbNameJoin.Text.Trim(' '), Player.PlayerState.NOT_READY);
+                            player = new Player(ltbNameJoin.Text.Replace(" ", ""), Player.PlayerState.NOT_READY);
 
                             // Ask the server if the name is available
                             Server.IsNameAvailable(server, player.Name);
@@ -228,7 +228,7 @@ namespace FiaMedKnuff
 
                                 // Create a player for the host
                                 characters = Character.Assign(FindAvailableColour());
-                                player = new Player(ltbNameHost.Text.Trim(' '), characters, Player.PlayerState.READY);
+                                player = new Player(ltbNameHost.Text.Replace(" ", ""), characters, Player.PlayerState.READY);
                                 players.Add(player);
                                 UpdatePlayerList();
 

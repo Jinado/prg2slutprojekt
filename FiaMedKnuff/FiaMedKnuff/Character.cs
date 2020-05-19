@@ -27,6 +27,7 @@ namespace FiaMedKnuff
                 throw new InvalidColourException();
             this.Colour = colour;
             this.State = CharacterState.HOME;
+            this.Position = -1;
         }
 
         /// <summary>

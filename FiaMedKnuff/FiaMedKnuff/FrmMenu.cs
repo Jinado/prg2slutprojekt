@@ -273,12 +273,12 @@ namespace FiaMedKnuff
             {
                 if (serverType == ServerType.HOSTING)
                 {
-                    FileHandler.ReadUserData(ltbNameHost.Text, ref gamesWon, ref gamesLost);
+                    FileHandler.ReadUserData(player.Name, ref gamesWon, ref gamesLost);
                     lblUserDataHost.Text = $"Vunnit: {gamesWon} | Förlorat: {gamesLost}";
                 }
                 else
                 {
-                    FileHandler.ReadUserData(ltbNameJoin.Text, ref gamesWon, ref gamesLost);
+                    FileHandler.ReadUserData(player.Name, ref gamesWon, ref gamesLost);
                     lblUserDataJoin.Text = $"Vunnit: {gamesWon} | Förlorat: {gamesLost}";
                 }
             }
@@ -290,12 +290,12 @@ namespace FiaMedKnuff
                     {
                         if (serverType == ServerType.HOSTING)
                         {
-                            FileHandler.SaveUserData(ltbNameHost.Text, gamesWon, gamesLost);
+                            FileHandler.SaveUserData(player.Name, gamesWon, gamesLost);
                             lblUserDataHost.Text = $"Vunnit: {gamesWon} | Förlorat: {gamesLost}";
                         }
                         else
                         {
-                            FileHandler.SaveUserData(ltbNameJoin.Text, gamesWon, gamesLost);
+                            FileHandler.SaveUserData(player.Name, gamesWon, gamesLost);
                             lblUserDataJoin.Text = $"Vunnit: {gamesWon} | Förlorat: {gamesLost}";
                         }
                     }

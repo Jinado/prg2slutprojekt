@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -232,14 +233,16 @@ namespace FiaMedKnuff
         /// Inform all other <see cref="TcpClient">Clients</see> on the server of a move
         /// </summary>
         /// <param name="server">The <see cref="Server">Server</see> to inform</param>
-        /// <param name="square">The <see cref="Square">Square</see> to move a <see cref="Character">Character</see> to</param>
-        /// <param name="character">The <see cref="Character">Character</see> to move</param>
+        /// <param name="square">The square to move to</param>
+        /// <param name="character">The character to move</param>
+        /// <param name="pathLocation">The location of the squares's picturebox</param>
+        /// <param name="pbxCharacter">The character's picturebox</param>
         /// <param name="host">True if the sender of the message is the host</param>
-        public static void MoveCharacter(Server server, Square square, Character character, bool host)
+        public static void MoveCharacter(Server server, Square square, Character character, Point pathLocation, PictureBox pbxCharacter, bool host)
         {
             // MVC stands for "MOVE CHARACTER", this is used
             // to identify what type of message has been recieved/sent
-            string message = $"MVC|{square.Position}|{character.Position}";
+            string message = $"MVC|{square.Position}|{character.Position}|{character.Colour}|{pathLocation.X}|{pathLocation.Y}|{pbxCharacter.Name}";
             if (host)
                 SendMessageFromHost(server, message);
             else

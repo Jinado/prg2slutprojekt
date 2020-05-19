@@ -47,8 +47,8 @@ namespace FiaMedKnuff
 
                 // Get the Character object
                 Character character = player.Characters[index];
-                Movement.MoveCharacter(path, character, ((PictureBox)sender), selectedCharacter);
-                selectedCharacter = null;
+                Server.MoveCharacter(server, path, character, ((PictureBox)sender).Location, selectedCharacter, serverType != 0);
+                Movement.MoveCharacter(path, character, ((PictureBox)sender).Location, selectedCharacter);
 
                 // If the path the character was moved to was the goal path, add one to the player's score
                 // and remove the character from the game
@@ -61,6 +61,8 @@ namespace FiaMedKnuff
 
                     CheckScore();
                 }
+
+                selectedCharacter = null;
 
                 // The user has moved, change the turn unless the user may move again
                 if (!reThrowAllowed && player.PlayersTurn)
@@ -114,7 +116,7 @@ namespace FiaMedKnuff
             if (player.PlayersTurn && (!diceThrown || reThrowAllowed))
             {
                 // Get a result
-                diceResult = new Random().Next(7);
+                diceResult = new Random().Next(1, 7);
                 pbxDice.Tag = diceResult;
                 Server.ThrownDice(server, diceResult, serverType != 0);
 
@@ -204,6 +206,57 @@ namespace FiaMedKnuff
                 case "FDP": // The player has been forcefully disconnected
                     break;
                 case "MVC": // A character has been moved
+
+                    // Find the colour sent over
+                    if(Character.TryParseColour(data[3], out Color colour))
+                    {
+                        // Convert the data into the objects they are representing
+                        Square path = Game.Squares[int.Parse(data[1])];
+                        Point pathLocation = new Point(int.Parse(data[4]), int.Parse(data[5]));
+                        PictureBox pbxCharacter = (PictureBox)Controls.Find(data[6], true)[0];
+                        Character character = null;
+
+                        // Find the character
+                        if(int.Parse(data[2]) == -1) // This is true if the character is at home
+                        {
+                            foreach (Player p in players)
+                            {
+                                if (p.Characters[0].Colour.Equals(colour))
+                                {
+                                    foreach (Character c in p.Characters)
+                                    {
+                                        if (c.State == Character.CharacterState.HOME)
+                                        {
+                                            character = c;
+                                            break;
+                                        }
+                                    }
+
+                                    if (character != null) break;
+                                }
+                            }
+                        }
+                        else // Since the character was not at home, one can find it by finding where he is currently standing
+                        {
+                            character = Game.Squares[int.Parse(data[2])].Character;
+                        }
+
+                        // Call the MoveCharacter() method with the decoded objects above
+                        Movement.MoveCharacter(path, character, pathLocation, pbxCharacter);
+
+                        // If the path the character was moved to was the goal path, add one to the player's score
+                        // and remove the character from the game
+                        if (path.Path == Square.PathType.GOAL)
+                        {
+                            score++;
+                            character.State = Character.CharacterState.WON;
+                            pbxCharacter.Enabled = false;
+                            pbxCharacter.Visible = false;
+
+                            CheckScore();
+                        }
+                    }
+
                     break;
                 case "HAW": // A player has won
                     break;
@@ -437,7 +490,13 @@ namespace FiaMedKnuff
             }
 
             if (score == 4)
+            {
+                int gamesWon = 0;
+                int gamesLost = 0;
+                FileHandler.ReadUserData(player.Name, ref gamesWon, ref gamesLost);
+                FileHandler.SaveUserData(player.Name, ++gamesWon, gamesLost);
                 Server.HasWon(server, player, serverType != 0);
+            }
         }
     }
 }

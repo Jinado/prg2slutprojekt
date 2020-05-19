@@ -36,6 +36,9 @@ namespace FiaMedKnuff
             Color charColour = character.Colour;
             Character.CharacterState charState = character.State;
 
+            // The character cannot move if he has already entered the goal
+            if (charState == Character.CharacterState.WON) return false;
+
             // Check if the character is home and if he may be moved outside
             if (charState == Character.CharacterState.HOME)
             {
@@ -156,7 +159,11 @@ namespace FiaMedKnuff
                 {
                     case 40:
                         if (diceResult > 4) return false;
-                        else if (diceResult == 4) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 4)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -168,7 +175,11 @@ namespace FiaMedKnuff
                         break;
                     case 41:
                         if (diceResult > 3) return false;
-                        else if (diceResult == 3) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 3)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -180,7 +191,11 @@ namespace FiaMedKnuff
                         break;
                     case 42:
                         if (diceResult > 2) return false;
-                        else if (diceResult == 2) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 2)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -194,13 +209,9 @@ namespace FiaMedKnuff
                         if (diceResult > 1) return false;
                         else
                         {
-                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
-                            {
-                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
-                                return true;
-                            }
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
                         }
-                        break;
                 }
 
                 return false;
@@ -212,7 +223,11 @@ namespace FiaMedKnuff
                 {
                     case 44:
                         if (diceResult > 4) return false;
-                        else if (diceResult == 4) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 4)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -224,7 +239,11 @@ namespace FiaMedKnuff
                         break;
                     case 45:
                         if (diceResult > 3) return false;
-                        else if (diceResult == 3) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 3)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -236,7 +255,11 @@ namespace FiaMedKnuff
                         break;
                     case 46:
                         if (diceResult > 2) return false;
-                        else if (diceResult == 2) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 2)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -250,13 +273,9 @@ namespace FiaMedKnuff
                         if (diceResult > 1) return false;
                         else
                         {
-                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
-                            {
-                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
-                                return true;
-                            }
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
                         }
-                        break;
                 }
 
                 return false;
@@ -268,7 +287,11 @@ namespace FiaMedKnuff
                 {
                     case 48:
                         if (diceResult > 4) return false;
-                        else if (diceResult == 4) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 4)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -280,7 +303,11 @@ namespace FiaMedKnuff
                         break;
                     case 49:
                         if (diceResult > 3) return false;
-                        else if (diceResult == 3) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 3)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -292,7 +319,11 @@ namespace FiaMedKnuff
                         break;
                     case 50:
                         if (diceResult > 2) return false;
-                        else if (diceResult == 2) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 2)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -306,13 +337,9 @@ namespace FiaMedKnuff
                         if (diceResult > 1) return false;
                         else
                         {
-                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
-                            {
-                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
-                                return true;
-                            }
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
                         }
-                        break;
                 }
 
                 return false;
@@ -324,7 +351,11 @@ namespace FiaMedKnuff
                 {
                     case 52:
                         if (diceResult > 4) return false;
-                        else if (diceResult == 4) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 4)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -336,7 +367,11 @@ namespace FiaMedKnuff
                         break;
                     case 53:
                         if (diceResult > 3) return false;
-                        else if (diceResult == 3) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 3)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -348,7 +383,11 @@ namespace FiaMedKnuff
                         break;
                     case 54:
                         if (diceResult > 2) return false;
-                        else if (diceResult == 2) Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        else if (diceResult == 2)
+                        {
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
                         else
                         {
                             if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
@@ -362,20 +401,15 @@ namespace FiaMedKnuff
                         if (diceResult > 1) return false;
                         else
                         {
-                            if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
-                            {
-                                Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
-                                return true;
-                            }
+                            Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
                         }
-                        break;
                 }
 
                 return false;
             }
             else // The character is not home nor on the final stretch, see where he may move to
             {
- 
                 // Check if the current character IS NOT green and if this character is able to move past square #39
                 // If he can, make sure the counting gets reset and begins from 0 as not to enter green's final stretch
                 if(!charColour.Equals(Color.Green) && (charPos + diceResult) > 39)
@@ -470,13 +504,14 @@ namespace FiaMedKnuff
         /// </summary>
         /// <param name="square">The square to move to</param>
         /// <param name="character">The character to move</param>
-        /// <param name="path">The path's picturebox</param>
+        /// <param name="pathLocation">The location of the squares's picturebox</param>
         /// <param name="pbxCharacter">The character's picturebox</param>
-        public static void MoveCharacter(Square square, Character character, PictureBox path, PictureBox pbxCharacter)
+        public static void MoveCharacter(Square square, Character character, Point pathLocation, PictureBox pbxCharacter)
         {
             // Change the state of the square the character to be moved is standning on to free
             // as he is now moving away from it
-            Game.Squares[character.Position].State = Square.SquareState.FREE;
+            if(character.Position != -1)
+                Game.Squares[character.Position].State = Square.SquareState.FREE;
             character.Position = square.Position;
 
             // Remove the border from the square
@@ -484,7 +519,7 @@ namespace FiaMedKnuff
 
             // Position the character in the middle of the path he went to (The character is shrunk down to half its size when it leaves its home)
             pbxCharacter.Size = new Size(32, 30);
-            pbxCharacter.Location = new Point(path.Location.X + 16, path.Location.Y + 15);
+            pbxCharacter.Location = new Point(pathLocation.X + 16, pathLocation.Y + 15);
 
             // Check the colour of the new square the character has moved to and make sure his picturebox's BackColor matches with the square's
             switch (Character.ColourToString(square.Colour))

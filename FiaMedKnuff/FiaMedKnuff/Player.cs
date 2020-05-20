@@ -34,7 +34,7 @@ namespace FiaMedKnuff
 
         public override string ToString()
         {
-            return $"{Name} : {State} : {PlayersTurn}";
+            return $"Name: {Name} | ReadyState: {State} | PlayersTurn: {PlayersTurn}";
         }
 
         public string Name { get; set; }

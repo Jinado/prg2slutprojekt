@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Character.cs" />
-    <Compile Include="Dice.cs" />
     <Compile Include="FrmGame.cs">
       <SubType>Form</SubType>
     </Compile>

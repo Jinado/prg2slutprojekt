@@ -102,11 +102,13 @@ namespace FiaMedKnuff
                     // Get the Character object
                     Character character = player.Characters[index];
 
+                    // First remove any other borders there may be
+                    foreach (Square s in Game.Squares) s.Border = Square.SquareBorder.BORDERLESS;
+
                     // Check if and where a player may move
-                    if (Movement.DrawMovementLine(diceResult, character))
-                    {
-                        UpdateBoard();
-                    }
+                    Movement.DrawMovementLine(diceResult, character);
+
+                    UpdateBoard();
                 }
             }
         }

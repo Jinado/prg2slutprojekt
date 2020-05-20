@@ -180,7 +180,7 @@ namespace FiaMedKnuff
 
         public override string ToString()
         {
-            return $"Colour: {Colour}";
+            return $"Colour: {Colour} | Pos: {Position} | State: {State}";
         }
 
         public Color Colour { get; set; }

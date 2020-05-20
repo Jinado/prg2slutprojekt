@@ -32,6 +32,11 @@ namespace FiaMedKnuff
             this.Path = path;
         }
 
+        public override string ToString()
+        {
+            return $"Colour: {Character.ColourToString(Colour)} | Pos: {Position} | State: {State} | BorderState: {Border} | PathType: {Path}";
+        }
+
         public Color Colour { get; set; }
         public Character Character { get; set; }
         public SquareState State { get; set; }

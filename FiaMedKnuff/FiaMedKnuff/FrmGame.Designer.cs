@@ -932,10 +932,10 @@
             this.groupBox1.Controls.Add(this.lblScoreRed);
             this.groupBox1.Controls.Add(this.lblScoreYellow);
             this.groupBox1.Controls.Add(this.lblScoreGreen);
-            this.groupBox1.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(804, 42);
+            this.groupBox1.Font = new System.Drawing.Font("Arial Rounded MT Bold", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(795, 42);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(235, 208);
+            this.groupBox1.Size = new System.Drawing.Size(244, 208);
             this.groupBox1.TabIndex = 91;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Antal karaktärer i mål";
@@ -943,36 +943,40 @@
             // lblScoreBlue
             // 
             this.lblScoreBlue.AutoSize = true;
+            this.lblScoreBlue.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblScoreBlue.Location = new System.Drawing.Point(6, 163);
             this.lblScoreBlue.Name = "lblScoreBlue";
-            this.lblScoreBlue.Size = new System.Drawing.Size(53, 18);
+            this.lblScoreBlue.Size = new System.Drawing.Size(78, 28);
             this.lblScoreBlue.TabIndex = 3;
             this.lblScoreBlue.Text = "Blå: 0";
             // 
             // lblScoreRed
             // 
             this.lblScoreRed.AutoSize = true;
+            this.lblScoreRed.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblScoreRed.Location = new System.Drawing.Point(6, 116);
             this.lblScoreRed.Name = "lblScoreRed";
-            this.lblScoreRed.Size = new System.Drawing.Size(59, 18);
+            this.lblScoreRed.Size = new System.Drawing.Size(86, 28);
             this.lblScoreRed.TabIndex = 2;
             this.lblScoreRed.Text = "Röd: 0";
             // 
             // lblScoreYellow
             // 
             this.lblScoreYellow.AutoSize = true;
+            this.lblScoreYellow.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblScoreYellow.Location = new System.Drawing.Point(6, 73);
             this.lblScoreYellow.Name = "lblScoreYellow";
-            this.lblScoreYellow.Size = new System.Drawing.Size(54, 18);
+            this.lblScoreYellow.Size = new System.Drawing.Size(80, 28);
             this.lblScoreYellow.TabIndex = 1;
             this.lblScoreYellow.Text = "Gul: 0";
             // 
             // lblScoreGreen
             // 
             this.lblScoreGreen.AutoSize = true;
+            this.lblScoreGreen.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblScoreGreen.Location = new System.Drawing.Point(6, 31);
             this.lblScoreGreen.Name = "lblScoreGreen";
-            this.lblScoreGreen.Size = new System.Drawing.Size(67, 18);
+            this.lblScoreGreen.Size = new System.Drawing.Size(98, 28);
             this.lblScoreGreen.TabIndex = 0;
             this.lblScoreGreen.Text = "Grön: 0";
             // 
@@ -980,7 +984,7 @@
             // 
             this.pbxDice.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pbxDice.Image = ((System.Drawing.Image)(resources.GetObject("pbxDice.Image")));
-            this.pbxDice.Location = new System.Drawing.Point(821, 265);
+            this.pbxDice.Location = new System.Drawing.Point(818, 265);
             this.pbxDice.Name = "pbxDice";
             this.pbxDice.Size = new System.Drawing.Size(200, 200);
             this.pbxDice.TabIndex = 92;

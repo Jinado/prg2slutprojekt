@@ -512,8 +512,6 @@ namespace FiaMedKnuff
             // as he is now moving away from it
             if(character.Position != -1)
                 Game.Squares[character.Position].State = Square.SquareState.FREE;
-            character.Position = square.Position;
-            pbxCharacter.Tag = character.Position;
 
             // Remove the border from the square
             square.Border = Square.SquareBorder.BORDERLESS;
@@ -546,15 +544,17 @@ namespace FiaMedKnuff
             character.State = Character.CharacterState.OUTSIDE;
 
             if(square.State == Square.SquareState.FREE)
-            {
                 square.State = Square.SquareState.OCCUPIED;
-                square.Character = character;
-            }
             else
-            {
                 PushOpponent(square.Character);
-                square.Character = character;
-            }
+
+            // Only change the character's position to the new position AFTER
+            // the character has potentially pushed someone else. Otherwise both
+            // the character and the opponent would have the same position at the
+            // same time, which leads to both characters being sent back to spawn
+            character.Position = square.Position;
+            pbxCharacter.Tag = character.Position;
+            square.Character = character;
         }
 
         /// <summary>
@@ -564,16 +564,12 @@ namespace FiaMedKnuff
         private static void PushOpponent(Character opponent)
         {
             PictureBox pbxOpponent = null;
-            foreach(Control c in Form.Controls)
+            foreach(PictureBox pbx in Characters)
             {
-                if(c is PictureBox)
+                if (pbx.Tag.Equals(opponent.Position))
                 {
-                    PictureBox pbx = (PictureBox)c;
-                    if (pbx.Tag.Equals(opponent.Position))
-                    {
-                        pbxOpponent = pbx;
-                        break;
-                    }
+                    pbxOpponent = pbx;
+                    break;
                 }
             }
 
@@ -583,44 +579,52 @@ namespace FiaMedKnuff
             switch (Character.ColourToString(opponent.Colour))
             {
                 case "Green":
-                    if (Form.GetChildAtPoint(Character.GREEN_POS1) == null)
+                    if (Form.GetChildAtPoint(Character.GREEN_POS1).Name == "pbxSpawnPointGreen")
                         pbxOpponent.Location = Character.GREEN_POS1;
-                    else if (Form.GetChildAtPoint(Character.GREEN_POS2) == null)
+                    else if (Form.GetChildAtPoint(Character.GREEN_POS2).Name == "pbxSpawnPointGreen")
                         pbxOpponent.Location = Character.GREEN_POS2;
-                    else if (Form.GetChildAtPoint(Character.GREEN_POS3) == null)
+                    else if (Form.GetChildAtPoint(Character.GREEN_POS3).Name == "pbxSpawnPointGreen")
                         pbxOpponent.Location = Character.GREEN_POS3;
-                    else if (Form.GetChildAtPoint(Character.GREEN_POS4) == null)
+                    else if (Form.GetChildAtPoint(Character.GREEN_POS4).Name == "pbxSpawnPointGreen")
                         pbxOpponent.Location = Character.GREEN_POS4;
+
+                    pbxOpponent.BackColor = Character.GREEN;
                     break;
                 case "Yellow":
-                    if (Form.GetChildAtPoint(Character.YELLOW_POS1) == null)
+                    if (Form.GetChildAtPoint(Character.YELLOW_POS1).Name == "pbxSpawnPointYellow")
                         pbxOpponent.Location = Character.YELLOW_POS1;
-                    else if (Form.GetChildAtPoint(Character.YELLOW_POS2) == null)
+                    else if (Form.GetChildAtPoint(Character.YELLOW_POS2).Name == "pbxSpawnPointYellow")
                         pbxOpponent.Location = Character.YELLOW_POS2;
-                    else if (Form.GetChildAtPoint(Character.YELLOW_POS3) == null)
+                    else if (Form.GetChildAtPoint(Character.YELLOW_POS3).Name == "pbxSpawnPointYellow")
                         pbxOpponent.Location = Character.YELLOW_POS3;
-                    else if (Form.GetChildAtPoint(Character.YELLOW_POS4) == null)
+                    else if (Form.GetChildAtPoint(Character.YELLOW_POS4).Name == "pbxSpawnPointYellow")
                         pbxOpponent.Location = Character.YELLOW_POS4;
+
+                    pbxOpponent.BackColor = Character.YELLOW;
                     break;
                 case "Red":
-                    if (Form.GetChildAtPoint(Character.RED_POS1) == null)
+                    if (Form.GetChildAtPoint(Character.RED_POS1).Name == "pbxSpawnPointRed")
                         pbxOpponent.Location = Character.RED_POS1;
-                    else if (Form.GetChildAtPoint(Character.RED_POS2) == null)
+                    else if (Form.GetChildAtPoint(Character.RED_POS2).Name == "pbxSpawnPointRed")
                         pbxOpponent.Location = Character.RED_POS2;
-                    else if (Form.GetChildAtPoint(Character.RED_POS3) == null)
+                    else if (Form.GetChildAtPoint(Character.RED_POS3).Name == "pbxSpawnPointRed")
                         pbxOpponent.Location = Character.RED_POS3;
-                    else if (Form.GetChildAtPoint(Character.RED_POS4) == null)
+                    else if (Form.GetChildAtPoint(Character.RED_POS4).Name == "pbxSpawnPointRed")
                         pbxOpponent.Location = Character.RED_POS4;
+
+                    pbxOpponent.BackColor = Character.RED;
                     break;
                 case "Blue":
-                    if (Form.GetChildAtPoint(Character.BLUE_POS1) == null)
+                    if (Form.GetChildAtPoint(Character.BLUE_POS1).Name == "pbxSpawnPointBlue")
                         pbxOpponent.Location = Character.BLUE_POS1;
-                    else if (Form.GetChildAtPoint(Character.BLUE_POS2) == null)
+                    else if (Form.GetChildAtPoint(Character.BLUE_POS2).Name == "pbxSpawnPointBlue")
                         pbxOpponent.Location = Character.BLUE_POS2;
-                    else if (Form.GetChildAtPoint(Character.BLUE_POS3) == null)
+                    else if (Form.GetChildAtPoint(Character.BLUE_POS3).Name == "pbxSpawnPointBlue")
                         pbxOpponent.Location = Character.BLUE_POS3;
-                    else if (Form.GetChildAtPoint(Character.BLUE_POS4) == null)
+                    else if (Form.GetChildAtPoint(Character.BLUE_POS4).Name == "pbxSpawnPointBlue")
                         pbxOpponent.Location = Character.BLUE_POS4;
+
+                    pbxOpponent.BackColor = Character.BLUE;
                     break;
             }
 
@@ -632,5 +636,6 @@ namespace FiaMedKnuff
 
         // The FrmGame form to be able to access its list of Controls
         public static FrmGame Form { get; set; }
+        public static List<PictureBox> Characters { get; set; }
     }
 }

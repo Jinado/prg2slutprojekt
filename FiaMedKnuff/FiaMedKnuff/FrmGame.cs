@@ -28,6 +28,7 @@ namespace FiaMedKnuff
         private static bool diceThrown = false;
         private static bool reThrowAllowed = false;
         private static PictureBox[] paths = new PictureBox[57];
+        private static List<PictureBox> characters = new List<PictureBox>(26);
         private static PictureBox selectedCharacter;
         private static int score = 0;
 
@@ -42,11 +43,12 @@ namespace FiaMedKnuff
             // Make sure the user pressed a bordered path
             if (path.Border == Square.SquareBorder.BORDER)
             {
+                // Get the Character object
                 string number = selectedCharacter.Name.Replace("pbxChar", "").Replace(Character.ColourToString(player.Characters[0].Colour), "");
                 int index = int.Parse(number);
-
-                // Get the Character object
                 Character character = player.Characters[index];
+
+                // Move the character both on this client and all others
                 Server.MoveCharacter(server, path, character, ((PictureBox)sender).Location, selectedCharacter, serverType != 0);
                 Movement.MoveCharacter(path, character, ((PictureBox)sender).Location, selectedCharacter);
 
@@ -244,16 +246,34 @@ namespace FiaMedKnuff
                         // Call the MoveCharacter() method with the decoded objects above
                         Movement.MoveCharacter(path, character, pathLocation, pbxCharacter);
 
-                        // If the path the character was moved to was the goal path, add one to the player's score
-                        // and remove the character from the game
+                        // If the path the character was moved to was the goal path, 
+                        // add one to the respective player's score and remove the 
+                        // character from the game
                         if (path.Path == Square.PathType.GOAL)
                         {
-                            score++;
+                            switch (Character.ColourToString(character.Colour))
+                            {
+                                case "Green":
+                                    int greenScore = int.Parse(lblScoreGreen.Text.Substring(6)) + 1;
+                                    lblScoreGreen.Text = $"Grön: {greenScore}";
+                                    break;
+                                case "Yellow":
+                                    int yellowScore = int.Parse(lblScoreYellow.Text.Substring(5)) + 1;
+                                    lblScoreYellow.Text = $"Gul: {yellowScore}";
+                                    break;
+                                case "Red":
+                                    int redScore = int.Parse(lblScoreRed.Text.Substring(5)) + 1;
+                                    lblScoreRed.Text = $"Röd: {redScore}";
+                                    break;
+                                case "Blue":
+                                    int blueScore = int.Parse(lblScoreBlue.Text.Substring(5)) + 1;
+                                    lblScoreBlue.Text = $"Blå: {blueScore}";
+                                    break;
+                            }
+
                             character.State = Character.CharacterState.WON;
                             pbxCharacter.Enabled = false;
-                            pbxCharacter.Visible = false;
-
-                            CheckScore();
+                            pbxCharacter.Visible = false; 
                         }
                     }
 
@@ -324,8 +344,6 @@ namespace FiaMedKnuff
         {
             this.Text += $" : {player.Name}";
 
-            Movement.Form = this;
-
             Server.BeginListeningForMessages(server, serverType != 0);
 
             Game.Initialize(players, maxPlayers);
@@ -349,6 +367,9 @@ namespace FiaMedKnuff
 
             InitializeCharacters();
             InitalizePaths();
+
+            Movement.Form = this;
+            Movement.Characters = characters;
         }
 
         /// <summary>
@@ -381,12 +402,13 @@ namespace FiaMedKnuff
         {
             foreach(Player p in players)
             {
-                PictureBox[] characters = Character.CreateCharacters(p.Characters[0].Colour);
-                foreach (PictureBox pbx in characters)
+                PictureBox[] chars = Character.CreateCharacters(p.Characters[0].Colour);
+                foreach (PictureBox pbx in chars)
                 {
                     pbx.Click += pbxCharacter_Click;
                     Controls.Add(pbx);
                     Controls.SetChildIndex(pbx, 0);
+                    characters.Add(pbx);
                 }
             }
         }

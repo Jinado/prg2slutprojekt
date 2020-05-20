@@ -17,7 +17,6 @@ namespace FiaMedKnuff
             this.Name = name;
             this.Characters = characters;
             this.State = state;
-            this.PlayersTurn = false;
         }
 
         /// <summary>
@@ -29,17 +28,15 @@ namespace FiaMedKnuff
         {
             this.Name = name;
             this.State = state;
-            this.PlayersTurn = false;
         }
 
         public override string ToString()
         {
-            return $"Name: {Name} | ReadyState: {State} | PlayersTurn: {PlayersTurn}";
+            return $"Name: {Name} | ReadyState: {State}";
         }
 
         public string Name { get; set; }
         public List<Character> Characters { get; set; }
         public PlayerState State { get; set; }
-        public bool PlayersTurn { get; set; }
     }
 }

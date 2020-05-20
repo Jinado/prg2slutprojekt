@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Deployment.Application;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -30,7 +31,6 @@ namespace FiaMedKnuff
         private static PictureBox[] paths = new PictureBox[57];
         private static List<PictureBox> characters = new List<PictureBox>(26);
         private static PictureBox selectedCharacter;
-        private static int score = 0;
 
         public FrmGame()
         {
@@ -56,18 +56,40 @@ namespace FiaMedKnuff
                 // and remove the character from the game
                 if(path.Path == Square.PathType.GOAL)
                 {
-                    score++;
                     character.State = Character.CharacterState.WON;
                     selectedCharacter.Enabled = false;
                     selectedCharacter.Visible = false;
 
+                    // Update the player's score
+                    string colour = Character.ColourToString(player.Characters[0].Colour);
+                    switch (colour)
+                    {
+                        case "Green":
+                            int greenScore = int.Parse(lblScoreGreen.Text.Substring(6)) + 1;
+                            lblScoreGreen.Text = $"Grön: {greenScore}";
+                            break;
+                        case "Yellow":
+                            int yellowScore = int.Parse(lblScoreYellow.Text.Substring(5)) + 1;
+                            lblScoreYellow.Text = $"Gul: {yellowScore}";
+                            break;
+                        case "Red":
+                            int redScore = int.Parse(lblScoreRed.Text.Substring(5)) + 1;
+                            lblScoreRed.Text = $"Röd: {redScore}";
+                            break;
+                        case "Blue":
+                            int blueScore = int.Parse(lblScoreBlue.Text.Substring(5)) + 1;
+                            lblScoreBlue.Text = $"Blå: {blueScore}";
+                            break;
+                    }
+
+                    // Check if someone has won
                     CheckScore();
                 }
 
                 selectedCharacter = null;
 
                 // The user has moved, change the turn unless the user may move again
-                if (!reThrowAllowed && player.PlayersTurn)
+                if (!reThrowAllowed && Game.CurrentTurn.Equals(player))
                 {
                     if (serverType == FrmMenu.ServerType.HOSTING)
                     {
@@ -125,8 +147,8 @@ namespace FiaMedKnuff
 
         private void pbxDice_Click(object sender, EventArgs e)
         {
-            // Only throw the dice if it is the players turn
-            if (player.PlayersTurn && (!diceThrown || reThrowAllowed))
+            // Only throw the dice if it is the player's turn
+            if (Game.CurrentTurn.Equals(player) && (!diceThrown || reThrowAllowed))
             {
                 // Get a result
                 diceResult = new Random().Next(1, 7);
@@ -193,11 +215,11 @@ namespace FiaMedKnuff
                     {
                         MessageBox.Show("Det finns inget drag att göra", "Du har inga drag", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        player.PlayersTurn = false;
                         diceThrown = false;
 
                         if(serverType == FrmMenu.ServerType.HOSTING)
                         {
+
                             // Change the turn
                             Game.ChangeTurn(players);
                             TurnChanged();
@@ -233,7 +255,7 @@ namespace FiaMedKnuff
                 case "MVC": // A character has been moved
 
                     // Find the colour sent over
-                    if(Character.TryParseColour(data[3], out Color colour))
+                    if(Character.TryParseColour(data[3], out Color colourMVC))
                     {
                         // Convert the data into the objects they are representing
                         Square path = Game.Squares[int.Parse(data[1])];
@@ -246,7 +268,7 @@ namespace FiaMedKnuff
                         {
                             foreach (Player p in players)
                             {
-                                if (p.Characters[0].Colour.Equals(colour))
+                                if (p.Characters[0].Colour.Equals(colourMVC))
                                 {
                                     foreach (Character c in p.Characters)
                                     {
@@ -296,12 +318,15 @@ namespace FiaMedKnuff
 
                             character.State = Character.CharacterState.WON;
                             pbxCharacter.Enabled = false;
-                            pbxCharacter.Visible = false; 
+                            pbxCharacter.Visible = false;
+
+                            CheckScore();
                         }
                     }
 
                     break;
                 case "HAW": // A player has won
+                    SomeoneWon(data[1]);
                     break;
                 case "TRD": // The dice has been thrown
 
@@ -360,7 +385,6 @@ namespace FiaMedKnuff
                     {
                         if (p.Name.Equals(data[1]))
                         {
-                            p.PlayersTurn = true;
                             Game.CurrentTurn = p;
                             break;
                         }
@@ -369,11 +393,16 @@ namespace FiaMedKnuff
                     TurnChanged();
 
                     break;
+                case "TMP":
+                    SomeoneWon(data[1]);
+                    break;
             }
         }
 
         private void FrmGame_Shown(object sender, EventArgs e)
         {
+            this.Text = player.Name;
+
             Server.BeginListeningForMessages(server, serverType != 0);
 
             Game.Initialize(players, maxPlayers);
@@ -415,7 +444,6 @@ namespace FiaMedKnuff
 
                 if (p.Equals(Game.CurrentTurn))
                 {
-                    p.PlayersTurn = true;
                     ((Label)control[0]).ForeColor = Color.Magenta;
                 }
                 else
@@ -521,36 +549,93 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Check the player's score to determine if he has won
+        /// Check the players' score to determine if anyone has won
         /// </summary>
         private void CheckScore()
         {
-            string colour = Character.ColourToString(player.Characters[0].Colour);
-            Control[] control = Controls.Find($"lblScore{colour}", true);
-            switch (colour)
+            // Get the colour of the player
+            Color colour = player.Characters[0].Colour;
+
+            // Prepare a variable to hold the colour of the winner
+            Color winner = Color.White;
+
+            // Fetch the different scores
+            int greenScore = int.Parse(lblScoreGreen.Text.Substring(6));
+            int yellowScore = int.Parse(lblScoreYellow.Text.Substring(5));
+            int redScore = int.Parse(lblScoreRed.Text.Substring(5));
+            int blueScore = int.Parse(lblScoreBlue.Text.Substring(5));
+
+            // Keep track of how many games the player has won and lost
+            int gamesWon = 0;
+            int gamesLost = 0;
+
+            if (greenScore == 4) winner = Color.Green;
+            else if (yellowScore == 4) winner = Color.Yellow;
+            else if (redScore == 4) winner = Color.Red;
+            else if (blueScore == 4) winner = Color.Blue;
+
+            // Read how many games the user has won and lost
+            FileHandler.ReadUserData(player.Name, ref gamesWon, ref gamesLost);
+
+            // Increment the games won by one if the player won, otherwise increment the games lost by one
+            if (colour == winner)
             {
-                case "Green":
-                    ((Label)control[0]).Text = $"Grön: {score}";
+                FileHandler.SaveUserData(player.Name, ++gamesWon, gamesLost);
+                Server.HasWon(server, winner, serverType != 0);
+
+                SomeoneWon(Character.ColourToString(winner));
+            }
+            else if (winner != Color.White) // If someone else has won, the winner colour IS NOT white
+            {
+                FileHandler.SaveUserData(player.Name, gamesWon, ++gamesLost);
+                Server.HasWon(server, winner, serverType != 0);
+
+                SomeoneWon(Character.ColourToString(winner));
+            }
+        }
+
+        /// <summary>
+        /// The method that handles all the logic when a player wins
+        /// </summary>
+        private void SomeoneWon(string data)
+        {
+            // Find the winner amongst the list of players
+            string colour = data;
+            Player winner = null;
+
+            foreach (Player p in players)
+            {
+                if (Character.ColourToString(p.Characters[0].Colour).Equals(colour))
+                {
+                    winner = p;
                     break;
-                case "Yellow":
-                    ((Label)control[0]).Text = $"Gul: {score}";
-                    break;
-                case "Red":
-                    ((Label)control[0]).Text = $"Röd: {score}";
-                    break;
-                case "Blue":
-                    ((Label)control[0]).Text = $"Blå: {score}";
-                    break;
+                }
             }
 
-            if (score == 4)
-            {
-                int gamesWon = 0;
-                int gamesLost = 0;
-                FileHandler.ReadUserData(player.Name, ref gamesWon, ref gamesLost);
-                FileHandler.SaveUserData(player.Name, ++gamesWon, gamesLost);
-                Server.HasWon(server, player, serverType != 0);
-            }
+            // Display to everyone who has won
+            if (winner.Name.Equals(player.Name))
+                MessageBox.Show("Grattis, du vann spelet!\nSnyggt gjort!", "Du är en vinnare!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show($"Tyvärr vann du inte...\nDet gjorde {winner.Name}!", "Det var ett bra försök!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Exit to menu
+            this.Hide();
+            FrmMenu frmMenu = new FrmMenu();
+
+            // Update the form
+            frmMenu.UpdateFormOnGameEnd();
+
+            // Show the menu
+            frmMenu.ShowDialog();
+            this.Close();
+        }
+
+        private void btnWin_Click(object sender, EventArgs e)
+        {
+            string colour = Character.ColourToString(player.Characters[0].Colour);
+
+            Server.Temporary(server, colour, serverType != 0);
+            SomeoneWon(colour);
         }
     }
 }

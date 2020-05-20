@@ -100,6 +100,7 @@
             this.lblScoreYellow = new System.Windows.Forms.Label();
             this.lblScoreGreen = new System.Windows.Forms.Label();
             this.pbxDice = new System.Windows.Forms.PictureBox();
+            this.btnWin = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbx3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx43)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx56)).BeginInit();
@@ -992,12 +993,23 @@
             this.pbxDice.Tag = "6";
             this.pbxDice.Click += new System.EventHandler(this.pbxDice_Click);
             // 
+            // btnWin
+            // 
+            this.btnWin.Location = new System.Drawing.Point(870, 555);
+            this.btnWin.Name = "btnWin";
+            this.btnWin.Size = new System.Drawing.Size(75, 23);
+            this.btnWin.TabIndex = 93;
+            this.btnWin.Text = "Win!";
+            this.btnWin.UseVisualStyleBackColor = true;
+            this.btnWin.Click += new System.EventHandler(this.btnWin_Click);
+            // 
             // FrmGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1051, 735);
+            this.Controls.Add(this.btnWin);
             this.Controls.Add(this.pbxDice);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pbxSpawnPointBlue);
@@ -1212,5 +1224,6 @@
         private System.Windows.Forms.Label lblScoreYellow;
         private System.Windows.Forms.Label lblScoreGreen;
         private System.Windows.Forms.PictureBox pbxDice;
+        private System.Windows.Forms.Button btnWin;
     }
 }

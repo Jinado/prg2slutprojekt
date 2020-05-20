@@ -610,7 +610,7 @@
             this.MaximizeBox = false;
             this.Name = "FrmMenu";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "             ";
+            this.Text = "Fia med knuff - Johannes Emmoth       ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMenu_FormClosing);
             this.Shown += new System.EventHandler(this.FrmMenu_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pbxHost)).EndInit();

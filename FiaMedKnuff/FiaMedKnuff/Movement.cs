@@ -84,13 +84,25 @@ namespace FiaMedKnuff
                 }
                 else return false;
             }
-            else if(charColour.Equals(Color.Green) && charPos == 39) // The green character is just outside the final stretch
+            else if(charColour.Equals(Color.Green) && (charPos == 39 || charPos == 38)) // The green character is just outside the final stretch
             {
-                if (diceResult == 6) return false;
-                else if (diceResult == 5) // The green character may enter the goal
+                if (diceResult == 6)
                 {
-                    Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
-                    return true;
+                    if (charPos == 38)
+                    {
+                        Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                    else return false;
+                }
+                else if (diceResult == 5)
+                {
+                    if (charPos == 39)
+                    {
+                        Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                    else return false;
                 }
                 else
                 {
@@ -101,13 +113,25 @@ namespace FiaMedKnuff
                     }
                 }
             }
-            else if (charColour.Equals(Color.Yellow) && charPos == 9) // The yellow character is just outside the final stretch
+            else if (charColour.Equals(Color.Yellow) && (charPos == 9 || charPos == 8)) // The yellow character is just outside the final stretch
             {
-                if (diceResult == 6) return false;
-                else if (diceResult == 5) // The yellow character may enter the goal
+                if (diceResult == 6)
                 {
-                    Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
-                    return true;
+                    if (charPos == 8)
+                    {
+                        Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                    else return false;
+                }
+                else if (diceResult == 5)
+                {
+                    if (charPos == 9)
+                    {
+                        Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                    else return false;
                 }
                 else
                 {
@@ -118,13 +142,25 @@ namespace FiaMedKnuff
                     }
                 }
             }
-            else if (charColour.Equals(Color.Red) && charPos == 19) // The red character is just outside the final stretch
+            else if (charColour.Equals(Color.Red) && (charPos == 19 || charPos == 18)) // The red character is just outside the final stretch
             {
-                if (diceResult == 6) return false;
-                else if (diceResult == 5) // The red character may enter the goal
+                if (diceResult == 6)
                 {
-                    Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
-                    return true;
+                    if(charPos == 18)
+                    {
+                        Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                    else return false;
+                }
+                else if (diceResult == 5) 
+                {
+                    if (charPos == 19)
+                    {
+                        Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                    else return false;
                 }
                 else
                 {
@@ -135,13 +171,25 @@ namespace FiaMedKnuff
                     }
                 }
             }
-            else if (charColour.Equals(Color.Blue) && charPos == 29) // The blue character is just outside the final stretch
+            else if (charColour.Equals(Color.Blue) && (charPos == 29 || charPos == 28)) // The blue character is just outside the final stretch
             {
-                if (diceResult == 6) return false;
-                else if (diceResult == 5) // The blue character may enter the goal
+                if (diceResult == 6)
                 {
-                    Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
-                    return true;
+                    if (charPos == 28)
+                    {
+                        Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                    else return false;
+                }
+                else if (diceResult == 5)
+                {
+                    if (charPos == 29)
+                    {
+                        Game.Squares[GOAL].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                        return true;
+                    }
+                    else return false;
                 }
                 else
                 {
@@ -427,6 +475,7 @@ namespace FiaMedKnuff
                 {
                     int stepsTo9 = 9 - charPos;
                     int stepsLeftOnDice = diceResult - stepsTo9;
+
                     if (CheckIfPossible(Game.Squares[FIRST_YELLOW_FINAL + (stepsLeftOnDice - 1)], character))
                     {
                         Game.Squares[FIRST_YELLOW_FINAL + (stepsLeftOnDice - 1)].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;

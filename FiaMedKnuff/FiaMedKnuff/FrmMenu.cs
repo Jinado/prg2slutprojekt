@@ -29,10 +29,10 @@ namespace FiaMedKnuff
         private static bool gameStarted = false;
 
         // Important for client
+        private static ServerType serverType = ServerType.NOT_HOSTING;
         private static Server server;
         private static Player player;
         private static List<Character> characters;
-        private static ServerType serverType = ServerType.NOT_HOSTING;
         private static int spdCount = 0;
         private static int gamesWon = 0;
         private static int gamesLost = 0;
@@ -46,6 +46,21 @@ namespace FiaMedKnuff
 
         private void FrmMenu_Shown(object sender, EventArgs e)
         {
+            // Make sure to listen to messages when you get back to the menu after finishing a game
+            if(server != null || host != null)
+            {
+                if(serverType == ServerType.HOSTING)
+                {
+                    host.Form = this;
+                    Server.BeginListeningForMessages(host, serverType != 0);
+                }
+                else
+                {
+                    server.Form = this;
+                    Server.BeginListeningForMessages(server, serverType != 0);
+                }
+            }
+
             try
             {
                 string ip = FileHandler.ReadConfigData();
@@ -209,32 +224,40 @@ namespace FiaMedKnuff
                         {
                             if(maxPlayers >= 2 && maxPlayers <= 4)
                             {
-                                // Start the server and allow the server to be stopped
-                                host = new Server(maxPlayers, this, port);
-                                Server.StartServer(host);
-                                btnStartServer.Text = "STOPPA SERVERN";
-                                serverType = ServerType.HOSTING;
+                                try
+                                {
+                                    // Start the server and allow the server to be stopped
+                                    host = new Server(maxPlayers, this, port);
+                                    Server.StartServer(host);
+                                    btnStartServer.Text = "STOPPA SERVERN";
+                                    serverType = ServerType.HOSTING;
 
-                                // Display amount of connected players
-                                lblConnectedPlayersHost.Text = $"Antal spelare: 1/{maxPlayers}";
+                                    // Display amount of connected players
+                                    lblConnectedPlayersHost.Text = $"Antal spelare: 1/{maxPlayers}";
 
-                                // Disable the server configuration textboxes
-                                ltbNameHost.Enabled = false;
-                                ltbMaxPlayers.Enabled = false;
-                                tbxPortHost.Enabled = false;
+                                    // Disable the server configuration textboxes
+                                    ltbNameHost.Enabled = false;
+                                    ltbMaxPlayers.Enabled = false;
+                                    tbxPortHost.Enabled = false;
 
-                                // Disable the "Back" and "Connect" button
-                                btnBack.Enabled = false;
-                                btnConnect.Enabled = false;
+                                    // Disable the "Back" and "Connect" button
+                                    btnBack.Enabled = false;
+                                    btnConnect.Enabled = false;
 
-                                // Create a player for the host
-                                characters = Character.Assign(FindAvailableColour());
-                                player = new Player(ltbNameHost.Text.Replace(" ", ""), characters, Player.PlayerState.READY);
-                                players.Add(player);
-                                UpdatePlayerList();
+                                    // Create a player for the host
+                                    characters = Character.Assign(FindAvailableColour());
+                                    player = new Player(ltbNameHost.Text.Replace(" ", ""), characters, Player.PlayerState.READY);
+                                    players.Add(player);
+                                    UpdatePlayerList();
 
-                                // Load or save user data
-                                HandleUserData();
+                                    // Load or save user data
+                                    HandleUserData();
+                                }
+                                catch (SocketException)
+                                {
+                                    MessageBox.Show("Det finns redan en server på denna kombination av IP-adress och port.\nVänligen stäng av den först eller välj en annan port.", "En server körs redan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
+                                
                             }
                             else
                             {
@@ -807,6 +830,56 @@ namespace FiaMedKnuff
             ltbNameJoin.Enabled = true;
             ltbServerIP.Enabled = true;
             btnBack.Enabled = true;
+        }
+
+        public void UpdateFormOnGameEnd()
+        {
+            // Make sure gameStarted is back to false
+            gameStarted = false;
+
+            // Make sure all the fields have their correct values in them
+            // as well as all buttons are either enabled or disabled
+            // as the should be
+            if(serverType == ServerType.HOSTING)
+            {
+                ltbNameHost.Text = player.Name;
+                ltbNameHost.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+
+                ltbMaxPlayers.Text = maxPlayers.ToString();
+                ltbMaxPlayers.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+
+                tbxPortHost.Text = host.Port.ToString();
+
+                lblConnectedPlayersHost.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
+
+                btnStartServer.Enabled = true;
+                btnStartServer.Text = "STOPPA SERVERN";
+
+                btnConnect.Enabled = false;
+            }
+            else
+            {
+                ltbNameJoin.Text = player.Name;
+                ltbNameJoin.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+
+                lblConnectedPlayersJoin.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
+
+                btnConnect.Enabled = true;
+                btnConnect.Text = "LÄMNA";
+
+                btnStartServer.Enabled = false;
+            }
+
+            // Turn off the back button
+            btnBack.Enabled = false;
+
+            // Change everyone's ready status
+            foreach (Player p in players) p.State = Player.PlayerState.NOT_READY;
+
+            // Load or save user data
+            HandleUserData();
+
+            UpdatePlayerList();
         }
     }
 }

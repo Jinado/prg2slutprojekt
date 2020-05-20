@@ -35,7 +35,6 @@ namespace FiaMedKnuff
                 FileStream fs = new FileStream(Path.Combine(FilePath.USER_PATH, name + ".fmk"), FileMode.Create, FileAccess.Write);
                 BinaryWriter bw = new BinaryWriter(fs);
 
-                bw.Write(name);
                 bw.Write(gamesWon);
                 bw.Write(gamesLost);
 
@@ -94,7 +93,6 @@ namespace FiaMedKnuff
                 FileStream fs = new FileStream(Path.Combine(FilePath.USER_PATH, name + ".fmk"), FileMode.Open, FileAccess.Read);
                 BinaryReader br = new BinaryReader(fs);
 
-                br.ReadString();
                 gamesWon = br.ReadInt32();
                 gamesLost = br.ReadInt32();
 

@@ -84,6 +84,7 @@ namespace FiaMedKnuff
         /// Start a <see cref="Server">Server</see> to host a game on
         /// </summary>
         /// <param name="server">The <see cref="Server">Server</see> to host the game on</param>
+        /// <exception cref="SocketException"/>
         static public void StartServer(Server server)
         {
             try
@@ -91,7 +92,11 @@ namespace FiaMedKnuff
                 server.listener = new TcpListener(IPAddress.Any, server.port);
                 server.listener.Start();
             }
-            catch (Exception err) { MessageBox.Show(err.Message, "Fel vid start av server", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            catch (Exception err) 
+            { 
+                if(err is SocketException) throw err;
+                MessageBox.Show(err.Message, "Fel vid start av server", MessageBoxButtons.OK, MessageBoxIcon.Error); return; 
+            }
 
             ListenForConnections(server);
         }
@@ -284,13 +289,13 @@ namespace FiaMedKnuff
         /// Inform all other clients which <see cref="Player">Player</see> has won
         /// </summary>
         /// <param name="server">The server to broadcast the message to</param>
-        /// <param name="player">The <see cref="Player">Player</see> that has won the game</param>
-        /// <param name="host">True if the sender of the message is the host</param>
-        public static void HasWon(Server server, Player player, bool host)
+        /// <param name="playerColour">The colour of the player that won</param>
+        /// <param name="host">True if the sender of the message is the host</param>s
+        public static void HasWon(Server server, Color playerColour, bool host)
         {
             // HAW stands for "HAS WON", this is used
             // to identify what type of message has been recieved/sent
-            string message = $"HAW|{player.Name}";
+            string message = $"HAW|{Character.ColourToString(playerColour)}";
             if (host)
                 SendMessageFromHost(server, message);
             else
@@ -437,6 +442,14 @@ namespace FiaMedKnuff
                 SendMessageToServer(server, message);
         }
 
+        public static void Temporary(Server server, string colour, bool host)
+        {
+            if (host)
+                SendMessageFromHost(server, $"TMP|{colour}");
+            else
+                SendMessageToServer(server, $"TMP|{colour}");
+        }
+
         /// <summary>
         /// Begin recieving data from the server
         /// </summary>
@@ -569,6 +582,10 @@ namespace FiaMedKnuff
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
+                    case "TMP":
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        break;
                     default:
                         break;
                 }
@@ -667,6 +684,10 @@ namespace FiaMedKnuff
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
+                    case "TMP":
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        break;
                     default:
                         break;
                 }
@@ -755,6 +776,11 @@ namespace FiaMedKnuff
         { 
             get { return this.form; }
             set { this.form = value; }
+        }
+
+        public int Port
+        {
+            get { return this.port; }
         }
     }
 }

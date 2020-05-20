@@ -89,10 +89,10 @@
             this.lblParagraph3.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblParagraph3.Location = new System.Drawing.Point(30, 396);
             this.lblParagraph3.Name = "lblParagraph3";
-            this.lblParagraph3.Size = new System.Drawing.Size(1158, 56);
+            this.lblParagraph3.Size = new System.Drawing.Size(1153, 56);
             this.lblParagraph3.TabIndex = 9;
-            this.lblParagraph3.Text = "Den som vinner spelet är den som, efter att ha gått ett varv runt spelplanen, för" +
-    "st kommer in i målet,\r\ndvs. den svarta brickan i mitten.";
+            this.lblParagraph3.Text = "Den som vinner spelet är den som först kommer in i målet med alla fyra av sina pj" +
+    "äser. Målet är den\r\nsvarta brickan i mitten av spelplanen.";
             // 
             // FrmRules
             // 

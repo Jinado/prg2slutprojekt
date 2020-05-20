@@ -204,7 +204,33 @@ namespace FiaMedKnuff
         {
             // FDP stands for "FORCE DISCONNECT PLAYER", this is used
             // to identify what type of message has been recieved/sent
-            string message = "FDP|";
+            string message = "FDP";
+            SendMessageFromHost(server, message);
+        }
+
+        /// <summary>
+        /// Ask the server if it is full
+        /// </summary>
+        /// <param name="server">The server to ask</param>
+        /// <param name="name">The name you wish to use</param>
+        public static void IsServerFull(Server server, string name)
+        {
+            // ISF stands for "IS SERVER FULL", this is used
+            // to identify what type of message has been recieved/sent
+            string message = $"ISF|{name}";
+            SendMessageToServer(server, message);
+        }
+
+        /// <summary>
+        /// Send the result of the "Is the server full?" request back to the client
+        /// </summary>
+        /// <param name="server">The server to broadcast the message to</param>
+        /// <param name="result">The result of the query</param>
+        public static void ServerFullResult(Server server, string result)
+        {
+            // SFR stands for "SERVER FULL RESULT", this is used
+            // to identify what type of message has been recieved/sent
+            string message = $"SFR|{result}";
             SendMessageFromHost(server, message);
         }
 
@@ -221,6 +247,11 @@ namespace FiaMedKnuff
             SendMessageToServer(server, message);
         }
 
+        /// <summary>
+        /// Send the result of the "Is this name available?" request back to the client
+        /// </summary>
+        /// <param name="server">The server to broadcast the message to</param>
+        /// <param name="result">The result of the query</param>
         public static void NameAvailableResult(Server server, string result)
         {
             // NAR stands for "NAME AVAILABLE RESULT", this is used
@@ -281,6 +312,19 @@ namespace FiaMedKnuff
                 SendMessageFromHost(server, message);
             else
                 SendMessageToServer(server, message);
+        }
+
+
+        /// <summary>
+        /// Request the server to change the turn
+        /// </summary>
+        /// <param name="server">The server to broadcast the message to</param>
+        public static void RequestChangeOfTurn(Server server)
+        {
+            // CTR stands for "CHANGE TURN REQUEST", this is used 
+            // to identify what type of message has been recieved/sent
+            string message = "CTR";
+            SendMessageToServer(server, message);
         }
 
         /// <summary>
@@ -463,14 +507,14 @@ namespace FiaMedKnuff
                 // Broadcast the message
                 foreach (TcpClient clt in server.clients)
                 {
-                    // Make sure NOT to send the message back to origin UNLESS it's the user's ready status
+                    // Make sure NOT to send the message back to origin UNLESS it's the users' ready status
                     if (!clt.Equals(client) || $"{message[0]}{message[1]}{message[2]}".Equals("SRS"))
                     {
                         SendMessage(clt, message);
                     }
                 }
 
-                // Send the message to oneself
+                // Send the message to oneself (I.e. the server)
                 string msgType = $"{message[0]}{message[1]}{message[2]}";
                 switch (msgType)
                 {
@@ -498,7 +542,7 @@ namespace FiaMedKnuff
                         if (server.form is FrmGame)
                             (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
-                    case "CHT": // The turn has been changed
+                    case "CTR": // A request to change the turn has been sent
                         if (server.form is FrmGame)
                             (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
@@ -506,11 +550,10 @@ namespace FiaMedKnuff
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
-                    case "INA": // A client wishes to know if a name is available
-                        if (server.form is FrmMenu)
-                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
+                    case "ISF": // A client wishes to know if the server is full
+                            new FrmMenu().HandleMessageRecievedByServer(message);
                         break;
-                    case "NAR": // A result from the above request has been recieved
+                    case "INA": // A client wishes to know if a name is available
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
@@ -608,19 +651,15 @@ namespace FiaMedKnuff
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
-                    case "INA": // A client wishes to know if a name is available
+                    case "SFR": // A result from the "Is the server full?" request has been recieved
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
-                    case "NAR": // A result from the above request has been recieved
+                    case "NAR": // A result from the "Is this name available?" request has been recieved
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "SPD": // Player data has been sent
-                        if (server.form is FrmMenu)
-                            (server.form as FrmMenu).HandleMessageRecievedByServer(message);
-                        break;
-                    case "SPN":
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;

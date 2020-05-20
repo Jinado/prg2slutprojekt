@@ -69,13 +69,22 @@ namespace FiaMedKnuff
                 // The user has moved, change the turn unless the user may move again
                 if (!reThrowAllowed && player.PlayersTurn)
                 {
-                    // Change turn
-                    Game.ChangeTurn(players);
-                    player.PlayersTurn = false;
-                    TurnChanged();
+                    if (serverType == FrmMenu.ServerType.HOSTING)
+                    {
+                        // Change the turn
+                        Game.ChangeTurn(players);
+                        TurnChanged();
 
-                    // Notify the other clients of the new turn
-                    Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+                        // Notify the other clients of the new turn
+                        Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+                    }
+                    else
+                    {
+                        // Request the server to change the turn
+                        // The server has to change the turn because not everyone's
+                        // list of Players is in the same order
+                        Server.RequestChangeOfTurn(server);
+                    }
                 }
 
                 UpdateBoard();
@@ -186,11 +195,23 @@ namespace FiaMedKnuff
 
                         player.PlayersTurn = false;
                         diceThrown = false;
-                        Game.ChangeTurn(players);
-                        TurnChanged();
 
-                        // Notify the other clients of the new turn
-                        Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+                        if(serverType == FrmMenu.ServerType.HOSTING)
+                        {
+                            // Change the turn
+                            Game.ChangeTurn(players);
+                            TurnChanged();
+
+                            // Notify the other clients of the new turn
+                            Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+                        }
+                        else
+                        {
+                            // Request the server to change the turn
+                            // The server has to change the turn because not everyone's
+                            // list of Players is in the same order
+                            Server.RequestChangeOfTurn(server);
+                        }
                     }
                 }
             }
@@ -324,7 +345,16 @@ namespace FiaMedKnuff
                     }
 
                     break;
-                case "CHT": // The turn has been changed
+                case "CTR": // A request to change the turn has been sent to the server
+
+                    Game.ChangeTurn(players);
+                    TurnChanged();
+
+                    // Notify the other clients of the new turn
+                    Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+
+                    break;
+                case "CHT": // The turn has been changed, only clients recieve this message
 
                     foreach (Player p in players)
                     {
@@ -344,8 +374,6 @@ namespace FiaMedKnuff
 
         private void FrmGame_Shown(object sender, EventArgs e)
         {
-            this.Text += $" : {player.Name}";
-
             Server.BeginListeningForMessages(server, serverType != 0);
 
             Game.Initialize(players, maxPlayers);

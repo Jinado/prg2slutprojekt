@@ -26,6 +26,7 @@ namespace FiaMedKnuff
         private static int maxPlayers;
         private static readonly Color[] availableColours = { Color.Yellow, Color.Red, Color.Blue, Color.Green };
         private static List<Color> usedColours = new List<Color>(4);
+        private static bool gameStarted = false;
 
         // Important for client
         private static Server server;
@@ -118,8 +119,8 @@ namespace FiaMedKnuff
                                     // Create a Player object and send it to the server
                                     player = new Player(ltbNameJoin.Text.Replace(" ", ""), Player.PlayerState.NOT_READY);
 
-                                    // Ask the server if the name is available
-                                    Server.IsNameAvailable(server, player.Name);
+                                    // Ask the server if it is full
+                                    Server.IsServerFull(server, player.Name);
 
                                     // Disable buttons and change the connect button to a disconnect button
                                     btnConnect.Text = "LÄMNA";
@@ -158,8 +159,8 @@ namespace FiaMedKnuff
                             // Create a Player object and send it to the server
                             player = new Player(ltbNameJoin.Text.Replace(" ", ""), Player.PlayerState.NOT_READY);
 
-                            // Ask the server if the name is available
-                            Server.IsNameAvailable(server, player.Name);
+                            // Ask the server if it is full
+                            Server.IsServerFull(server, player.Name);
 
                             // Disable buttons and change the connect button to a disconnect button
                             btnConnect.Text = "LÄMNA";
@@ -431,6 +432,8 @@ namespace FiaMedKnuff
                 frmGame.server = serverType == ServerType.HOSTING ? host : server;
                 frmGame.server.Form = frmGame;
 
+                gameStarted = true;
+
                 // Show the game form
                 frmGame.ShowDialog();
                 this.Close();
@@ -523,15 +526,6 @@ namespace FiaMedKnuff
             {
                 case "PLD": // Player disconnected
 
-                    // Check if the player who disconnected is the same player who recieved the message
-                    // (this happens when that player tried to join a full server)
-                    if(serverType == ServerType.NOT_HOSTING && data[1].Equals(player.Name))
-                    {
-                        ResetFormOnDisconnect();
-                        MessageBox.Show("Din anslutning blev nekad då servern är full.", "Full server", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-
                     // Loop through the player list and remove the disconnected player
                     Color colourPLD = Color.White;
                     for(int i = 0; i < players.Count; i++)
@@ -580,30 +574,67 @@ namespace FiaMedKnuff
                     lblConnectedPlayersJoin.Text = $"Antal spelare: {players.Count()}/{maxPlayers}";
 
                     break;
-                case "INA": // A client wishes to know if a name is available
+                case "ISF": // A client wishes to know if the server is full, this event is only sent to the server
 
-                    // Only handle this event if you are the host of the server
-                    if(serverType == ServerType.HOSTING)
+                    if(host != null)
                     {
-                        foreach(Player p in players)
-                        {
-                            if (p.Name.Equals(data[1]))
-                            {
-                                // Inform the clients that the name is not available
-                                Server.NameAvailableResult(host, $"{data[1]}|no");
-                                return;
-                            }
-                        }
-
-                        Server.NameAvailableResult(host, $"{data[1]}|yes");
+                        if (gameStarted)
+                            Server.ServerFullResult(host, $"{data[1]}|started");
+                        else if (players.Count == maxPlayers)
+                            Server.ServerFullResult(host, $"{data[1]}|yes");
+                        else
+                            Server.ServerFullResult(host, $"{data[1]}|no");
                     }
 
                     break;
-                case "NAR":
+                case "SFR": // A response to the above request has been sent. This event is only sent to the clients
 
-                    // Only handle this event if you are NOT the host of the server
-                    // and you are the one who sent the request
-                    if (serverType == ServerType.NOT_HOSTING && player.Name.Equals(data[1]))
+                    // Only handle this event if you are the one who sent the request
+                    if (player.Name.Equals(data[1]))
+                    {
+                        if (data[2].Equals("started"))
+                        {
+                            Server.Disconnect(server);
+                            ResetFormOnDisconnect();
+                            UpdatePlayerList();
+
+                            MessageBox.Show("Din anslutning blev nekad då spelet har redan startat.", "Spelet är igång", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else if (data[2].Equals("no"))
+                        {
+                            // Ask the server if the name is available
+                            Server.IsNameAvailable(server, player.Name);
+                        }
+                        else
+                        {
+                            Server.Disconnect(server);
+                            ResetFormOnDisconnect();
+                            UpdatePlayerList();
+
+                            MessageBox.Show("Din anslutning blev nekad då servern är full.", "Full server", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+
+                    break;
+                case "INA": // A client wishes to know if a name is available, this event is only sent to the server
+
+                    foreach (Player p in players)
+                    {
+                        if (p.Name.Equals(data[1]))
+                        {
+                            // Inform the clients that the name is not available
+                            Server.NameAvailableResult(host, $"{data[1]}|no");
+                            return;
+                        }
+                    }
+
+                    Server.NameAvailableResult(host, $"{data[1]}|yes");
+
+                    break;
+                case "NAR": // A response to the above request has been sent. This event is only sent to the clients
+
+                    // Only handle this event if you are the one who sent the request
+                    if (player.Name.Equals(data[1]))
                     {
                         if (data[2].Equals("yes"))
                         {
@@ -679,50 +710,22 @@ namespace FiaMedKnuff
                     }
 
                     break;
-                case "SPN": // Player data has been sent but it doesn't include a list of characters
+                case "SPN": // Player data has been sent but it doesn't include a list of characters, this event is only sent to the server
 
-                    // Only handle this event if you are the host of the server
-                    if(serverType == ServerType.HOSTING)
+                    // Create a Player object and add it to the list of players
+                    List<Character> tempCharsSPN = Character.Assign(FindAvailableColour());
+
+                    players.Add(new Player(data[1], tempCharsSPN, (Player.PlayerState)int.Parse(data[2])));
+
+                    // Broadcast the player list to all other clients
+                    foreach (Player p in players)
                     {
-                        // Create a Player object and add it to the list of players
-                        List<Character> tempCharsSPN = Character.Assign(FindAvailableColour());
-
-                        players.Add(new Player(data[1], tempCharsSPN, (Player.PlayerState)int.Parse(data[2])));
-
-                        // Broadcast the player list to all other clients
-                        foreach (Player p in players)
-                        {
-                            Server.SendPlayerData(host, p, players.Count);
-                            Server.SendMaxPlayers(host, maxPlayers);
-                        }
-
-                        // Check if there are too many connected players right now
-                        if (maxPlayers < players.Count)
-                        {
-                            // Make sure to wait a little so that the other messages are sent and processed in time
-                            Thread.Sleep(50);
-                            Server.Disconnect(players[players.Count - 1], host, serverType != 0);
-                            Color colourSPN = players[players.Count - 1].Characters[0].Colour;
-
-                            // Remove player from the player list
-                            players.RemoveAt(players.Count - 1);
-
-                            // Remove the colour that player was assigned from the usedColour list
-                            for (int i = 0; i < usedColours.Count; i++)
-                            {
-                                if (usedColours[i].Equals(colourSPN))
-                                {
-                                    usedColours.RemoveAt(i);
-                                    break;
-                                }
-                            }
-
-                        } 
-
-                        lblConnectedPlayersHost.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
-                        UpdatePlayerList();
+                        Server.SendPlayerData(host, p, players.Count);
+                        Server.SendMaxPlayers(host, maxPlayers);
                     }
-                    
+
+                    lblConnectedPlayersHost.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
+                    UpdatePlayerList();
                     break;
                 case "SRS": // Ready status of all players have been sent
 
@@ -754,7 +757,7 @@ namespace FiaMedKnuff
             
             if(server != null)
             {
-                if (server.Client.Connected) // Check if the user is currently connected to a server
+                if (server.Client.Connected && player != null) // Check if the user is currently connected to a server
                 {
                     // Send a disconnect message to the server
                     Server.Disconnect(player, server, serverType != 0);

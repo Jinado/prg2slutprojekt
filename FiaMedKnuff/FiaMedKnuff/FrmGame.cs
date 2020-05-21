@@ -31,10 +31,130 @@ namespace FiaMedKnuff
         private static PictureBox[] paths = new PictureBox[57];
         private static List<PictureBox> characters = new List<PictureBox>(26);
         private static PictureBox selectedCharacter;
+        private static bool appClosingSelf = false;
 
         public FrmGame()
         {
             InitializeComponent();
+        }
+
+        private void Button_MouseEnter(object sender, EventArgs e)
+        {
+            ((Button)sender).BackColor = Color.IndianRed;
+        }
+
+        private void Button_MouseLeave(object sender, EventArgs e)
+        {
+            ((Button)sender).BackColor = Color.SlateBlue;
+        }
+
+        private void btnLeave_Click(object sender, EventArgs e)
+        {
+            DialogResult result = DialogResult.No;
+
+            if(serverType == FrmMenu.ServerType.HOSTING)
+                result = MessageBox.Show("Är du säker på att du vill lämna? Alla andra anslutna till servern kommer också att tvingas lämna.", "Är du säker?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            else
+                result = MessageBox.Show("Är du säker på att du vill lämna?", "Är du säker?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // Disconnect the player
+            if (result == DialogResult.Yes)
+            {
+                appClosingSelf = true;
+
+                // If you choose to leave, you automatically lose the game
+                LoseGame();
+
+                if (serverType == FrmMenu.ServerType.HOSTING)
+                {
+                    // Make sure everyone goes back to lobby
+                    Server.LeaveToLobby(server);
+                    ExitToLobby();
+                }
+                else
+                {
+                    // If it is currently your turn, make sure to change it before leaving
+                    if (Game.CurrentTurn.Equals(player))
+                        Server.RequestChangeOfTurn(server);
+
+                    // Make sure everyone goes back to lobby
+                    Server.Disconnect(server, player, false);
+                    ExitToLobby();
+                }
+            }
+        }
+
+        private void btnLeaveToDesktop_Click(object sender, EventArgs e)
+        {
+            DialogResult result = DialogResult.No;
+
+            if (serverType == FrmMenu.ServerType.HOSTING)
+                result = MessageBox.Show("Är du säker på att du vill lämna? Alla andra anslutna till servern kommer också att tvingas lämna.", "Är du säker?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            else
+                result = MessageBox.Show("Är du säker på att du vill lämna?", "Är du säker?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // Disconnect the player and exit to desktop
+            if (result == DialogResult.Yes)
+            {
+                appClosingSelf = true;
+
+                // If you choose to leave, you automatically lose the game
+                LoseGame();
+
+                if (serverType == FrmMenu.ServerType.HOSTING)
+                {
+                    // Stop the server and exit the application, also send each connected players back to the lobby
+                    Server.StopDuringGame(server);
+                    Application.Exit();
+                }
+                else
+                {
+                    // If it is currently your turn, make sure to change it before leaving
+                    if (Game.CurrentTurn.Equals(player))
+                        Server.RequestChangeOfTurn(server);
+
+                    // Disconnect from the server and exit the application
+                    Server.Disconnect(server, player, false);
+                    Application.Exit();
+                }
+            }
+        }
+
+        /// <summary>
+        /// If a player chooses to close the form by pressing the X button, he is effectively
+        /// doing the same as pressing the btnLeaveToDesktop button
+        /// </summary>
+        private void FrmGame_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing && !appClosingSelf)
+            {
+                DialogResult result = DialogResult.No;
+
+                if (serverType == FrmMenu.ServerType.HOSTING)
+                    result = MessageBox.Show("Är du säker på att du vill lämna? Alla andra anslutna till servern kommer också att tvingas lämna.", "Är du säker?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                else
+                    result = MessageBox.Show("Är du säker på att du vill lämna?", "Är du säker?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    // If you choose to leave, you automatically lose the game
+                    LoseGame();
+
+                    if (serverType == FrmMenu.ServerType.HOSTING)
+                    {
+                        // Stop the server and exit the application, also send each connected players back to the lobby
+                        Server.StopDuringGame(server);
+                        Application.Exit();
+                    }
+                    else
+                    {
+                        // Disconnect from the server and exit the application
+                        Server.Disconnect(server, player, false);
+                        Application.Exit();
+                    }
+                }
+            }
+            else appClosingSelf = false;
         }
 
         private void PictureBoxPath_Click(object sender, EventArgs e)
@@ -57,8 +177,7 @@ namespace FiaMedKnuff
                 if(path.Path == Square.PathType.GOAL)
                 {
                     character.State = Character.CharacterState.WON;
-                    selectedCharacter.Enabled = false;
-                    selectedCharacter.Visible = false;
+                    Controls.Remove(selectedCharacter);
 
                     // Update the player's score
                     string colour = Character.ColourToString(player.Characters[0].Colour);
@@ -249,8 +368,47 @@ namespace FiaMedKnuff
             switch (msgType)
             {
                 case "PLD": // Player disconnected
+
+                    // Loop through the player list and remove the disconnected player
+                    string colourPLD = "";
+                    for (int i = 0; i < players.Count; i++)
+                    {
+                        if (players[i].Name == data[1])
+                        {
+                            colourPLD = Character.ColourToString(players[i].Characters[0].Colour);
+                            players.RemoveAt(i);
+                            break;
+                        }
+                    }
+
+                    // Remove the player's characters from the board
+                    foreach (PictureBox pbxChar in characters)
+                    {
+                        // Find the colour of the character
+                        string colour = pbxChar.Name.Replace("pbxChar", "").Substring(0);
+                        if (colour.Equals(colourPLD))
+                            Controls.Remove(pbxChar);
+                    }
+
+                    // See if you're the last player online, if you are, you win
+                    if(players.Count == 1)
+                    {
+                        // Increase the player's score to four
+                        Label playerScore = (Label)Controls.Find($"lblScore{Character.ColourToString(player.Characters[0].Colour)}", true)[0];
+                        playerScore.Text = playerScore.Text.Length == 7 ? $"{playerScore.Text.Substring(0, 6)}4" : $"{playerScore.Text.Substring(0, 5)}4";
+
+                        // Call the CheckScore() method to find that this player is the winner
+                        CheckScore();
+                    }
+
                     break;
-                case "FDP": // The player has been forcefully disconnected
+                case "LTL": // A message to all clients telling them to leave the game back to lobby
+                    MessageBox.Show("Värden har avslutat spelet. Du kommer nu bli tillbakaskickad till spelmenyn.", "Spelet är avslutat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ExitToLobby();
+                    break;
+                case "SDG": // A message to all clients informing them that the host has stopped the server
+                    MessageBox.Show("Värden har stoppat servern. Du kommer nu bli tillbakaskickad till spelmenyn.", "Spelet är avslutat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ExitToLobby(false);
                     break;
                 case "MVC": // A character has been moved
 
@@ -392,9 +550,6 @@ namespace FiaMedKnuff
 
                     TurnChanged();
 
-                    break;
-                case "TMP":
-                    SomeoneWon(data[1]);
                     break;
             }
         }
@@ -618,24 +773,36 @@ namespace FiaMedKnuff
             else
                 MessageBox.Show($"Tyvärr vann du inte...\nDet gjorde {winner.Name}!", "Det var ett bra försök!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+            ExitToLobby();
+        }
+
+        /// <summary>
+        /// Exit back to lobby
+        /// </summary>
+        /// <param name="connected">True by default, informs the Menu form if the player is still connected or not</param>
+        private void ExitToLobby(bool connected = true)
+        {
             // Exit to menu
             this.Hide();
             FrmMenu frmMenu = new FrmMenu();
 
             // Update the form
-            frmMenu.UpdateFormOnGameEnd();
+            frmMenu.UpdateFormOnGameEnd(connected);
 
             // Show the menu
             frmMenu.ShowDialog();
+            appClosingSelf = true;
             this.Close();
         }
 
-        private void btnWin_Click(object sender, EventArgs e)
+        /// <summary>
+        /// This method makes the player automatically lose the game
+        /// </summary>
+        private void LoseGame()
         {
-            string colour = Character.ColourToString(player.Characters[0].Colour);
-
-            Server.Temporary(server, colour, serverType != 0);
-            SomeoneWon(colour);
+            int gamesWon = 0;
+            int gamesLost = 0;
+            FileHandler.SaveUserData(player.Name, gamesWon, ++gamesLost);
         }
     }
 }

@@ -100,7 +100,8 @@
             this.lblScoreYellow = new System.Windows.Forms.Label();
             this.lblScoreGreen = new System.Windows.Forms.Label();
             this.pbxDice = new System.Windows.Forms.PictureBox();
-            this.btnWin = new System.Windows.Forms.Button();
+            this.btnLeaveToDesktop = new System.Windows.Forms.Button();
+            this.btnLeave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbx3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx43)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx56)).BeginInit();
@@ -993,15 +994,39 @@
             this.pbxDice.Tag = "6";
             this.pbxDice.Click += new System.EventHandler(this.pbxDice_Click);
             // 
-            // btnWin
+            // btnLeaveToDesktop
             // 
-            this.btnWin.Location = new System.Drawing.Point(870, 555);
-            this.btnWin.Name = "btnWin";
-            this.btnWin.Size = new System.Drawing.Size(75, 23);
-            this.btnWin.TabIndex = 93;
-            this.btnWin.Text = "Win!";
-            this.btnWin.UseVisualStyleBackColor = true;
-            this.btnWin.Click += new System.EventHandler(this.btnWin_Click);
+            this.btnLeaveToDesktop.BackColor = System.Drawing.Color.SlateBlue;
+            this.btnLeaveToDesktop.FlatAppearance.BorderSize = 0;
+            this.btnLeaveToDesktop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLeaveToDesktop.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLeaveToDesktop.ForeColor = System.Drawing.Color.White;
+            this.btnLeaveToDesktop.Location = new System.Drawing.Point(831, 603);
+            this.btnLeaveToDesktop.Name = "btnLeaveToDesktop";
+            this.btnLeaveToDesktop.Size = new System.Drawing.Size(169, 52);
+            this.btnLeaveToDesktop.TabIndex = 93;
+            this.btnLeaveToDesktop.Text = "LÄMNA TILL SKRIVBORD";
+            this.btnLeaveToDesktop.UseVisualStyleBackColor = false;
+            this.btnLeaveToDesktop.Click += new System.EventHandler(this.btnLeaveToDesktop_Click);
+            this.btnLeaveToDesktop.MouseEnter += new System.EventHandler(this.Button_MouseEnter);
+            this.btnLeaveToDesktop.MouseLeave += new System.EventHandler(this.Button_MouseLeave);
+            // 
+            // btnLeave
+            // 
+            this.btnLeave.BackColor = System.Drawing.Color.SlateBlue;
+            this.btnLeave.FlatAppearance.BorderSize = 0;
+            this.btnLeave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLeave.Font = new System.Drawing.Font("Arial Rounded MT Bold", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLeave.ForeColor = System.Drawing.Color.White;
+            this.btnLeave.Location = new System.Drawing.Point(831, 534);
+            this.btnLeave.Name = "btnLeave";
+            this.btnLeave.Size = new System.Drawing.Size(169, 36);
+            this.btnLeave.TabIndex = 94;
+            this.btnLeave.Text = "LÄMNA";
+            this.btnLeave.UseVisualStyleBackColor = false;
+            this.btnLeave.Click += new System.EventHandler(this.btnLeave_Click);
+            this.btnLeave.MouseEnter += new System.EventHandler(this.Button_MouseEnter);
+            this.btnLeave.MouseLeave += new System.EventHandler(this.Button_MouseLeave);
             // 
             // FrmGame
             // 
@@ -1009,7 +1034,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1051, 735);
-            this.Controls.Add(this.btnWin);
+            this.Controls.Add(this.btnLeave);
+            this.Controls.Add(this.btnLeaveToDesktop);
             this.Controls.Add(this.pbxDice);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.pbxSpawnPointBlue);
@@ -1082,6 +1108,7 @@
             this.Name = "FrmGame";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Fia med knuff - Johannes Emmoth ";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmGame_FormClosing);
             this.Shown += new System.EventHandler(this.FrmGame_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pbx3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx43)).EndInit();
@@ -1224,6 +1251,7 @@
         private System.Windows.Forms.Label lblScoreYellow;
         private System.Windows.Forms.Label lblScoreGreen;
         private System.Windows.Forms.PictureBox pbxDice;
-        private System.Windows.Forms.Button btnWin;
+        private System.Windows.Forms.Button btnLeaveToDesktop;
+        private System.Windows.Forms.Button btnLeave;
     }
 }

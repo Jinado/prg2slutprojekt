@@ -12,6 +12,7 @@ public class LabeledTextBox : TextBox
 {
     private string label;
 
+    // As soon as someone starts writing something, remove the label from the textbox
     protected override void OnKeyDown(KeyEventArgs e)
     {
         base.OnKeyDown(e);
@@ -23,6 +24,7 @@ public class LabeledTextBox : TextBox
         }
     }
 
+    // As soon as someone stops writing, write the label to the textbox IF the textbox is empty
     protected override void OnKeyUp(KeyEventArgs e)
     {
         base.OnKeyUp(e);

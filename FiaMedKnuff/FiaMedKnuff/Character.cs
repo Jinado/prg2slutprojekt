@@ -8,8 +8,9 @@ namespace FiaMedKnuff
 {
     public class Character
     {
-        public enum CharacterState { HOME, OUTSIDE, WON };
-
+        // This keeps track of where the character currently is
+        public enum CharacterState { HOME, OUTSIDE, WON }; 
+      
         // The ARGB colour value of the colours used in the form
         public static readonly Color GREEN = Color.FromArgb(0, 166, 81);
         public static readonly Color YELLOW = Color.FromArgb(255, 204, 1);
@@ -186,5 +187,6 @@ namespace FiaMedKnuff
         public Color Colour { get; set; }
         public int Position { get; set; }
         public CharacterState State { get; set; }
+
     }
 }

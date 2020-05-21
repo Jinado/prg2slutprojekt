@@ -83,8 +83,8 @@ namespace FiaMedKnuff
                     }
                 }
                 else return false;
-            }
-            else if(charColour.Equals(Color.Green) && (charPos == 39 || charPos == 38)) // The green character is just outside the final stretch
+            } // The green character is just outside the final stretch
+            else if(charColour.Equals(Color.Green) && (charPos == 39 || (charPos == 38 && diceResult == 6)))
             {
                 if (diceResult == 6)
                 {
@@ -112,8 +112,8 @@ namespace FiaMedKnuff
                         return true;
                     }
                 }
-            }
-            else if (charColour.Equals(Color.Yellow) && (charPos == 9 || charPos == 8)) // The yellow character is just outside the final stretch
+            } // The yellow character is just outside the final stretch
+            else if (charColour.Equals(Color.Yellow) && (charPos == 9 || (charPos == 8 && diceResult == 6)))
             {
                 if (diceResult == 6)
                 {
@@ -141,8 +141,8 @@ namespace FiaMedKnuff
                         return true;
                     }
                 }
-            }
-            else if (charColour.Equals(Color.Red) && (charPos == 19 || charPos == 18)) // The red character is just outside the final stretch
+            } // The red character is just outside the final stretch
+            else if (charColour.Equals(Color.Red) && (charPos == 19 || (charPos == 18 && diceResult == 6))) 
             {
                 if (diceResult == 6)
                 {
@@ -170,8 +170,8 @@ namespace FiaMedKnuff
                         return true;
                     }
                 }
-            }
-            else if (charColour.Equals(Color.Blue) && (charPos == 29 || charPos == 28)) // The blue character is just outside the final stretch
+            } // The blue character is just outside the final stretch
+            else if (charColour.Equals(Color.Blue) && (charPos == 29 || (charPos == 28 && diceResult == 6))) 
             {
                 if (diceResult == 6)
                 {
@@ -471,6 +471,17 @@ namespace FiaMedKnuff
                     }
                 }
                 // Look if the characters are able to enter their final stretch
+                else if (charColour.Equals(Color.Green) && (charPos + diceResult) > 39 && charPos < 39)
+                {
+                    if((charPos + diceResult) <= 56) // Make sure he wont accidentally try to move past the goal
+                    {
+                        if (CheckIfPossible(Game.Squares[charPos + diceResult], character))
+                        {
+                            Game.Squares[charPos + diceResult].Border = !silent ? Square.SquareBorder.BORDER : Square.SquareBorder.BORDERLESS;
+                            return true;
+                        }
+                    }
+                }
                 else if (charColour.Equals(Color.Yellow) && (charPos + diceResult) > 9 && charPos < 9)
                 {
                     int stepsTo9 = 9 - charPos;

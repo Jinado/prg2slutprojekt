@@ -198,7 +198,7 @@ namespace FiaMedKnuff
             else // Disconnect from the server
             {
                 // Send a disconnect message to the server
-                Server.Disconnect(player, server, serverType != 0);
+                Server.Disconnect(server, player, serverType != 0);
                 ResetFormOnDisconnect();
             }
         }
@@ -783,7 +783,7 @@ namespace FiaMedKnuff
                 if (server.Client.Connected && player != null) // Check if the user is currently connected to a server
                 {
                     // Send a disconnect message to the server
-                    Server.Disconnect(player, server, serverType != 0);
+                    Server.Disconnect(server, player, serverType != 0);
                     ResetFormOnDisconnect();
                 }
 
@@ -825,6 +825,7 @@ namespace FiaMedKnuff
             players.Clear();
             player = null;
             ClearPlayerList("Join");
+            maxPlayers = 0;
 
             // Enable the input fields and the back button
             ltbNameJoin.Enabled = true;
@@ -832,54 +833,83 @@ namespace FiaMedKnuff
             btnBack.Enabled = true;
         }
 
-        public void UpdateFormOnGameEnd()
+        /// <summary>
+        /// This method is called from the FrmGame form when a game has ended
+        /// </summary>
+        /// <param name="connected">Informs this form if the player is connected to a server or not</param>
+        public void UpdateFormOnGameEnd(bool connected)
         {
             // Make sure gameStarted is back to false
             gameStarted = false;
 
-            // Make sure all the fields have their correct values in them
-            // as well as all buttons are either enabled or disabled
-            // as the should be
-            if(serverType == ServerType.HOSTING)
+            if (connected)
             {
-                ltbNameHost.Text = player.Name;
-                ltbNameHost.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+                // Make sure all the fields have their correct values in them
+                // as well as all buttons are either enabled or disabled
+                // as the should be
+                if (serverType == ServerType.HOSTING)
+                {
+                    ltbNameHost.Text = player.Name;
+                    ltbNameHost.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
 
-                ltbMaxPlayers.Text = maxPlayers.ToString();
-                ltbMaxPlayers.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+                    ltbMaxPlayers.Text = maxPlayers.ToString();
+                    ltbMaxPlayers.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
 
-                tbxPortHost.Text = host.Port.ToString();
+                    tbxPortHost.Text = host.Port.ToString();
 
-                lblConnectedPlayersHost.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
+                    lblConnectedPlayersHost.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
 
-                btnStartServer.Enabled = true;
-                btnStartServer.Text = "STOPPA SERVERN";
+                    btnStartServer.Enabled = true;
+                    btnStartServer.Text = "STOPPA SERVERN";
 
-                btnConnect.Enabled = false;
+                    btnConnect.Enabled = false;
+
+                    // If a player has disconnected mid-game, make sure to update the "usedColours" list
+                    if(players.Count != maxPlayers)
+                    {
+                        for(int i = 0; i < usedColours.Count; i++)
+                        {
+                            int notEqual = 0;
+                            foreach(Player p in players)
+                            {
+                                if (usedColours[i].Equals(p)) break;
+                                else notEqual++;
+
+                                if (notEqual == players.Count)
+                                    usedColours.RemoveAt(i);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    ltbNameJoin.Text = player.Name;
+                    ltbNameJoin.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
+
+                    lblConnectedPlayersJoin.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
+
+                    btnConnect.Enabled = true;
+                    btnConnect.Text = "LÄMNA";
+
+                    btnStartServer.Enabled = false;
+                }
+
+                // Turn off the back button
+                btnBack.Enabled = false;
+
+                // Change everyone's ready status
+                foreach (Player p in players) p.State = Player.PlayerState.NOT_READY;
+
+                // Load or save user data
+                HandleUserData();
+
+                // Update the player list
+                UpdatePlayerList();
             }
-            else
+            else // Only a client will reach this else block
             {
-                ltbNameJoin.Text = player.Name;
-                ltbNameJoin.ForeColor = Color.FromKnownColor(KnownColor.ControlText);
-
-                lblConnectedPlayersJoin.Text = $"Antal spelare: {players.Count}/{maxPlayers}";
-
-                btnConnect.Enabled = true;
-                btnConnect.Text = "LÄMNA";
-
-                btnStartServer.Enabled = false;
+                ResetFormOnDisconnect();
             }
-
-            // Turn off the back button
-            btnBack.Enabled = false;
-
-            // Change everyone's ready status
-            foreach (Player p in players) p.State = Player.PlayerState.NOT_READY;
-
-            // Load or save user data
-            HandleUserData();
-
-            UpdatePlayerList();
         }
     }
 }

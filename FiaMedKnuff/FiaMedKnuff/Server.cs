@@ -155,12 +155,12 @@ namespace FiaMedKnuff
         /// <summary>
         /// Disconnect a <see cref="Player">Player</see> from a <see cref="Server">Server</see>
         /// </summary>
-        /// <param name="player">The <see cref="Player">Player</see> to disconnect</param>
         /// <param name="server">The <see cref="Server">Server</see> to disconnect from</param>
+        /// <param name="player">The <see cref="Player">Player</see> to disconnect</param>
         /// <param name="host">True if the sender of the message is the host</param>
-        public static void Disconnect(Player player, Server server, bool host)
+        public static void Disconnect(Server server, Player player, bool host)
         {
-            Server.PlayerDisconnected(server, player, host);
+            PlayerDisconnected(server, player, host);
         }
 
         /// <summary>
@@ -180,8 +180,33 @@ namespace FiaMedKnuff
         /// <param name="server">The <see cref="Server">Server</see> to stop</param>
         public static void Stop(Server server)
         {
-            Server.ForceDisconnectPlayers(server);
+            ForceDisconnectPlayers(server);
             server.listener.Server.Close();
+        }
+
+        /// <summary>
+        /// This method is called by the host if he stops the server mid-game
+        /// </summary>
+        /// <param name="server">The server to stop</param>
+        public static void StopDuringGame(Server server)
+        {
+            // SDG stands for "STOP DURING GAME", this is used
+            // to identify what type of message has been recieved/sent
+            string message = "SDG";
+            SendMessageFromHost(server, message);
+            server.listener.Server.Close();
+        }
+
+        /// <summary>
+        /// This method is called by the host if he leaves mid-game
+        /// </summary>
+        /// <param name="server">The server he's hosting</param>
+        public static void LeaveToLobby(Server server)
+        {
+            // LTL stands for "LEAVE TO LOBBY", this is used
+            // to identify what type of message has been recieved/sent
+            string message = "LTL";
+            SendMessageFromHost(server, message);
         }
 
         /// <summary>
@@ -442,14 +467,6 @@ namespace FiaMedKnuff
                 SendMessageToServer(server, message);
         }
 
-        public static void Temporary(Server server, string colour, bool host)
-        {
-            if (host)
-                SendMessageFromHost(server, $"TMP|{colour}");
-            else
-                SendMessageToServer(server, $"TMP|{colour}");
-        }
-
         /// <summary>
         /// Begin recieving data from the server
         /// </summary>
@@ -538,9 +555,7 @@ namespace FiaMedKnuff
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "FDP": // Player forcefully disconnected
-                        if (server.form is FrmGame)
-                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
-                        else
+                        if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "MVC": // A character has been moved
@@ -581,10 +596,6 @@ namespace FiaMedKnuff
                     case "SRS": // Ready status of all players have been sent
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
-                        break;
-                    case "TMP":
-                        if (server.form is FrmGame)
-                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     default:
                         break;
@@ -642,10 +653,16 @@ namespace FiaMedKnuff
                         else
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
-                    case "FDP": // Player forcefully disconnected
+                    case "LTL": // A message to all clients telling them to leave the game back to lobby
                         if (server.form is FrmGame)
                             (server.form as FrmGame).HandleMessageRecievedByServer(message);
-                        else
+                        break;
+                    case "SDG": // A message to all clients informing them that the host has stopped the server
+                        if (server.form is FrmGame)
+                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
+                        break;
+                    case "FDP": // Player forcefully disconnected
+                        if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
                     case "MVC": // A character has been moved
@@ -683,10 +700,6 @@ namespace FiaMedKnuff
                     case "SRS": // Ready status of all players have been sent
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
-                        break;
-                    case "TMP":
-                        if (server.form is FrmGame)
-                            (server.form as FrmGame).HandleMessageRecievedByServer(message);
                         break;
                     default:
                         break;

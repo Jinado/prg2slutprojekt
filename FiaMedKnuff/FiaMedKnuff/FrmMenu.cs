@@ -872,7 +872,7 @@ namespace FiaMedKnuff
                             int notEqual = 0;
                             foreach(Player p in players)
                             {
-                                if (usedColours[i].Equals(p)) break;
+                                if (usedColours[i].Equals(p.Characters[0].Colour)) break;
                                 else notEqual++;
 
                                 if (notEqual == players.Count)

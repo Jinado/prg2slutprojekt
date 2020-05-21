@@ -73,13 +73,15 @@ namespace FiaMedKnuff
                 }
                 else
                 {
+                    player = null;
+
                     // If it is currently your turn, make sure to change it before leaving
                     if (Game.CurrentTurn.Equals(player))
                         Server.RequestChangeOfTurn(server);
 
                     // Make sure everyone goes back to lobby
                     Server.Disconnect(server, player, false);
-                    ExitToLobby();
+                    ExitToLobby(false);
                 }
             }
         }
@@ -153,6 +155,7 @@ namespace FiaMedKnuff
                         Application.Exit();
                     }
                 }
+                else e.Cancel = true;
             }
             else appClosingSelf = false;
         }
@@ -363,194 +366,207 @@ namespace FiaMedKnuff
         /// </summary>
         public void HandleMessageRecievedByServer(string message)
         {
-            string msgType = $"{message[0]}{message[1]}{message[2]}";
-            string[] data = message.Split('|');
-            switch (msgType)
+            // Player is null when the player leaves the game by their own choosing
+            if(player != null)
             {
-                case "PLD": // Player disconnected
+                string msgType = $"{message[0]}{message[1]}{message[2]}";
+                string[] data = message.Split('|');
+                switch (msgType)
+                {
+                    case "PLD": // Player disconnected
 
-                    // Loop through the player list and remove the disconnected player
-                    string colourPLD = "";
-                    for (int i = 0; i < players.Count; i++)
-                    {
-                        if (players[i].Name == data[1])
+                        // Loop through the player list and remove the disconnected player
+                        string colourPLD = "";
+                        for (int i = 0; i < players.Count; i++)
                         {
-                            colourPLD = Character.ColourToString(players[i].Characters[0].Colour);
-                            players.RemoveAt(i);
-                            break;
-                        }
-                    }
-
-                    // Remove the player's characters from the board
-                    foreach (PictureBox pbxChar in characters)
-                    {
-                        // Find the colour of the character
-                        string colour = pbxChar.Name.Replace("pbxChar", "").Substring(0);
-                        if (colour.Equals(colourPLD))
-                            Controls.Remove(pbxChar);
-                    }
-
-                    // See if you're the last player online, if you are, you win
-                    if(players.Count == 1)
-                    {
-                        // Increase the player's score to four
-                        Label playerScore = (Label)Controls.Find($"lblScore{Character.ColourToString(player.Characters[0].Colour)}", true)[0];
-                        playerScore.Text = playerScore.Text.Length == 7 ? $"{playerScore.Text.Substring(0, 6)}4" : $"{playerScore.Text.Substring(0, 5)}4";
-
-                        // Call the CheckScore() method to find that this player is the winner
-                        CheckScore();
-                    }
-
-                    break;
-                case "LTL": // A message to all clients telling them to leave the game back to lobby
-                    MessageBox.Show("Värden har avslutat spelet. Du kommer nu bli tillbakaskickad till spelmenyn.", "Spelet är avslutat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    ExitToLobby();
-                    break;
-                case "SDG": // A message to all clients informing them that the host has stopped the server
-                    MessageBox.Show("Värden har stoppat servern. Du kommer nu bli tillbakaskickad till spelmenyn.", "Spelet är avslutat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    ExitToLobby(false);
-                    break;
-                case "MVC": // A character has been moved
-
-                    // Find the colour sent over
-                    if(Character.TryParseColour(data[3], out Color colourMVC))
-                    {
-                        // Convert the data into the objects they are representing
-                        Square path = Game.Squares[int.Parse(data[1])];
-                        Point pathLocation = new Point(int.Parse(data[4]), int.Parse(data[5]));
-                        PictureBox pbxCharacter = (PictureBox)Controls.Find(data[6], true)[0];
-                        Character character = null;
-
-                        // Find the character
-                        if(int.Parse(data[2]) == -1) // This is true if the character is at home
-                        {
-                            foreach (Player p in players)
+                            if (players[i].Name == data[1])
                             {
-                                if (p.Characters[0].Colour.Equals(colourMVC))
-                                {
-                                    foreach (Character c in p.Characters)
-                                    {
-                                        if (c.State == Character.CharacterState.HOME)
-                                        {
-                                            character = c;
-                                            break;
-                                        }
-                                    }
-
-                                    if (character != null) break;
-                                }
+                                colourPLD = Character.ColourToString(players[i].Characters[0].Colour);
+                                players.RemoveAt(i);
+                                break;
                             }
                         }
-                        else // Since the character was not at home, one can find it by finding where he is currently standing
+
+                        // Remove the player's characters from the board
+                        foreach (PictureBox pbxChar in characters)
                         {
-                            character = Game.Squares[int.Parse(data[2])].Character;
+                            // Find the colour of the character
+                            string colour = pbxChar.Name.Replace("pbxChar", "").Substring(1);
+                            if (colour.Equals(colourPLD))
+                                Controls.Remove(pbxChar);
                         }
 
-                        // Call the MoveCharacter() method with the decoded objects above
-                        Movement.MoveCharacter(path, character, pathLocation, pbxCharacter);
-
-                        // If the path the character was moved to was the goal path, 
-                        // add one to the respective player's score and remove the 
-                        // character from the game
-                        if (path.Path == Square.PathType.GOAL)
+                        // See if you're the last player online, if you are, you win
+                        if (players.Count == 1)
                         {
-                            switch (Character.ColourToString(character.Colour))
-                            {
-                                case "Green":
-                                    int greenScore = int.Parse(lblScoreGreen.Text.Substring(6)) + 1;
-                                    lblScoreGreen.Text = $"Grön: {greenScore}";
-                                    break;
-                                case "Yellow":
-                                    int yellowScore = int.Parse(lblScoreYellow.Text.Substring(5)) + 1;
-                                    lblScoreYellow.Text = $"Gul: {yellowScore}";
-                                    break;
-                                case "Red":
-                                    int redScore = int.Parse(lblScoreRed.Text.Substring(5)) + 1;
-                                    lblScoreRed.Text = $"Röd: {redScore}";
-                                    break;
-                                case "Blue":
-                                    int blueScore = int.Parse(lblScoreBlue.Text.Substring(5)) + 1;
-                                    lblScoreBlue.Text = $"Blå: {blueScore}";
-                                    break;
-                            }
+                            // Increase the player's score to four
+                            Label playerScore = (Label)Controls.Find($"lblScore{Character.ColourToString(player.Characters[0].Colour)}", true)[0];
+                            playerScore.Text = playerScore.Text.Length == 7 ? $"{playerScore.Text.Substring(0, 6)}4" : $"{playerScore.Text.Substring(0, 5)}4";
 
-                            character.State = Character.CharacterState.WON;
-                            pbxCharacter.Enabled = false;
-                            pbxCharacter.Visible = false;
-
+                            // Call the CheckScore() method to find that this player is the winner
                             CheckScore();
                         }
-                    }
 
-                    break;
-                case "HAW": // A player has won
-                    SomeoneWon(data[1]);
-                    break;
-                case "TRD": // The dice has been thrown
-
-                    // "Animate" the dice a little
-                    pbxDice.Left += 15;
-                    Thread.Sleep(100);
-                    pbxDice.Top -= 15;
-                    Thread.Sleep(100);
-                    pbxDice.Left -= 10;
-                    Thread.Sleep(100);
-                    pbxDice.Top += 18;
-                    Thread.Sleep(100);
-                    pbxDice.Left -= 5;
-                    Thread.Sleep(100);
-                    pbxDice.Top -= 3;
-                    Thread.Sleep(100);
-
-                    diceResult = int.Parse(data[1]);
-                    pbxDice.Tag = diceResult;
-
-                    switch (diceResult)
-                    {
-                        case 1:
-                            pbxDice.Image = Resources.dice_1;
-                            break;
-                        case 2:
-                            pbxDice.Image = Resources.dice_2;
-                            break;
-                        case 3:
-                            pbxDice.Image = Resources.dice_3;
-                            break;
-                        case 4:
-                            pbxDice.Image = Resources.dice_4;
-                            break;
-                        case 5:
-                            pbxDice.Image = Resources.dice_5;
-                            break;
-                        case 6:
-                            pbxDice.Image = Resources.dice_6;
-                            break;
-                    }
-
-                    break;
-                case "CTR": // A request to change the turn has been sent to the server
-
-                    Game.ChangeTurn(players);
-                    TurnChanged();
-
-                    // Notify the other clients of the new turn
-                    Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
-
-                    break;
-                case "CHT": // The turn has been changed, only clients recieve this message
-
-                    foreach (Player p in players)
-                    {
-                        if (p.Name.Equals(data[1]))
+                        break;
+                    case "LTL": // A message to all clients telling them to leave the game back to lobby
+                        MessageBox.Show("Värden har avslutat spelet. Du kommer nu bli tillbakaskickad till spelmenyn.", "Spelet är avslutat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ExitToLobby();
+                        break;
+                    case "SDG": // A message to all clients informing them that the host has stopped the server
+                        // See if you're the last player online, if you are, you win
+                        if (players.Count == 1)
                         {
-                            Game.CurrentTurn = p;
-                            break;
+                            int gamesWon = 0;
+                            int gamesLost = 0;
+                            FileHandler.ReadUserData(player.Name, ref gamesWon, ref gamesLost);
+                            FileHandler.SaveUserData(player.Name, ++gamesWon, gamesLost);
                         }
-                    }
 
-                    TurnChanged();
+                        MessageBox.Show("Värden har stoppat servern. Du kommer nu bli tillbakaskickad till spelmenyn.", "Spelet är avslutat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ExitToLobby(false);
+                        break;
+                    case "MVC": // A character has been moved
 
-                    break;
+                        // Find the colour sent over
+                        if (Character.TryParseColour(data[3], out Color colourMVC))
+                        {
+                            // Convert the data into the objects they are representing
+                            Square path = Game.Squares[int.Parse(data[1])];
+                            Point pathLocation = new Point(int.Parse(data[4]), int.Parse(data[5]));
+                            PictureBox pbxCharacter = (PictureBox)Controls.Find(data[6], true)[0];
+                            Character character = null;
+
+                            // Find the character
+                            if (int.Parse(data[2]) == -1) // This is true if the character is at home
+                            {
+                                foreach (Player p in players)
+                                {
+                                    if (p.Characters[0].Colour.Equals(colourMVC))
+                                    {
+                                        foreach (Character c in p.Characters)
+                                        {
+                                            if (c.State == Character.CharacterState.HOME)
+                                            {
+                                                character = c;
+                                                break;
+                                            }
+                                        }
+
+                                        if (character != null) break;
+                                    }
+                                }
+                            }
+                            else // Since the character was not at home, one can find it by finding where he is currently standing
+                            {
+                                character = Game.Squares[int.Parse(data[2])].Character;
+                            }
+
+                            // Call the MoveCharacter() method with the decoded objects above
+                            Movement.MoveCharacter(path, character, pathLocation, pbxCharacter);
+
+                            // If the path the character was moved to was the goal path, 
+                            // add one to the respective player's score and remove the 
+                            // character from the game
+                            if (path.Path == Square.PathType.GOAL)
+                            {
+                                switch (Character.ColourToString(character.Colour))
+                                {
+                                    case "Green":
+                                        int greenScore = int.Parse(lblScoreGreen.Text.Substring(6)) + 1;
+                                        lblScoreGreen.Text = $"Grön: {greenScore}";
+                                        break;
+                                    case "Yellow":
+                                        int yellowScore = int.Parse(lblScoreYellow.Text.Substring(5)) + 1;
+                                        lblScoreYellow.Text = $"Gul: {yellowScore}";
+                                        break;
+                                    case "Red":
+                                        int redScore = int.Parse(lblScoreRed.Text.Substring(5)) + 1;
+                                        lblScoreRed.Text = $"Röd: {redScore}";
+                                        break;
+                                    case "Blue":
+                                        int blueScore = int.Parse(lblScoreBlue.Text.Substring(5)) + 1;
+                                        lblScoreBlue.Text = $"Blå: {blueScore}";
+                                        break;
+                                }
+
+                                character.State = Character.CharacterState.WON;
+                                pbxCharacter.Enabled = false;
+                                pbxCharacter.Visible = false;
+
+                                CheckScore();
+                            }
+                        }
+
+                        break;
+                    case "HAW": // A player has won
+                        SomeoneWon(data[1]);
+                        break;
+                    case "TRD": // The dice has been thrown
+
+                        // "Animate" the dice a little
+                        pbxDice.Left += 15;
+                        Thread.Sleep(100);
+                        pbxDice.Top -= 15;
+                        Thread.Sleep(100);
+                        pbxDice.Left -= 10;
+                        Thread.Sleep(100);
+                        pbxDice.Top += 18;
+                        Thread.Sleep(100);
+                        pbxDice.Left -= 5;
+                        Thread.Sleep(100);
+                        pbxDice.Top -= 3;
+                        Thread.Sleep(100);
+
+                        diceResult = int.Parse(data[1]);
+                        pbxDice.Tag = diceResult;
+
+                        switch (diceResult)
+                        {
+                            case 1:
+                                pbxDice.Image = Resources.dice_1;
+                                break;
+                            case 2:
+                                pbxDice.Image = Resources.dice_2;
+                                break;
+                            case 3:
+                                pbxDice.Image = Resources.dice_3;
+                                break;
+                            case 4:
+                                pbxDice.Image = Resources.dice_4;
+                                break;
+                            case 5:
+                                pbxDice.Image = Resources.dice_5;
+                                break;
+                            case 6:
+                                pbxDice.Image = Resources.dice_6;
+                                break;
+                        }
+
+                        break;
+                    case "CTR": // A request to change the turn has been sent to the server
+
+                        Game.ChangeTurn(players);
+                        TurnChanged();
+
+                        // Notify the other clients of the new turn
+                        Server.ChangeTurn(server, Game.CurrentTurn, serverType != 0);
+
+                        break;
+                    case "CHT": // The turn has been changed, only clients recieve this message
+
+                        foreach (Player p in players)
+                        {
+                            if (p.Name.Equals(data[1]))
+                            {
+                                Game.CurrentTurn = p;
+                                break;
+                            }
+                        }
+
+                        TurnChanged();
+
+                        break;
+                }
             }
         }
 
@@ -767,13 +783,20 @@ namespace FiaMedKnuff
                 }
             }
 
-            // Display to everyone who has won
-            if (winner.Name.Equals(player.Name))
-                MessageBox.Show("Grattis, du vann spelet!\nSnyggt gjort!", "Du är en vinnare!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            else
-                MessageBox.Show($"Tyvärr vann du inte...\nDet gjorde {winner.Name}!", "Det var ett bra försök!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Winner could end up being null if a player leaves and the message that someone has won
+            // is recieved by the player who left quicker than he can disconnect from the server.
+            // The reason the player who's trying to disconnect cannot find a winner is because the points
+            // give to someone who wins by default to being the last player online are ONLY given client-side.
+            if(winner != null)
+            {
+                // Display to everyone who has won
+                if (winner.Name.Equals(player.Name))
+                    MessageBox.Show("Grattis, du vann spelet!\nSnyggt gjort!", "Du är en vinnare!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else
+                    MessageBox.Show($"Tyvärr vann du inte...\nDet gjorde {winner.Name}!", "Det var ett bra försök!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            ExitToLobby();
+                ExitToLobby();
+            }
         }
 
         /// <summary>

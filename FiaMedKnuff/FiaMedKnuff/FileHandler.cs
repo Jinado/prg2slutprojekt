@@ -12,13 +12,13 @@ namespace FiaMedKnuff
     public static class FileHandler
     {
         /// <summary>
-        /// Saves a user's data
+        /// Saves a <see cref="Player"/>'s data
         /// </summary>
-        /// <param name="name">The name of the user</param>
-        /// <param name="gamesWon">The amount of games won by the user</param>
-        /// <param name="gamesLost">The amount of games lost by the user</param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="name">The name of the <see cref="Player"/></param>
+        /// <param name="gamesWon">The amount of games won by the <see cref="Player"/></param>
+        /// <param name="gamesLost">The amount of games lost by the <see cref="Player"/></param>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="ArgumentNullException"/>
         public static void SaveUserData(string name, int gamesWon, int gamesLost)
         {
             if (name == null)
@@ -29,7 +29,7 @@ namespace FiaMedKnuff
 
             try
             {
-                // Makes sure to create the FiaMedKnuff/users directory
+                // Makes sure to create the FiaMedKnuff/users directory if it does not exist
                 Directory.CreateDirectory(FilePath.USER_PATH);
 
                 FileStream fs = new FileStream(Path.Combine(FilePath.USER_PATH, name + ".fmk"), FileMode.Create, FileAccess.Write);
@@ -48,14 +48,14 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Saves the last used IP into a file so that it may be read and automatically filled out
+        /// Saves the last, successfully, used IP-address into a file so that it may be read and automatically filled out
         /// </summary>
         /// <param name="ip">IP-address to store</param>
         public static void SaveConfigData(string ip)
         {
             try
             {
-                // Makes sure to create the FiaMedKnuff/config directory
+                // Makes sure to create the FiaMedKnuff/config directory if it does not exist
                 Directory.CreateDirectory(FilePath.CONFIG_PATH);
 
                 FileStream fs = new FileStream(Path.Combine(FilePath.CONFIG_PATH, "config.fmkc"), FileMode.Create, FileAccess.Write);
@@ -73,11 +73,11 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Reads the user data of the user with the specified name
+        /// Reads the user data of the <see cref="Player"/> with the specified name
         /// </summary>
-        /// <param name="name">The name of the user</param>
-        /// <param name="gamesWon">The amount of games the user has won</param>
-        /// <param name="gamesLost">The amount of games the user has lost</param>
+        /// <param name="name">The name of the <see cref="Player"/></param>
+        /// <param name="gamesWon">The amount of games the <see cref="Player"/> has won</param>
+        /// <param name="gamesLost">The amount of games the <see cref="Player"/> has lost</param>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="FileNotFoundException"/>
         public static void ReadUserData(string name, ref int gamesWon, ref int gamesLost)
@@ -87,7 +87,7 @@ namespace FiaMedKnuff
 
             try
             {
-                // Makes sure to create the FiaMedKnuff/users directory
+                // Makes sure to create the FiaMedKnuff/users directory if it does not exist
                 Directory.CreateDirectory(FilePath.USER_PATH);
 
                 FileStream fs = new FileStream(Path.Combine(FilePath.USER_PATH, name + ".fmk"), FileMode.Open, FileAccess.Read);

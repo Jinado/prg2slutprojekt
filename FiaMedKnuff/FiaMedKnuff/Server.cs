@@ -25,12 +25,13 @@ namespace FiaMedKnuff
         private Form form;
 
         /// <summary>
-        /// This constructor is used for constructing a <see cref="Server">Server</see> to host
+        /// This constructor is used for constructing a <see cref="Server"/> to host
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="maxPlayers"></param>
-        /// <exception cref="ArgumentException"></exception>
-        /// <exception cref="InvalidValueOfMaximumPlayersException"></exception>
+        /// <param name="maxPlayers">The max amount of players that may be connected to the server at once</param>
+        /// <param name="form">The form that the server should send the messages to</param>
+        /// <param name="port">The port to use for the server</param>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="InvalidValueOfMaximumPlayersException"/>
         public Server(int maxPlayers, Form form, int port = 6767)
         {
             if (port < 1024)
@@ -45,19 +46,16 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// This constructor is used for constructing a <see cref="Server">Server</see> to join
+        /// This constructor is used for constructing a <see cref="Server"/> to join
         /// </summary>
         /// <param name="ip">The IP-adress the server is running on</param>
         /// <param name="port">The port the server is running on</param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="ArgumentNullException"/>
         public Server(TcpClient client, string ip, Form form, int port = 6767)
         {
             if (port < 1024)
                 throw new ArgumentException("Invalid port number. The port cannot be within the range of 0 - 1023.");
-
-            if (client == null)
-                throw new ArgumentNullException();
-
             try
             {
                 this.ip = IPAddress.Parse(ip);
@@ -74,16 +72,16 @@ namespace FiaMedKnuff
                 return;
             }
 
-            this.client = client;
+            this.client = client ?? throw new ArgumentNullException();
             this.client.NoDelay = true;
             this.port = port;
             this.form = form;
         }
 
         /// <summary>
-        /// Start a <see cref="Server">Server</see> to host a game on
+        /// Start a <see cref="Server"/> to host a game on
         /// </summary>
-        /// <param name="server">The <see cref="Server">Server</see> to host the game on</param>
+        /// <param name="server">The <see cref="Server"/> to host the game on</param>
         /// <exception cref="SocketException"/>
         static public void StartServer(Server server)
         {
@@ -102,9 +100,9 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Listens for connections from <see cref="TcpClient">Clients</see>
+        /// Listens for connections from <see cref="TcpClient">clients</see>
         /// </summary>
-        /// <param name="server">The server to listen on</param>
+        /// <param name="server">The <see cref="Server"/> to listen on</param>
         private async static void ListenForConnections(Server server)
         {
             TcpClient tempClient = null;
@@ -130,10 +128,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Join a <see cref="Server">Server</see>
+        /// Join a <see cref="Server"/>
         /// </summary>
-        /// <param name="server">The <see cref="Server">Server</see> to join</param>
-        /// <returns>True if the connections was successful</returns>
+        /// <param name="server">The <see cref="Server"/> to join</param>
+        /// <returns>True if the connection was successful</returns>
         public async static Task<bool> JoinServer(Server server)
         {
             try
@@ -153,10 +151,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Disconnect a <see cref="Player">Player</see> from a <see cref="Server">Server</see>
+        /// Disconnect a <see cref="Player"/> from a <see cref="Server"/>
         /// </summary>
-        /// <param name="server">The <see cref="Server">Server</see> to disconnect from</param>
-        /// <param name="player">The <see cref="Player">Player</see> to disconnect</param>
+        /// <param name="server">The <see cref="Server"/> to disconnect from</param>
+        /// <param name="player">The <see cref="Player"/> to disconnect</param>
         /// <param name="host">True if the sender of the message is the host</param>
         public static void Disconnect(Server server, Player player, bool host)
         {
@@ -166,7 +164,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Disconnect a specific client
         /// </summary>
-        /// <param name="server">The server to disconnect from</param>
+        /// <param name="server">The <see cref="Server"/> to disconnect from</param>
         public static void Disconnect(Server server)
         {
             // NAD stands for "NAME AVAILABLE DISCONNECT", this is used
@@ -175,9 +173,9 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Stop the <see cref="Server">Server</see>
+        /// Stop the <see cref="Server"/>
         /// </summary>
-        /// <param name="server">The <see cref="Server">Server</see> to stop</param>
+        /// <param name="server">The <see cref="Server"/> to stop</param>
         public static void Stop(Server server)
         {
             ForceDisconnectPlayers(server);
@@ -185,9 +183,9 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// This method is called by the host if he stops the server mid-game
+        /// This method is called by the host if he stops the <see cref="Server"/> mid-game
         /// </summary>
-        /// <param name="server">The server to stop</param>
+        /// <param name="server">The <see cref="Server"/> to stop</param>
         public static void StopDuringGame(Server server)
         {
             // SDG stands for "STOP DURING GAME", this is used
@@ -200,7 +198,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// This method is called by the host if he leaves mid-game
         /// </summary>
-        /// <param name="server">The server he's hosting</param>
+        /// <param name="server">The <see cref="Server"/> he's hosting</param>
         public static void LeaveToLobby(Server server)
         {
             // LTL stands for "LEAVE TO LOBBY", this is used
@@ -210,10 +208,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Announce to each client that a <see cref="Player">Player</see> has disconnected
+        /// Announce to each client that a <see cref="Player"/> has disconnected
         /// </summary>
-        /// <param name="server">The <see cref="Server">Server</see> the <see cref="Player">Player</see> has disconnected from</param>
-        /// <param name="player">The <see cref="Player">Player</see> that has disconnected</param>
+        /// <param name="server">The <see cref="Server"/> the <see cref="Player"/> has disconnected from</param>
+        /// <param name="player">The <see cref="Player"/> that has disconnected</param>
         /// <param name="host">True if the sender of the message is the host</param>
         private static void PlayerDisconnected(Server server, Player player, bool host)
         {
@@ -227,9 +225,9 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Send a message to each client from the host that a player has been disconnected
+        /// Send a message to each client from the host that a <see cref="Player"/> has been disconnected
         /// </summary>
-        /// <param name="server">The server to disconnect from</param>
+        /// <param name="server">The <see cref="Server"/> to disconnect from</param>
         private static void ForceDisconnectPlayers(Server server)
         {
             // FDP stands for "FORCE DISCONNECT PLAYER", this is used
@@ -239,9 +237,9 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Ask the server if it is full
+        /// Ask the <see cref="Server"/> if it is full
         /// </summary>
-        /// <param name="server">The server to ask</param>
+        /// <param name="server">The <see cref="Server"/> to ask</param>
         /// <param name="name">The name you wish to use</param>
         public static void IsServerFull(Server server, string name)
         {
@@ -254,7 +252,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Send the result of the "Is the server full?" request back to the client
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
         /// <param name="result">The result of the query</param>
         public static void ServerFullResult(Server server, string result)
         {
@@ -265,9 +263,9 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Check with the server if a name is available
+        /// Check with the <see cref="Server"/> if a name is available
         /// </summary>
-        /// <param name="server">The server to ask</param>
+        /// <param name="server">The <see cref="Server"/> to ask</param>
         /// <param name="name">The name you wish to use</param>
         public static void IsNameAvailable(Server server, string name)
         {
@@ -280,7 +278,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Send the result of the "Is this name available?" request back to the client
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
         /// <param name="result">The result of the query</param>
         public static void NameAvailableResult(Server server, string result)
         {
@@ -291,13 +289,13 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Inform all other <see cref="TcpClient">Clients</see> on the server of a move
+        /// Inform all other clients on the server of a move
         /// </summary>
-        /// <param name="server">The <see cref="Server">Server</see> to inform</param>
-        /// <param name="square">The square to move to</param>
-        /// <param name="character">The character to move</param>
-        /// <param name="pathLocation">The location of the squares's picturebox</param>
-        /// <param name="pbxCharacter">The character's picturebox</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
+        /// <param name="square">The <see cref="Square"/> to move to</param>
+        /// <param name="character">The <see cref="Character"/> to move</param>
+        /// <param name="pathLocation">The <see cref="Point">location</see> of the squares's <see cref="PictureBox"/></param>
+        /// <param name="pbxCharacter">The character's <see cref="PictureBox"/></param>
         /// <param name="host">True if the sender of the message is the host</param>
         public static void MoveCharacter(Server server, Square square, Character character, Point pathLocation, PictureBox pbxCharacter, bool host)
         {
@@ -311,10 +309,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Inform all other clients which <see cref="Player">Player</see> has won
+        /// Inform all other clients which <see cref="Player"/> has won
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
-        /// <param name="playerColour">The colour of the player that won</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
+        /// <param name="playerColour">The <see cref="Color"/> of the <see cref="Player"/> that won</param>
         /// <param name="host">True if the sender of the message is the host</param>s
         public static void HasWon(Server server, Color playerColour, bool host)
         {
@@ -330,7 +328,7 @@ namespace FiaMedKnuff
         /// <summary>
         /// Tell each client that the dice has been thrown and show the result
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
         /// <param name="diceResult">The result of the dice throw</param>
         /// <param name="host">True if the sender of the message is the host</param>
         public static void ThrownDice(Server server, int diceResult, bool host)
@@ -346,9 +344,9 @@ namespace FiaMedKnuff
 
 
         /// <summary>
-        /// Request the server to change the turn
+        /// Request the <see cref="Server"/> to change the turn
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
         public static void RequestChangeOfTurn(Server server)
         {
             // CTR stands for "CHANGE TURN REQUEST", this is used 
@@ -358,10 +356,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Tell the other clients which <see cref="Player">Player's</see> turn it is
+        /// Tell the other clients which <see cref="Player"/>'s turn it is
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
-        /// <param name="player">The <see cref="Player">Player</see> whose turn it is</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
+        /// <param name="player">The <see cref="Player"/> whose turn it is</param>
         /// <param name="host">True if the sender of the message is the host</param>
         public static void ChangeTurn(Server server, Player player, bool host)
         {
@@ -375,10 +373,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Send over a client's <see cref="Player">Player</see> object to all other clients
+        /// Send over a client's <see cref="Player"/> object to all other clients
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
-        /// <param name="player">The <see cref="Player">Player</see> object to send over</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
+        /// <param name="player">The <see cref="Player"/> object to send over</param>
         /// <param name="host">True if the sender of the message is the host</param>
         public static void SendPlayerData(Server server, Player player, bool host)
         {
@@ -399,10 +397,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Informs all clients of maximum amount of players
+        /// Informs all clients of maximum amount of <see cref="Player">players</see>
         /// </summary>
-        /// <param name="server">The server to broadcast the message on</param>
-        /// <param name="maxPlayers">The max amount of players</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message on</param>
+        /// <param name="maxPlayers">The max amount of <see cref="Player">players</see></param>
         public static void SendMaxPlayers(Server server, int maxPlayers)
         {
             // SMP stands for "SEND MAX PLAYERS", this is used
@@ -412,12 +410,12 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Send over a client's Player object to all other clients, also inform the client
-        /// of the total number of Player objects that will be sent
+        /// Send over a client's <see cref="Player"/> object to all other clients, also inform the client
+        /// of the total number of <see cref="Player"/> objects that will be sent
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
-        /// <param name="player">The player object to send over</param>
-        /// <param name="count">This keeps track of how many Player objects will be sent over in total</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
+        /// <param name="player">The <see cref="Player"/> object to send over</param>
+        /// <param name="count">This keeps track of how many <see cref="Player"/> objects will be sent over in total</param>
         public static void SendPlayerData(Server server, Player player, int count)
         {
             /*
@@ -448,10 +446,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Tell all other clients which players are ready and which aren't
+        /// Tell all other clients which <see cref="Player">players</see> are ready and which aren't
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
-        /// <param name="players">The list of players connected to the server</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
+        /// <param name="players">The list of <see cref="Player">players</see> connected to the server</param>
         /// <param name="host">True if the sender of the message is the host</param>
         public static void SendReadyStatus(Server server, List<Player> players, bool host)
         {
@@ -468,16 +466,16 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Begin recieving data from the server
+        /// Begin recieving data from the <see cref="Server"/>
         /// </summary>
-        /// <param name="server">The server to recieve data from</param>
-        /// <param name="host">Wether or not the caller of the method is the host of the server</param>
+        /// <param name="server">The <see cref="Server"/> to recieve data from</param>
+        /// <param name="host">Whether or not the caller of the method is the host of the <see cref="Server"/></param>
         public static void BeginListeningForMessages(Server server, bool host)
         {
             if (host)
             {
-                foreach(TcpClient clt in server.clients)
-                    RecieveData(server, clt);
+                for(int i = 0; i < server.clients.Count; i++)
+                    RecieveData(server, server.clients[i]);
             }
             else
             {
@@ -486,10 +484,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Recieve data sent to the server and broadcast it to all clients
+        /// Recieve data sent to the <see cref="Server"/> and broadcast it to all clients
         /// </summary>
-        /// <param name="server">The server to broadcast the message to</param>
-        /// <param name="client">The client that will listen to messages (I.E. The server's client itself)</param>
+        /// <param name="server">The <see cref="Server"/> to broadcast the message to</param>
+        /// <param name="client">The <see cref="TcpClient"/> that will listen to messages</param>
         private async static void RecieveData(Server server, TcpClient client)
         {
             // Client is null if the server has been stopped, in that case, don't continue
@@ -528,7 +526,7 @@ namespace FiaMedKnuff
                     server.clients.Remove(client);
                     return;
                 }
-                MessageBox.Show(err.Message, "Serverfel 1", MessageBoxButtons.OK, MessageBoxIcon.Error); return; 
+                MessageBox.Show(err.Message, "Serverfel", MessageBoxButtons.OK, MessageBoxIcon.Error); return; 
             }
 
             string message = Encoding.UTF8.GetString(buffer, 0, n);
@@ -589,7 +587,7 @@ namespace FiaMedKnuff
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
-                    case "SPN":
+                    case "SPN": // Player data without a list of characters has been sent
                         if (server.form is FrmMenu)
                             (server.form as FrmMenu).HandleMessageRecievedByServer(message);
                         break;
@@ -637,7 +635,7 @@ namespace FiaMedKnuff
 
                 // This is true if the host stops the server and exists the application before the other clients exit
                 if (err.InnerException is SocketException) return;
-                MessageBox.Show(err.Message, "Serverfel 2", MessageBoxButtons.OK, MessageBoxIcon.Error); return; 
+                MessageBox.Show(err.Message, "Serverfel", MessageBoxButtons.OK, MessageBoxIcon.Error); return; 
             }
 
             string message = Encoding.UTF8.GetString(buffer, 0, n);
@@ -722,7 +720,7 @@ namespace FiaMedKnuff
             {
                     await server.client.GetStream().WriteAsync(msg, 0, msg.Length);
             }
-            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till servern.\n{err.Message}", "Serverfel 3", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till servern.\n{err.Message}", "Serverfel", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
 
             // If the message is that a player has disconnected, close the client
             // linked to that player
@@ -765,7 +763,7 @@ namespace FiaMedKnuff
                     await client.GetStream().WriteAsync(msg, 0, msg.Length);
                 else return;
             }
-            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till klienten.\n{err.Message}", "Serverfel 4", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+            catch (Exception err) { MessageBox.Show($"Kunde ej skicka meddelande till klienten.\n{err.Message}", "Serverfel", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
         }
 
         public override string ToString()

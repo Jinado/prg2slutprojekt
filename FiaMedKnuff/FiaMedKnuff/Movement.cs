@@ -24,11 +24,14 @@ namespace FiaMedKnuff
         private const int GOAL = 56;
 
         /// <summary>
-        /// Draws a border around the square a character may move to
+        /// Draws a border around the <see cref="Square"/> a <see cref="Character"/> may move to
         /// </summary>
         /// <param name="diceResult">The result of a dice throw</param>
-        /// <param name="character">The character the player wishes to move</param>
-        /// <param name="silent">If true, no borders will be added to squares that you may move to</param>
+        /// <param name="character">The <see cref="Character"/> the <see cref="Player"/> wishes to move</param>
+        /// <param name="silent">
+        /// If true, no borders will be added to <see cref="Square">squares</see> that you may move to.
+        /// This is useful for when you only need to check if a <see cref="Player"/> can actually make a move.
+        /// </param>
         /// <returns>True if there was a possible move</returns>
         public static bool DrawMovementLine(int diceResult, Character character, bool silent = false)
         {
@@ -528,11 +531,11 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Checks if it is possible for a specified character to move to a specified square
+        /// Checks if it is possible for a specified <see cref="Character"/> to move to a specified <see cref="Square"/>
         /// </summary>
-        /// <param name="square">The square to move to</param>
-        /// <param name="character">The character to move</param>
-        /// <returns>True if the character may move to the square</returns>
+        /// <param name="square">The <see cref="Square"/> to move to</param>
+        /// <param name="character">The <see cref="Character"/> to move</param>
+        /// <returns>True if the <see cref="Character"/> may move to the <see cref="Square"/></returns>
         private static bool CheckIfPossible(Square square, Character character)
         {
             // Check if there is a character on the square already
@@ -560,12 +563,12 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Moves a specified character to a specified square
+        /// Moves a specified <see cref="Character"/> to a specified square
         /// </summary>
-        /// <param name="square">The square to move to</param>
-        /// <param name="character">The character to move</param>
-        /// <param name="pathLocation">The location of the squares's picturebox</param>
-        /// <param name="pbxCharacter">The character's picturebox</param>
+        /// <param name="square">The <see cref="Square"/> to move to</param>
+        /// <param name="character">The <see cref="Character"/> to move</param>
+        /// <param name="pathLocation">The location of the <see cref="Square"/>'s <see cref="PictureBox"/></param>
+        /// <param name="pbxCharacter">The <see cref="Character"/>'s <see cref="PictureBox"/></param>
         public static void MoveCharacter(Square square, Character character, Point pathLocation, PictureBox pbxCharacter)
         {
             // Change the state of the square the character to be moved is standning on to free
@@ -618,9 +621,9 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Pushes an opponent
+        /// Pushes an <see cref="Character">opponent</see>
         /// </summary>
-        /// <param name="opponent">The opponent to push</param>
+        /// <param name="opponent">The <see cref="Character">opponent</see> to push</param>
         private static void PushOpponent(Character opponent)
         {
             PictureBox pbxOpponent = null;

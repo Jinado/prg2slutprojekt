@@ -43,7 +43,7 @@ namespace FiaMedKnuff
         /// Constructor for the Character class
         /// </summary>
         /// <param name="colour">The colour of this character</param>
-        /// <exception cref="InvalidColourException"></exception>
+        /// <exception cref="InvalidColourException"/>
         public Character(Color colour)
         {
             if (colour != Color.Green && colour != Color.Red && colour != Color.Yellow && colour != Color.Blue)
@@ -187,6 +187,5 @@ namespace FiaMedKnuff
         public Color Colour { get; set; }
         public int Position { get; set; }
         public CharacterState State { get; set; }
-
     }
 }

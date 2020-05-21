@@ -8,15 +8,15 @@ namespace FiaMedKnuff
         public enum SquareState { OCCUPIED, FREE };
         public enum SquareBorder { BORDERLESS, BORDER };
         public enum PathType { STANDARD, FINAL, GOAL };
-        
+
         /// <summary>
-        /// Constructor for the Square class
+        /// Constructor for the <see cref="Square"/> class
         /// </summary>
-        /// <param name="colour">The colour of the Square, if black, it's the middle Square</param>
-        /// <param name="index">The index of the Square</param>
-        /// <param name="path">The type of path the square is</param>
-        /// <exception cref="InvalidColourException"></exception>
-        /// <exception cref="System.IndexOutOfRangeException"></exception>
+        /// <param name="colour">The <see cref="Color"/> of the <see cref="Square"/>, if black, it's the middle <see cref="Square"/></param>
+        /// <param name="index">The index of the <see cref="Square"/></param>
+        /// <param name="path">The <see cref="Square"/>'s <see cref="PathType"/></param>
+        /// <exception cref="InvalidColourException"/>
+        /// <exception cref="System.IndexOutOfRangeException"/>
         public Square(Color colour, int index, PathType path = PathType.STANDARD)
         {
             this.State = SquareState.FREE;

@@ -7,11 +7,11 @@ namespace FiaMedKnuff
         public enum PlayerState { NOT_READY, READY };
 
         /// <summary>
-        /// Constructor for the Player class
+        /// Constructor for the <see cref="Player"/> class
         /// </summary>
-        /// <param name="name">The name of the player</param>
-        /// <param name="characters">The characters the player controls</param>
-        /// <param name="state">The ready state of a player</param>
+        /// <param name="name">The name of the <see cref="Player"/></param>
+        /// <param name="characters">The <see cref="Character">characters</see> the <see cref="Player"/> controls</param>
+        /// <param name="state">The <see cref="Player"/>'s <see cref="PlayerState"/>. This keeps track of if the <see cref="Player"/> is ready or not</param>
         public Player(string name, List<Character> characters, PlayerState state)
         {
             this.Name = name;
@@ -20,10 +20,10 @@ namespace FiaMedKnuff
         }
 
         /// <summary>
-        /// Constructor for the Player class
+        /// Constructor for the <see cref="Player"/> class
         /// </summary>
-        /// <param name="name">The name of the player</param>
-        /// <param name="state">The ready state of a player</param>
+        /// <param name="name">The name of the <see cref="Player"/></param>
+        /// <param name="state">The ready state of a <see cref="Player"/></param>
         public Player(string name, PlayerState state)
         {
             this.Name = name;

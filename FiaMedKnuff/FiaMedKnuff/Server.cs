@@ -62,9 +62,9 @@ namespace FiaMedKnuff
             }
             catch(Exception err)
             {
-                if(err.InnerException is ArgumentNullException)
+                if(err is ArgumentNullException)
                     MessageBox.Show("IP-adressen kan ej vara av typ null", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                else if (err.InnerException is FormatException)
+                else if (err is FormatException)
                     MessageBox.Show("Den angivna IP-adressen är inkorrekt formaterad", "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     MessageBox.Show(err.Message, "Ogiltig IP-adress", MessageBoxButtons.OK, MessageBoxIcon.Error);

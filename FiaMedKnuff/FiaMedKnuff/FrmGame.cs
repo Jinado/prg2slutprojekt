@@ -572,8 +572,6 @@ namespace FiaMedKnuff
 
         private void FrmGame_Shown(object sender, EventArgs e)
         {
-            this.Text = player.Name;
-
             Server.BeginListeningForMessages(server, serverType != 0);
 
             Game.Initialize(players, maxPlayers);

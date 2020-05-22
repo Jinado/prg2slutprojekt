@@ -102,6 +102,7 @@
             this.pbxDice = new System.Windows.Forms.PictureBox();
             this.btnLeaveToDesktop = new System.Windows.Forms.Button();
             this.btnLeave = new System.Windows.Forms.Button();
+            this.lblDiceTutorial = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbx3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx43)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx56)).BeginInit();
@@ -1001,7 +1002,7 @@
             this.btnLeaveToDesktop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLeaveToDesktop.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLeaveToDesktop.ForeColor = System.Drawing.Color.White;
-            this.btnLeaveToDesktop.Location = new System.Drawing.Point(831, 603);
+            this.btnLeaveToDesktop.Location = new System.Drawing.Point(832, 639);
             this.btnLeaveToDesktop.Name = "btnLeaveToDesktop";
             this.btnLeaveToDesktop.Size = new System.Drawing.Size(169, 52);
             this.btnLeaveToDesktop.TabIndex = 93;
@@ -1018,7 +1019,7 @@
             this.btnLeave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLeave.Font = new System.Drawing.Font("Arial Rounded MT Bold", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLeave.ForeColor = System.Drawing.Color.White;
-            this.btnLeave.Location = new System.Drawing.Point(831, 534);
+            this.btnLeave.Location = new System.Drawing.Point(832, 570);
             this.btnLeave.Name = "btnLeave";
             this.btnLeave.Size = new System.Drawing.Size(169, 36);
             this.btnLeave.TabIndex = 94;
@@ -1028,12 +1029,24 @@
             this.btnLeave.MouseEnter += new System.EventHandler(this.Button_MouseEnter);
             this.btnLeave.MouseLeave += new System.EventHandler(this.Button_MouseLeave);
             // 
+            // lblDiceTutorial
+            // 
+            this.lblDiceTutorial.AutoSize = true;
+            this.lblDiceTutorial.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDiceTutorial.Location = new System.Drawing.Point(804, 497);
+            this.lblDiceTutorial.Name = "lblDiceTutorial";
+            this.lblDiceTutorial.Size = new System.Drawing.Size(224, 36);
+            this.lblDiceTutorial.TabIndex = 95;
+            this.lblDiceTutorial.Text = "Det är din tur! Klicka på\r\ntärningen för att kasta den!";
+            this.lblDiceTutorial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FrmGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1051, 735);
+            this.Controls.Add(this.lblDiceTutorial);
             this.Controls.Add(this.btnLeave);
             this.Controls.Add(this.btnLeaveToDesktop);
             this.Controls.Add(this.pbxDice);
@@ -1253,5 +1266,6 @@
         private System.Windows.Forms.PictureBox pbxDice;
         private System.Windows.Forms.Button btnLeaveToDesktop;
         private System.Windows.Forms.Button btnLeave;
+        private System.Windows.Forms.Label lblDiceTutorial;
     }
 }

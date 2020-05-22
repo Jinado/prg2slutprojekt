@@ -105,8 +105,11 @@ namespace FiaMedKnuff
 
                 if (serverType == FrmMenu.ServerType.HOSTING)
                 {
-                    // Stop the server and exit the application, also send each connected players back to the lobby
+                    // Stop the server and exit the application, also send each connected player back to the lobby
                     Server.StopDuringGame(server);
+
+                    // Sleeping a litle to give the application time to send the above message to the server
+                    Thread.Sleep(150);
                     Application.Exit();
                 }
                 else
@@ -117,6 +120,9 @@ namespace FiaMedKnuff
 
                     // Disconnect from the server and exit the application
                     Server.Disconnect(server, player, false);
+
+                    // Sleeping a litle to give the application time to send the above message to the server
+                    Thread.Sleep(150);
                     Application.Exit();
                 }
             }
@@ -146,12 +152,18 @@ namespace FiaMedKnuff
                     {
                         // Stop the server and exit the application, also send each connected players back to the lobby
                         Server.StopDuringGame(server);
+
+                        // Sleeping a litle to give the application time to send the above message to the server
+                        Thread.Sleep(150);
                         Application.Exit();
                     }
                     else
                     {
                         // Disconnect from the server and exit the application
                         Server.Disconnect(server, player, false);
+
+                        // Sleeping a litle to give the application time to send the above message to the server
+                        Thread.Sleep(150);
                         Application.Exit();
                     }
                 }
@@ -413,14 +425,11 @@ namespace FiaMedKnuff
                         ExitToLobby();
                         break;
                     case "SDG": // A message to all clients informing them that the host has stopped the server
-                        // See if you're the last player online, if you are, you win
-                        if (players.Count == 1)
-                        {
-                            int gamesWon = 0;
-                            int gamesLost = 0;
-                            FileHandler.ReadUserData(player.Name, ref gamesWon, ref gamesLost);
-                            FileHandler.SaveUserData(player.Name, ++gamesWon, gamesLost);
-                        }
+                        // If the host stops the server, you automatically win
+                        int gamesWon = 0;
+                        int gamesLost = 0;
+                        FileHandler.ReadUserData(player.Name, ref gamesWon, ref gamesLost);
+                        FileHandler.SaveUserData(player.Name, ++gamesWon, gamesLost);
 
                         MessageBox.Show("Värden har stoppat servern. Du kommer nu bli tillbakaskickad till spelmenyn.", "Spelet är avslutat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         ExitToLobby(false);
@@ -620,6 +629,11 @@ namespace FiaMedKnuff
                     ((Label)control[0]).ForeColor = Color.FromKnownColor(KnownColor.ControlText);
                 }
             }
+
+            if (Game.CurrentTurn.Equals(player))
+                lblDiceTutorial.Text = "Det är din tur! Klicka på\r\ntärningen för att kasta den!";
+            else
+                lblDiceTutorial.Text = "";
         }
 
         /// <summary>
@@ -823,6 +837,7 @@ namespace FiaMedKnuff
         {
             int gamesWon = 0;
             int gamesLost = 0;
+            FileHandler.ReadUserData(player.Name, ref gamesWon, ref gamesLost);
             FileHandler.SaveUserData(player.Name, gamesWon, ++gamesLost);
         }
     }

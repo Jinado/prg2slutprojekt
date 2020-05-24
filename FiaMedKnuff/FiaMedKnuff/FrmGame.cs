@@ -73,7 +73,6 @@ namespace FiaMedKnuff
                 }
                 else
                 {
-                    player = null;
 
                     // If it is currently your turn, make sure to change it before leaving
                     if (Game.CurrentTurn.Equals(player))
@@ -82,6 +81,8 @@ namespace FiaMedKnuff
                     // Make sure everyone goes back to lobby
                     Server.Disconnect(server, player, false);
                     ExitToLobby(false);
+
+                    player = null;
                 }
             }
         }
